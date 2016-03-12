@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Nadget</string>
+
+    <string name="placeholder">News about gadgets and mobiles</string>
+
+    <string name="connection_error">Unable to connect. Please check your network connectivity</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+</resources>
