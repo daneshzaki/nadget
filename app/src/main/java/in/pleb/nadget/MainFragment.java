@@ -31,118 +31,113 @@
 
 package in.pleb.nadget;
 
-import android.app.Fragment;
+import android.app.ListFragment;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
- * Fragment used for displaying content using a TextView.
+ * Fragment for displaying the main list with posts
  */
-public class MainFragment extends Fragment {
+public class MainFragment extends ListFragment implements AdapterView.OnItemClickListener {
 
-    //TODO:once the code starts working - replace mainTextView with a list view similar to old Thingse
-    private TextView mainTextView;
-    private ScrollView mScrollView;
-
-    public MainFragment() {}
-
-    public View inflateViews() {
-        mScrollView = new ScrollView(getActivity());
-        ViewGroup.LayoutParams scrollParams = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        mScrollView.setLayoutParams(scrollParams);
-
-        mainTextView = new TextView(getActivity());
-        ViewGroup.LayoutParams logParams = new ViewGroup.LayoutParams(scrollParams);
-        mainTextView.setLayoutParams(logParams);
-        mainTextView.setClickable(false);
-        mainTextView.setFocusable(false);
-        mainTextView.setBackgroundColor(Color.WHITE);
-        mainTextView.setGravity(Gravity.BOTTOM);
-
-
-        mScrollView.addView(mainTextView);
-        return mScrollView;
-    }
+	public MainFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View result = inflateViews();
-
-        mainTextView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
-            }
-        });
-        return result;
+                             Bundle savedInstanceState)
+	{
+        View view = inflater.inflate(R.layout.list_fragment, container, false);
+        mainTextView = new TextView(getActivity());
+		Log.i(TAG,"onCreateView complete");
+        return view;
     }
 
-    //for setting text
-    public void setMainText(String content)
-    {
-        Log.i(TAG, "in set text with " + content);
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+	{
+        super.onActivityCreated(savedInstanceState);
 
-        mainTextView.append(content);
+        //setup UI
+        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        getListView().setTextFilterEnabled(true);
+        getListView().setDivider(new ColorDrawable(Color.LTGRAY));
+        getListView().setDividerHeight(1);
+
+		Log.i(TAG, "onActivityCreated setupUI complete");
+        //layout and load data
+
+
+        getListView().setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
+        //handle row selects in list - move to fragment
+        // call webView with post selected
+        // create a bundle with values to be passed to display screen
+	/*	Bundle bundle = new Bundle();
+
+		// post title
+		bundle.putString("id", thingsArList.get(position).getId());
+
+		// post description
+		bundle.putString("name", thingsArList.get(position).getName());
+
+		// post link
+		bundle.putString("price", thingsArList.get(position).getPrice());
+
+		// post date
+		bundle.putString("purchaseDate", thingsArList.get(position)
+				.getPurchaseDate());
+
+		// post image link (check null before setting)
+		bundle.putString("picLocation", thingsArList.get(position)
+				.getPicLocation());
+
+		Log.i("Nadget",
+				"onListItemClick setting bundle pic location = "
+						+ bundle.getString("picLocation"));
+
+		// create an intent and add the bundle to it
+		Intent displayIntent = new Intent(ThingseActivity.this,
+				DetailedPostView.class);
+
+		displayIntent.putExtra("nadget", bundle);
+
+		startActivity(displayIntent);
+*/
 
     }
 
-    //set item title
-    public void setItemTitle(String content)
-    {
-        Log.i(TAG, "in set title with " + content);
-        mainTextView.append("\n");
-        mainTextView.setTypeface(null, Typeface.BOLD);
-        mainTextView.setLinksClickable(false);
-        mainTextView.append(content);
-        mainTextView.append("\n");
 
-    }
+	//set list adapter
+	public void setArrayAdapter(ArrayAdapter arrayAdapter)
+	{
+		this.arrayAdapter = arrayAdapter;
+		this.setListAdapter(arrayAdapter);
+	}
 
-    //set description
-    public void setItemDescription(String content)
-    {
-        Log.i(TAG, "in set description with " + content);
-
-        mainTextView.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
-        mainTextView.setLinksClickable(true);
-        mainTextView.append(content);
-        mainTextView.append("\n");
-
-    }
-
-    //set item link
-    public void setItemLink(String content)
-    {
-        Log.i(TAG, "in set item link with " + content);
-
-        mainTextView.setTypeface(null, Typeface.NORMAL);
-        mainTextView.setLinksClickable(false);
-        mainTextView.append(content);
-        mainTextView.append("\n");
-
-    }
-
-
+	private ArrayAdapter arrayAdapter;
+    private TextView mainTextView;
     private static final String TAG = "Nadget";
+    private ArrayList<String> titleList = new ArrayList<>();
+    private ArrayList<String> descriptionList = new ArrayList<>();
+    private ArrayList<String> linkList = new ArrayList<>();
+    private ArrayList<String> imageLinkArr = new ArrayList<>();
 
 }
