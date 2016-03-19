@@ -1,3 +1,4 @@
+
 /*
 * Copyright 2013 The Android Open Source Project
 *
@@ -36,6 +37,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -47,6 +50,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -63,7 +67,14 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
 	{
         View view = inflater.inflate(R.layout.list_fragment, container, false);
         mainTextView = new TextView(getActivity());
-		Log.i(TAG,"onCreateView complete");
+
+		// Retrieve the SwipeRefreshLayout and ListView instances
+		swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+
+		// Set the color scheme of the SwipeRefreshLayout by providing 4 color resource ids
+		//swipeRefreshLayout.setColorScheme(R.color.swipe_color_1, R.color.swipe_color_2,R.color.swipe_color_3, R.color.swipe_color_4);
+
+		Log.i(TAG,"mainfragment onCreateView complete");
         return view;
     }
 
@@ -77,13 +88,28 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
         getListView().setTextFilterEnabled(true);
         getListView().setDivider(new ColorDrawable(Color.LTGRAY));
         getListView().setDividerHeight(1);
-
-		Log.i(TAG, "onActivityCreated setupUI complete");
+		//emptyView = (TextView) getListView().findViewById(android.R.id.empty);
+		//Log.i(TAG, "mainfragment emptyView "+emptyView);
+		Log.i(TAG, "mainfragment onActivityCreated setupUI complete");
         //layout and load data
 
 
         getListView().setOnItemClickListener(this);
     }
+
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState)
+	{
+		super.onViewCreated(view, savedInstanceState);
+		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				Log.i(TAG, "onRefresh called from SwipeRefreshLayout");
+
+				initiateRefresh();
+			}
+		});
+	}
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
@@ -124,6 +150,19 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
 
     }
 
+	//refresh the list
+	private void initiateRefresh()
+	{
+		Log.i(TAG, "****MainFragment*****");
+		Log.i(TAG, "MainFragment initiateRefresh");
+
+		//call asynctask to refresh
+		((NadgetMain)(getActivity())).refreshMainList();
+		//stop the refreshing indicator
+		swipeRefreshLayout.setRefreshing(false);
+
+
+	}
 
 	//set list adapter
 	public void setArrayAdapter(ArrayAdapter arrayAdapter)
@@ -132,8 +171,19 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
 		this.setListAdapter(arrayAdapter);
 	}
 
+	//method to display any error
+	public void setError(String errorMsg)
+	{
+		Log.i(TAG, "mainfragment setError");
+		//emptyView.setText(errorMsg);
+	}
+
 	private ArrayAdapter arrayAdapter;
     private TextView mainTextView;
+
+	//private TextView emptyView;
+	private SwipeRefreshLayout swipeRefreshLayout;
+
     private static final String TAG = "Nadget";
     private ArrayList<String> titleList = new ArrayList<>();
     private ArrayList<String> descriptionList = new ArrayList<>();
