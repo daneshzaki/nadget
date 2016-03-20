@@ -50,15 +50,17 @@ public class NadgetMain extends Activity{
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_nadget_main);
 
-        //drawer
+        //navigation drawer
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerList = (ListView) findViewById(R.id.left_drawer);
 
-        // Set the adapter for the list view
+        // set the adapter for the navigation drawer
         drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, drawerItemLabels));
-        // Set the list's click listener
+
+        // set the nav drawer list's click listener
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
+        //set the action bar
         final ActionBar actionBar = getActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
         actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Nadget</font>"));
@@ -89,15 +91,15 @@ public class NadgetMain extends Activity{
             //handle instance state when exit
         }
         mainFragment = (MainFragment) getFragmentManager().findFragmentById(R.id.main_fragment);
+
+        //check network connectivity
         if(!isNetworkAvailable())
         {
             displayNetworkError();
             return;
         }
-        //new DownloadTask().execute(NDTV_NEWS_FEED);
 
         //refresh main list
-
         refreshMainList();
     }
 
@@ -229,12 +231,14 @@ public class NadgetMain extends Activity{
             //set post details
             setPostDetails(rssItems);
 
-            final String[] titleArr = titleList.toArray(new String[titleList.size()]);
-            final String[] linkArr = linkList.toArray(new String[titleList.size()]);
-            final String[] descriptionArr = descriptionList.toArray(new String[titleList.size()]);
+            titleArr = titleList.toArray(new String[titleList.size()]);
+            linkArr = linkList.toArray(new String[titleList.size()]);
+            descriptionArr = descriptionList.toArray(new String[titleList.size()]);
+            pubDateArr = pubDateList.toArray(new String[titleList.size()]);
+            imageLinkArr = imageLinkList.toArray(new String[titleList.size()]);
 
             //create main list adapter
-            ArrayAdapter adapter = createMainListAdapter(titleArr, descriptionArr, linkArr);
+            ArrayAdapter adapter = createMainListAdapter(titleArr, descriptionArr, linkArr, pubDateArr, imageLinkArr);
             mainFragment.setArrayAdapter(adapter);
         }
     }
@@ -246,6 +250,7 @@ public class NadgetMain extends Activity{
             //Log.i("Nadget", "title: " + rssItem.getTitle());
             setItemTitle(rssItem.getTitle());
             setItemDescription(rssItem.getDescription());
+            setItemPubDate(rssItem.getPubDate());
             //Log.i("Nadget", "URL: " + rssItem.getLink());
             setItemLink(rssItem.getLink());
             //Log.i("Nadget", "Image URL: " + rssItem.getImageUrl());
@@ -257,7 +262,9 @@ public class NadgetMain extends Activity{
     }
 
     //create main list adapter
-    private ArrayAdapter createMainListAdapter(final String[] titleArr, final String[] descriptionArr, final String[] linkArr)
+    private ArrayAdapter createMainListAdapter(final String[] titleArr, final String[] descriptionArr,
+                                               final String[] linkArr, final String[] pubDateArr,
+                                               final String[] imageLinkArr)
     {
         ArrayAdapter adapter = new ArrayAdapter(NadgetMain.this,android.R.layout.simple_list_item_1, titleArr)
         {
@@ -308,9 +315,9 @@ public class NadgetMain extends Activity{
                     iv.setImageResource(R.drawable.ic_action_ng);
                     Log.i(TAG, "***setText***");
                     tv1.setText(titleArr[position]);
-                    Log.i(TAG, "tv1 setText " + titleArr[position] );
-                    Log.i(TAG,"tv2 setText "+linkArr[position]);
-                    tv2.setText(linkArr[position]);
+                    Log.i(TAG, "tv1 setText " + titleArr[position]);
+                    Log.i(TAG, "tv1 setText " + pubDateArr[position] );
+                    tv2.setText(pubDateArr[position]);
                     Log.i(TAG, "onActivityCreated convertView null addView");
                     ll.addView(iv);
                     ll.addView(ll2);
@@ -326,10 +333,10 @@ public class NadgetMain extends Activity{
                     // TODO:display post image
                     Log.i(TAG, "***setText***");
                     Log.i(TAG, "tv1 else setText " + titleArr[position] );
-                    Log.i(TAG,"tv2 else setText "+linkArr[position]);
+                    Log.i(TAG,"tv2 else setText "+pubDateArr[position]);
 
                     tv1.setText(titleArr[position] );
-                    tv2.setText(linkArr[position]);
+                    tv2.setText(pubDateArr[position]);
                 }
 
                 return ll;
@@ -393,6 +400,13 @@ public class NadgetMain extends Activity{
         descriptionList.add(content);
     }
 
+    //set published Date
+    private void setItemPubDate(String content)
+    {
+        //Log.i(TAG, "in set description with " + content);
+        pubDateList.add(content);
+    }
+
     //set item link
     private void setItemLink(String content)
     {
@@ -430,7 +444,33 @@ public class NadgetMain extends Activity{
         new DownloadTask().execute(GREENBOT_FEED);
     }
 
-    private static final String TAG = "Nadget";
+    //method to return post title
+    public String[] getItemTitle()
+    {
+        return titleArr;
+    }
+
+    public String[] getItemLink()
+    {
+        return linkArr;
+    }
+    public String[] getItemDescription()
+    {
+        return descriptionArr;
+    }
+    public String[] getItemPubDate()
+    {
+        return pubDateArr;
+    }
+    public String[] getItemImageLink()
+    {
+        return imageLinkArr;
+    }
+
+
+
+
+    private static final String TAG = "Nadget Main";
     private static final int POST_TITLE_LENGTH = 40;
 
     private MainFragment mainFragment;
@@ -448,6 +488,14 @@ public class NadgetMain extends Activity{
     private ArrayList<String> titleList = new ArrayList<>();
     private ArrayList<String> descriptionList = new ArrayList<>();
     private ArrayList<String> linkList = new ArrayList<>();
-    private ArrayList<String> imageLinkArr = new ArrayList<>();
+    private ArrayList<String> imageLinkList = new ArrayList<>();
+    private ArrayList<String> pubDateList = new ArrayList<>();
+
+    private String[] titleArr = null;
+    private String[] linkArr = null;
+    private String[] descriptionArr = null;
+    private String[] pubDateArr = null;
+    private String[] imageLinkArr = null;
+
 
 }

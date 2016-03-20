@@ -33,6 +33,7 @@
 package in.pleb.nadget;
 
 import android.app.ListFragment;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -111,42 +112,37 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
 		});
 	}
 
+	//handle row selects in list
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-        //handle row selects in list - move to fragment
+
         // call webView with post selected
         // create a bundle with values to be passed to display screen
-	/*	Bundle bundle = new Bundle();
+		Bundle bundle = new Bundle();
 
 		// post title
-		bundle.putString("id", thingsArList.get(position).getId());
+		bundle.putString("title", ((NadgetMain) (getActivity())).getItemTitle()[position]);
 
 		// post description
-		bundle.putString("name", thingsArList.get(position).getName());
+		bundle.putString("description", ((NadgetMain) (getActivity())).getItemDescription()[position]);
 
 		// post link
-		bundle.putString("price", thingsArList.get(position).getPrice());
+		bundle.putString("link", ((NadgetMain) (getActivity())).getItemLink()[position]);
 
 		// post date
-		bundle.putString("purchaseDate", thingsArList.get(position)
-				.getPurchaseDate());
+		bundle.putString("pubDate", ((NadgetMain) (getActivity())).getItemPubDate()[position]);
 
-		// post image link (check null before setting)
-		bundle.putString("picLocation", thingsArList.get(position)
-				.getPicLocation());
+		// post image link
+		bundle.putString("imageLink", ((NadgetMain) (getActivity())).getItemImageLink()[position]);
 
-		Log.i("Nadget",
-				"onListItemClick setting bundle pic location = "
-						+ bundle.getString("picLocation"));
+		Log.i("Nadget", "onListItemClick bundle title = " + bundle.getString("title"));
 
 		// create an intent and add the bundle to it
-		Intent displayIntent = new Intent(ThingseActivity.this,
-				DetailedPostView.class);
+		Intent displayIntent = new Intent(getActivity(), PostView.class);
 
-		displayIntent.putExtra("nadget", bundle);
+		displayIntent.putExtra("post", bundle);
 
 		startActivity(displayIntent);
-*/
 
     }
 
@@ -184,7 +180,7 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
 	//private TextView emptyView;
 	private SwipeRefreshLayout swipeRefreshLayout;
 
-    private static final String TAG = "Nadget";
+    private static final String TAG = "Nadget MainFragment";
     private ArrayList<String> titleList = new ArrayList<>();
     private ArrayList<String> descriptionList = new ArrayList<>();
     private ArrayList<String> linkList = new ArrayList<>();

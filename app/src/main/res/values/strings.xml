@@ -6,4 +6,8 @@
     <string name="connection_error">Unable to connect. Please check your network connectivity</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="title_activity_post_view">PostView</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>

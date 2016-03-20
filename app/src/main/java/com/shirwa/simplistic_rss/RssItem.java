@@ -1,5 +1,7 @@
 package com.shirwa.simplistic_rss;
-
+import android.util.Log;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 /*
  * Copyright (C) 2014 Shirwa Mohamed <shirwa99@gmail.com>
  *
@@ -21,13 +23,29 @@ public class RssItem {
     String description;
     String link;
     String imageUrl;
+    String pubDate;
 
-    public String getDescription() {
-        return description;
+    public String getDescription() {return description;}
+
+    public String getImageUrl() { return imageUrl; }
+
+    public String getPubDate() {
+        return pubDate;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public void setPubDate(String pubDate) {
+        try
+        {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, DD MMM yyyy HH:mm:ss");
+            Date pubDateDt = dateFormat.parse(pubDate);
+            pubDate = dateFormat.format(pubDateDt);
+            this.pubDate = pubDate;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            Log.e("RssItem", e.toString());
+        }
     }
 
     public void setImageUrl(String imageUrl) {
