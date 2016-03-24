@@ -15,7 +15,9 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -45,10 +47,15 @@ import com.shirwa.simplistic_rss.*;
 public class NadgetMain extends Activity{
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_nadget_main);
+
+        //font
+        //set fonts for all text
+        typeface = Typeface.createFromAsset( getResources().getAssets(), "SourceSansPro-Regular.otf");
 
         //navigation drawer
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -59,9 +66,11 @@ public class NadgetMain extends Activity{
 
         // set the nav drawer list's click listener
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
+        drawerLayout.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
+        drawerList.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
 
         //set the action bar
-        final ActionBar actionBar = getActionBar();
+        actionBar = getActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
         actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Nadget</font>"));
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -198,12 +207,17 @@ public class NadgetMain extends Activity{
         protected ArrayList<RssItem> doInBackground(String... urls)
         {
             Log.i(TAG, "NadgetMain doInBg start");
+            //for feeds that need setting user agent use the extended parser
             ArrayList<RssItem> rssItems = null;
+
+            if(isUserAgentRequired)
+            {
+                return extendedParse();
+            }
 
             try {
                 RssReader reader = new RssReader(urls[0]);
                 rssItems = (ArrayList<RssItem>) reader.getItems();
-
                 //return loadFromNetwork(urls[0]);
             } catch (IOException e)
             {
@@ -214,8 +228,10 @@ public class NadgetMain extends Activity{
             } catch (Exception e)
             {
                 Log.e(TAG, e.toString());
-                displayNetworkError();
+                displayInternalError();
+                return null;
             }
+            //Log.i(TAG, "***NadgetMain doInBg rssItems = "+rssItems.toString());
             Log.i(TAG, "NadgetMain doInBg return");
             return rssItems;
         }
@@ -226,7 +242,7 @@ public class NadgetMain extends Activity{
          */
         @Override
         protected void onPostExecute(ArrayList<RssItem> rssItems) {
-            Log.i(TAG, "NadgetMain onPostExec rssItems = "+rssItems);
+            //Log.i(TAG, "***NadgetMain onPostExec rssItems = "+rssItems.toString());
 
             //set post details
             setPostDetails(rssItems);
@@ -237,17 +253,57 @@ public class NadgetMain extends Activity{
             pubDateArr = pubDateList.toArray(new String[titleList.size()]);
             imageLinkArr = imageLinkList.toArray(new String[titleList.size()]);
 
+            Log.i(TAG, "***NadgetMain onPostExec titleList = "+titleList.toString());
+
+            for(int i=0;i<titleArr.length;i++)
+            {
+                //Log.i(TAG, "***NadgetMain onPostExec titleArr = "+titleArr[i]);
+            }
+
             //create main list adapter
-            ArrayAdapter adapter = createMainListAdapter(titleArr, descriptionArr, linkArr, pubDateArr, imageLinkArr);
+            adapter = createMainListAdapter(titleArr, descriptionArr, linkArr, pubDateArr, imageLinkArr);
             mainFragment.setArrayAdapter(adapter);
         }
     }
 
+    //use extended parser for feeds that require user agent to be set
+    private ArrayList<RssItem> extendedParse()
+    {
+        ArrayList<RssItem> rssItems = null;
+
+        try
+        {
+            ExtendedRssParser extendedRssParser = new ExtendedRssParser(NDTV_NEWS_FEED, 100);
+            extendedRssParser.parse();
+            rssItems = (ArrayList<RssItem>) extendedRssParser.getItems();
+        }
+        catch(IOException e)
+        {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+            displayNetworkError();
+            return null;
+            //return getString(R.string.connection_error);
+        } catch (Exception e)
+        {
+            Log.e(TAG, e.toString());
+            displayInternalError();
+            return null;
+        }
+
+        return rssItems;
+    }
+
+
     //set post details
     private void setPostDetails(ArrayList<RssItem> rssItems)
     {
+        Log.i(TAG, "*** setPostDetails entry" );
+
+        clearAll();
+
         for (RssItem rssItem : rssItems) {
-            //Log.i("Nadget", "title: " + rssItem.getTitle());
+            Log.i(TAG, "*** setPostDetails title: " + rssItem.getTitle());
             setItemTitle(rssItem.getTitle());
             setItemDescription(rssItem.getDescription());
             setItemPubDate(rssItem.getPubDate());
@@ -259,6 +315,9 @@ public class NadgetMain extends Activity{
                 setItemLink(rssItem.getImageUrl());
             }
         }
+        Log.i(TAG, "*** setPostDetails exit" );
+
+
     }
 
     //create main list adapter
@@ -266,64 +325,67 @@ public class NadgetMain extends Activity{
                                                final String[] linkArr, final String[] pubDateArr,
                                                final String[] imageLinkArr)
     {
-        ArrayAdapter adapter = new ArrayAdapter(NadgetMain.this,android.R.layout.simple_list_item_1, titleArr)
+        ArrayAdapter adapter = new ArrayAdapter(NadgetMain.this,android.R.layout.two_line_list_item, titleArr)
         {
             // layout for image and two text views
             @Override
             public View getView(int position, View convertView, ViewGroup parent)
             {
-                Log.i(TAG, "onActivityCreated getView starting...");
+                //Log.i(TAG, "onActivityCreated getView starting...");
                 ImageView iv;
                 TextView tv1, tv2;
                 LinearLayout ll, ll2;
 
                 if (convertView == null)
                 {
-                    Log.i(TAG, "onActivityCreated convertView null");
+                    //Log.i(TAG, "onActivityCreated convertView null");
                     iv = new ImageView(getContext());
                     iv.setPadding(5, 10, 5, 10);
                     //uncomment the line below if thumbnails are of different sizes
                     //iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     tv1 = new TextView(getContext());
-                    tv1.setTypeface(null, Typeface.BOLD);
+                    tv1.setTypeface(typeface, Typeface.BOLD);
                     tv1.setGravity(Gravity.LEFT);
-                    tv1.setTextSize(16.0f);
-                    //tv1.setTextColor(android.graphics.Color.parseColor("#33B5E5"));
-                    tv1.setPadding(5, 10, 5, 10);
-                    tv1.setLines(1);
+                    tv1.setTextSize(18.0f);
+                    tv1.setTextColor(android.graphics.Color.parseColor("#000000"));
+                    tv1.setPadding(7, 20, 7, 15);
+                    tv1.setLines(2);
+                    tv1.setEllipsize(TextUtils.TruncateAt.END);
+                    tv1.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
 
                     // second line text view
                     tv2 = new TextView(getContext());
-                    tv2.setTypeface(null, Typeface.ITALIC);
+                    tv2.setTypeface(typeface, Typeface.ITALIC);
                     tv2.setGravity(Gravity.LEFT);
-                    tv2.setTextSize(12.0f);
-                    tv2.setPadding(5, 10, 5, 10);
+                    tv2.setTextSize(14.0f);
+                    tv2.setTextColor(android.graphics.Color.parseColor("#000000"));
+                    tv2.setPadding(7, 15, 7, 20);
                     tv2.setLines(1);
+                    tv2.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
 
                     ll = new LinearLayout(getContext());
                     ll.setOrientation(LinearLayout.HORIZONTAL);
-                    ll.setBackgroundColor(android.graphics.Color.parseColor("#fff3f3f3"));
+                    ll.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
 
                     // layout for text views
                     ll2 = new LinearLayout(getContext());
                     ll2.setOrientation(LinearLayout.VERTICAL);
-                    ll2.setBackgroundColor(android.graphics.Color.parseColor("#fff3f3f3"));
+                    ll2.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
                     ll2.addView(tv1, 0);
                     ll2.addView(tv2, 1);
 
                     //TODO: display post image
                     iv.setImageResource(R.drawable.ic_action_ng);
-                    Log.i(TAG, "***setText***");
                     tv1.setText(titleArr[position]);
-                    Log.i(TAG, "tv1 setText " + titleArr[position]);
-                    Log.i(TAG, "tv1 setText " + pubDateArr[position] );
+                    //Log.i(TAG, "tv1 setText " + titleArr[position]);
+                    //Log.i(TAG, "tv1 setText " + pubDateArr[position] );
                     tv2.setText(pubDateArr[position]);
-                    Log.i(TAG, "onActivityCreated convertView null addView");
+                    //Log.i(TAG, "onActivityCreated convertView null addView");
                     ll.addView(iv);
                     ll.addView(ll2);
                 } else
                 {
-                    Log.i(TAG, "onActivityCreated else");
+                    //Log.i(TAG, "onActivityCreated else");
                     ll = (LinearLayout) convertView;
                     iv = (ImageView) ll.getChildAt(0);
                     ll2 = (LinearLayout) (ll.getChildAt(1));
@@ -331,9 +393,8 @@ public class NadgetMain extends Activity{
                     tv2 = (TextView) (ll2.getChildAt(1));
 
                     // TODO:display post image
-                    Log.i(TAG, "***setText***");
-                    Log.i(TAG, "tv1 else setText " + titleArr[position] );
-                    Log.i(TAG,"tv2 else setText "+pubDateArr[position]);
+                    //Log.i(TAG, "tv1 else setText " + titleArr[position] );
+                    //Log.i(TAG,"tv2 else setText "+pubDateArr[position]);
 
                     tv1.setText(titleArr[position] );
                     tv2.setText(pubDateArr[position]);
@@ -344,37 +405,6 @@ public class NadgetMain extends Activity{
         };
 
         return adapter;
-    }
-
-    private String downloadUrl(String urlString)
-    {
-        StringBuffer content = new StringBuffer();
-        try {
-            RssReader reader = new RssReader(urlString);
-            ArrayList<RssItem> rssItems = (ArrayList<RssItem>) reader.getItems();
-            for (RssItem rssItem : rssItems) {
-                Log.i("Nadget", "title: " + rssItem.getTitle());
-                content.append("Title: " + rssItem.getTitle());
-                content.append("\n");
-                content.append("Description: "+rssItem.getDescription());
-                content.append("\n");
-                content.append("URL: "+rssItem.getLink());
-                content.append("\n");
-                content.append("Image URL: "+rssItem.getImageUrl());
-                content.append("\n");
-                content.append("\n");
-            }
-        }
-        catch(IOException e){
-            Log.e(TAG,e.toString());
-        }
-        catch(SAXException e){
-            Log.e(TAG,e.toString());
-        }
-        catch(Exception e){
-            Log.e(TAG,e.toString());
-        }
-        return content.toString();
     }
 
     //set item title
@@ -415,6 +445,16 @@ public class NadgetMain extends Activity{
 
     }
 
+    //clear all content
+    private void clearAll()
+    {
+        titleList.clear();
+        linkList.clear();
+        descriptionList.clear();
+        pubDateList.clear();
+        imageLinkList.clear();
+    }
+
     //check network state
     private boolean isNetworkAvailable() {
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -430,18 +470,39 @@ public class NadgetMain extends Activity{
     //method to display error on no connection
     public void displayNetworkError()
     {
-        Log.i(TAG, "NadgetMain displayError");
+        Log.i(TAG, "NadgetMain displayNetworkError");
         //mainFragment.setError("Please check your network connection and try again");
         Toast.makeText(this, "Please check your network connection and try again", Toast.LENGTH_LONG).show();
         //Snackbar.make(this.findViewById(R.id.drawer_layout), "Please check your network connection and try again", Snackbar.LENGTH_LONG).show();
     }
 
+    //for all generic errors
+    public void displayInternalError() {
+        Log.i(TAG, "NadgetMain displayInternalError");
+        //mainFragment.setError("Please check your network connection and try again");
+        //Toast.makeText(this, "Sorry, an internal error occurred", Toast.LENGTH_SHORT).show();
+
+    }
+
+
+
     //method to refresh
     public void refreshMainList()
     {
         Log.i(TAG, "refreshMainList");
-        new DownloadTask().execute(TIMES_FEED);
-        new DownloadTask().execute(GREENBOT_FEED);
+        try
+        {
+            //new DownloadTask().execute(TIMES_FEED);
+
+            //set this for feeds that need it
+            isUserAgentRequired = true;
+            new DownloadTask().execute(NDTV_NEWS_FEED);
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, e.toString());
+            displayInternalError();
+        }
     }
 
     //method to return post title
@@ -475,7 +536,7 @@ public class NadgetMain extends Activity{
 
     private MainFragment mainFragment;
     //private String startingUrl = "https://news.google.com/news/section?q=oneplus+review+ndtv&output=rss";
-    //private final String NDTV_NEWS_FEED = "http://gadgets.ndtv.com/rss/news";
+    private final String NDTV_NEWS_FEED = "http://gadgets.ndtv.com/rss/news";
     //private final String NDTV_NEWS_FEED = "https://feeds.feedburner.com/NDTV-Tech";
     //private final String BGR_FEED = "http://www.bgr.in/feed/";
     private final String TIMES_FEED = "http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss";
@@ -497,5 +558,8 @@ public class NadgetMain extends Activity{
     private String[] pubDateArr = null;
     private String[] imageLinkArr = null;
 
-
+    private Typeface typeface = null;
+    private ArrayAdapter adapter = null;
+    private ActionBar actionBar = null;
+    private boolean isUserAgentRequired = false;
 }

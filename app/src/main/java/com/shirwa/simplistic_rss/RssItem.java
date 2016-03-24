@@ -36,10 +36,13 @@ public class RssItem {
     public void setPubDate(String pubDate) {
         try
         {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, DD MMM yyyy HH:mm:ss");
-            Date pubDateDt = dateFormat.parse(pubDate);
-            pubDate = dateFormat.format(pubDateDt);
+            //Log.i("Nadget RssItem in",pubDate);
+            //SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, DD MMM yyyy HH:mm:ss");
+            //Date pubDateDt = dateFormat.parse(pubDate);
+            //pubDate = dateFormat.format(pubDateDt);
             this.pubDate = pubDate;
+            //Log.i("Nadget RssItem out",pubDate);
+
         }
         catch(Exception e)
         {
@@ -70,5 +73,23 @@ public class RssItem {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("title=");
+        buffer.append(title);
+        buffer.append(" description=");
+        buffer.append(description);
+        buffer.append(" link=");
+        buffer.append(link);
+        buffer.append(" imageUrl=");
+        buffer.append(imageUrl);
+        buffer.append(" pubDate=");
+        buffer.append(pubDate);
+
+        return buffer.toString();
     }
 }

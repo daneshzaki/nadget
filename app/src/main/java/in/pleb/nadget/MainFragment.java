@@ -1,35 +1,4 @@
 
-/*
-* Copyright 2013 The Android Open Source Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-/*
- * Copyright 2013 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package in.pleb.nadget;
 
 import android.app.ListFragment;
@@ -75,7 +44,7 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
 		// Set the color scheme of the SwipeRefreshLayout by providing 4 color resource ids
 		//swipeRefreshLayout.setColorScheme(R.color.swipe_color_1, R.color.swipe_color_2,R.color.swipe_color_3, R.color.swipe_color_4);
 
-		Log.i(TAG,"mainfragment onCreateView complete");
+		//Log.i(TAG,"mainfragment onCreateView complete");
         return view;
     }
 
@@ -88,10 +57,11 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
         getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         getListView().setTextFilterEnabled(true);
         getListView().setDivider(new ColorDrawable(Color.LTGRAY));
+		getListView().setBackgroundColor(Color.WHITE);
         getListView().setDividerHeight(1);
 		//emptyView = (TextView) getListView().findViewById(android.R.id.empty);
 		//Log.i(TAG, "mainfragment emptyView "+emptyView);
-		Log.i(TAG, "mainfragment onActivityCreated setupUI complete");
+		//Log.i(TAG, "mainfragment onActivityCreated setupUI complete");
         //layout and load data
 
 
