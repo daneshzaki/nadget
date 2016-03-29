@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<!-- TODO Find better ways of displaying list of feeds-->
+    <SwitchPreference
+        android:enabled="true"
+        android:key="notifications"
+        android:selectable="true"
+        android:summary="Notify on new feeds"
+        android:title="Notifications" />
+    <Preference
+        android:enabled="true"
+        android:key="import"
+        android:selectable="true"
+        android:summary="Import feeds from file"
+        android:title="Import" />
+    <Preference
+        android:enabled="true"
+        android:key="export"
+        android:selectable="true"
+        android:summary="Export feeds to file"
+        android:title="Export" />
+    <Preference
+        android:enabled="true"
+        android:key="aboutPref"
+        android:persistent="false"
+        android:selectable="true"
+        android:title="About Nadget" />
+    <Preference
+        android:enabled="true"
+        android:key="osPref"
+        android:persistent="false"
+        android:selectable="true"
+        android:title="Open Source Licenses" />
+
+</PreferenceScreen>

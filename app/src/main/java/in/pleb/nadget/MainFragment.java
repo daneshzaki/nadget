@@ -123,7 +123,7 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
 		Log.i(TAG, "MainFragment initiateRefresh");
 
 		//call asynctask to refresh
-		((NadgetMain)(getActivity())).refreshMainList();
+		((NadgetMain)(getActivity())).refreshForPull();
 		//stop the refreshing indicator
 		swipeRefreshLayout.setRefreshing(false);
 

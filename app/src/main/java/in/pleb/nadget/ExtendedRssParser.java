@@ -19,27 +19,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 public class ExtendedRssParser extends DefaultHandler
 {
-    //How many RSS news items should we load before stopping.
-    private int maximumResults=10;
-    /*How many elements should we allow before stopping the parse
-      this stops giant files from breaking the server.*/
-    private static final int MAX_ELEMENTS=500;
-    //Keep track of the current element count.
-    private int ecount=0;
-    //Keep track of the current news item count.
-    private int rcount=0;
-    private String Url="";//Url to parse.
-    //String to store parsed data to.
-    private String output="<i>Error parsing RSS feed.</i>";
-    //Current string being parsed.
-    private String currentText="";
-    //Current RSS rssItemList Item.
-    private RssItem currentItem=null;
-    //ArrayList of all current rssItemList Items.
-    private ArrayList rssItemList=new ArrayList();
-    //Has the RSS feed's description been set yet?
-    boolean dSet=false;
-
 
     //Constructor.
     public ExtendedRssParser(String Url,int maximumResults){
@@ -55,7 +34,7 @@ public class ExtendedRssParser extends DefaultHandler
      */
     public synchronized void parse() throws SAXException, IOException, ParserConfigurationException
     {
-        Log.i(TAG, "ExtendedRssParser parse entry");
+        Log.i(TAG, "ExtendedRssParser parse entry maxres"+maximumResults);
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser saxParser = factory.newSAXParser();
@@ -75,14 +54,6 @@ public class ExtendedRssParser extends DefaultHandler
 
         Log.i(TAG, "ExtendedRssParser list="+rssItemList);
 
-        //Output all the parsed news items as HTML.
-        /*for(int i=0;i<rssItemList.size();i++)
-        {
-            output+="<div class=\"search"+(i%2)+"\">";
-            output+=((NewsItem)rssItemList.get(i)).toString();
-            output+="</div>";
-        }
-        return(output);*/
     }
 
 
@@ -112,6 +83,10 @@ public class ExtendedRssParser extends DefaultHandler
     public void startElement (String uri, String name,
                               String qName, Attributes atts) throws SAXException
     {
+        if(isLimitReached)
+        {
+            return;
+        }
         //qName contains the non-URI name of the XML element.
         if(qName.equals("item")){
             if(currentItem!=null){
@@ -119,10 +94,13 @@ public class ExtendedRssParser extends DefaultHandler
                 rcount++;
                 //Add it to our ArrayList.
                 rssItemList.add(currentItem);
-                if(rcount==maximumResults){
-                    //not doing anything now
-                    //Maximum results have been reached.
+
+                //Maximum results have been reached.
+                if(rcount==maximumResults)
+                {
                     //throw new SAXException("\nLimit reached.");
+                    isLimitReached = true;
+                    return;
                 }
             }
             //Create a new NewsItem to add data to.
@@ -134,6 +112,11 @@ public class ExtendedRssParser extends DefaultHandler
     //We've reached the end of an XML element.
     public void endElement (String uri, String name, String qName) throws SAXException
     {
+        if(isLimitReached)
+        {
+            return;
+        }
+
         //Wait for the title information.
         if(qName.equals("title")&&output.equals("<i>Error parsing RSS feed.</i>"))
         {
@@ -155,6 +138,8 @@ public class ExtendedRssParser extends DefaultHandler
             currentItem.setPubDate(currentText);
         else if(qName.equals("description")&&currentItem!=null)
             currentItem.setDescription(currentText);
+
+        //image url setting problem
         else if (qName.equals("media:thumbnail") || qName.equals("media:content") || qName.equals("image"))
         {
             if(currentItem != null)
@@ -169,8 +154,12 @@ public class ExtendedRssParser extends DefaultHandler
         currentText="";
         ecount++;
 
-        //not doing anything now
         //if(ecount>MAX_ELEMENTS) throw new SAXException("\nLimit reached");
+        if(ecount>MAX_ELEMENTS)
+        {
+            isLimitReached = true;
+            return;
+        }
     }
 
     //Parse characters from the current element we're parsing.
@@ -186,6 +175,28 @@ public class ExtendedRssParser extends DefaultHandler
     {
         return rssItemList;
     }
+
+    //How many RSS news items should we load before stopping.
+    private int maximumResults=20;
+    /*How many elements should we allow before stopping the parse
+      this stops giant files from breaking the server.*/
+    private static final int MAX_ELEMENTS=20;
+    private boolean isLimitReached = false;
+    //Keep track of the current element count.
+    private int ecount=0;
+    //Keep track of the current news item count.
+    private int rcount=0;
+    private String Url="";//Url to parse.
+    //String to store parsed data to.
+    private String output="<i>Error parsing RSS feed.</i>";
+    //Current string being parsed.
+    private String currentText="";
+    //Current RSS rssItemList Item.
+    private RssItem currentItem=null;
+    //ArrayList of all current rssItemList Items.
+    private ArrayList rssItemList=new ArrayList();
+    //Has the RSS feed's description been set yet?
+    boolean dSet=false;
 
     private final String TAG = "Nadget ";
 }

@@ -2,22 +2,18 @@ package in.pleb.nadget;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -31,20 +27,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.support.v4.widget.DrawerLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import com.shirwa.simplistic_rss.*;
 
+import org.xml.sax.SAXException;
+
 public class NadgetMain extends Activity{
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -145,7 +138,13 @@ public class NadgetMain extends Activity{
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-            Log.i(TAG, "Nav bar item clicked");
+            Log.i(TAG, "Nav bar item clicked is "+drawerItemLabels[position]);
+
+            //feed selector clicked
+            if(position == 2)
+            {
+                startActivity(new Intent(NadgetMain.this, FeedSelector.class));
+            }
         }
     }
 
@@ -210,29 +209,26 @@ public class NadgetMain extends Activity{
             //for feeds that need setting user agent use the extended parser
             ArrayList<RssItem> rssItems = null;
 
-            if(isUserAgentRequired)
-            {
-                return extendedParse();
-            }
 
-            try {
-                RssReader reader = new RssReader(urls[0]);
-                rssItems = (ArrayList<RssItem>) reader.getItems();
+           /* if(isUserAgentRequired)
+            {
+                return extendedParse(urls[0]);
+            }*/
+
+            try
+            {
+                rssItems = extendedParse(urls[0]);
+                //RssReader reader = new RssReader(urls[0]);
+                //rssItems = (ArrayList<RssItem>) reader.getItems();
                 //return loadFromNetwork(urls[0]);
-            } catch (IOException e)
+            }
+            catch (Exception e)
             {
-                Log.e(TAG, e.toString());
-                e.printStackTrace();
-                displayNetworkError();
-                //return getString(R.string.connection_error);
-            } catch (Exception e)
-            {
-                Log.e(TAG, e.toString());
+                Log.e(TAG,"doInBg exception"+ e.toString());
                 displayInternalError();
-                return null;
             }
             //Log.i(TAG, "***NadgetMain doInBg rssItems = "+rssItems.toString());
-            Log.i(TAG, "NadgetMain doInBg return");
+            //Log.i(TAG, "NadgetMain doInBg return");
             return rssItems;
         }
 
@@ -242,7 +238,8 @@ public class NadgetMain extends Activity{
          */
         @Override
         protected void onPostExecute(ArrayList<RssItem> rssItems) {
-            //Log.i(TAG, "***NadgetMain onPostExec rssItems = "+rssItems.toString());
+            Log.i(TAG, "***NadgetMain onPostExec rssItems = "+rssItems);
+            Log.i(TAG, "***NadgetMain onPostExec rssItems = "+rssItems.toString());
 
             //set post details
             setPostDetails(rssItems);
@@ -255,11 +252,6 @@ public class NadgetMain extends Activity{
 
             Log.i(TAG, "***NadgetMain onPostExec titleList = "+titleList.toString());
 
-            for(int i=0;i<titleArr.length;i++)
-            {
-                //Log.i(TAG, "***NadgetMain onPostExec titleArr = "+titleArr[i]);
-            }
-
             //create main list adapter
             adapter = createMainListAdapter(titleArr, descriptionArr, linkArr, pubDateArr, imageLinkArr);
             mainFragment.setArrayAdapter(adapter);
@@ -267,28 +259,34 @@ public class NadgetMain extends Activity{
     }
 
     //use extended parser for feeds that require user agent to be set
-    private ArrayList<RssItem> extendedParse()
+    private ArrayList<RssItem> extendedParse(String url)
     {
         ArrayList<RssItem> rssItems = null;
 
         try
         {
-            ExtendedRssParser extendedRssParser = new ExtendedRssParser(NDTV_NEWS_FEED, 100);
+            //take the number of posts from settings
+            ExtendedRssParser extendedRssParser = new ExtendedRssParser(url, NUMBER_OF_POSTS);
             extendedRssParser.parse();
             rssItems = (ArrayList<RssItem>) extendedRssParser.getItems();
         }
-        catch(IOException e)
+        catch(SAXException e)
         {
-            Log.e(TAG, e.toString());
-            e.printStackTrace();
-            displayNetworkError();
-            return null;
-            //return getString(R.string.connection_error);
-        } catch (Exception e)
+            Log.e(TAG,"extendedParse exception "+ e.toString());
+
+            //return feed when limit reached
+            if(e.toString().contains("\nLimit reached"))
+            {
+                Log.e(TAG,"extendedParse limit reached check rssItems="+rssItems);
+
+                return rssItems;
+            }
+
+        }
+        catch (Exception e)
         {
-            Log.e(TAG, e.toString());
+            Log.e(TAG,"extendedParse exception"+ e.toString());
             displayInternalError();
-            return null;
         }
 
         return rssItems;
@@ -300,7 +298,7 @@ public class NadgetMain extends Activity{
     {
         Log.i(TAG, "*** setPostDetails entry" );
 
-        clearAll();
+        //clearAll();
 
         for (RssItem rssItem : rssItems) {
             Log.i(TAG, "*** setPostDetails title: " + rssItem.getTitle());
@@ -350,7 +348,7 @@ public class NadgetMain extends Activity{
                     tv1.setTextColor(android.graphics.Color.parseColor("#000000"));
                     tv1.setPadding(7, 20, 7, 15);
                     tv1.setLines(2);
-                    tv1.setEllipsize(TextUtils.TruncateAt.END);
+                    //tv1.setEllipsize(TextUtils.TruncateAt.END);
                     tv1.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
 
                     // second line text view
@@ -411,14 +409,6 @@ public class NadgetMain extends Activity{
     private void setItemTitle(String content)
     {
         //Log.i(TAG, "in set title with " + content);
-        //check size and display ellipsis for long titles
-
-        if(content.length() > POST_TITLE_LENGTH)
-        {
-            content.substring(0, (POST_TITLE_LENGTH - 3));
-            content.concat("...");
-        }
-
         titleList.add(content);
 
     }
@@ -489,14 +479,62 @@ public class NadgetMain extends Activity{
     //method to refresh
     public void refreshMainList()
     {
-        Log.i(TAG, "refreshMainList");
+        Log.i(TAG, "refreshMainList 1 isRefreshedMainList="+isRefreshedMainList);
         try
         {
-            //new DownloadTask().execute(TIMES_FEED);
+            //TODO: remove this after testing with multiple feeds
+            //isUserAgentRequired = true;
+            if(!isRefreshedMainList)
+            {
+                Log.i(TAG, "refreshMainList 2 isRefreshedMainList="+isRefreshedMainList);
+                isRefreshedMainList = true;
+                //TODO: move the block below to a method once settings - feed chooser is ready
+                //todo: remove the test block on success
 
-            //set this for feeds that need it
-            isUserAgentRequired = true;
+                //begin test block
+                //todo:restrict to less posts
+                /*for (int i = 0; i < feedList.length; i++)
+                {
+                    Log.i(TAG,"executing feed"+feedList[i]);
+                    new DownloadTask().execute(feedList[i]);
+                }*/
+                //end test block
+                //todo uncomment below after testing
+                new DownloadTask().execute(NDTV_NEWS_FEED);
+                new DownloadTask().execute(TIMES_FEED);
+            }
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, e.toString());
+            displayInternalError();
+        }
+        Log.i(TAG, "refreshMainList 3 isRefreshedMainList="+isRefreshedMainList);
+    }
+
+    //method for pull to refresh
+    public void refreshForPull()
+    {
+        Log.i(TAG, "refreshForPull");
+        try
+        {
+            //TODO: remove this after testing with multiple feeds
+            //isUserAgentRequired = true;
+
+            //TODO: move the block below to a method once settings - feed chooser is ready
+            //todo: remove the test block on success
+
+            //begin test block
+            //todo:restrict to less posts
+            /*for (int i = 0; i < feedList.length; i++) {
+                Log.i(TAG,"executing feed"+feedList[i]);
+                new DownloadTask().execute(feedList[i]);
+            }*/
+
+
+            //end test block
             new DownloadTask().execute(NDTV_NEWS_FEED);
+            new DownloadTask().execute(TIMES_FEED);
         }
         catch (Exception e)
         {
@@ -504,6 +542,7 @@ public class NadgetMain extends Activity{
             displayInternalError();
         }
     }
+
 
     //method to return post title
     public String[] getItemTitle()
@@ -529,20 +568,15 @@ public class NadgetMain extends Activity{
     }
 
 
-
-
     private static final String TAG = "Nadget Main";
     private static final int POST_TITLE_LENGTH = 40;
 
     private MainFragment mainFragment;
-    //private String startingUrl = "https://news.google.com/news/section?q=oneplus+review+ndtv&output=rss";
-    private final String NDTV_NEWS_FEED = "http://gadgets.ndtv.com/rss/news";
-    //private final String NDTV_NEWS_FEED = "https://feeds.feedburner.com/NDTV-Tech";
-    //private final String BGR_FEED = "http://www.bgr.in/feed/";
-    private final String TIMES_FEED = "http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss";
-    //private final String TECHTREE_FEED = "http://www.techtree.com/rss.xml";
-    private final String GREENBOT_FEED = "http://www.greenbot.com/index.rss";
-    private String[] drawerItemLabels = new String[]{"Sign in", "Saved Articles", "Help", "Settings"};
+
+    private static final String NDTV_NEWS_FEED = "http://gadgets.ndtv.com/rss/news";
+    private static final String TIMES_FEED = "http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss";
+
+    private String[] drawerItemLabels = new String[]{"Sign in", "Saved Articles", "Select Feeds", "Settings"};
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
@@ -562,4 +596,27 @@ public class NadgetMain extends Activity{
     private ArrayAdapter adapter = null;
     private ActionBar actionBar = null;
     private boolean isUserAgentRequired = false;
+    private boolean isRefreshedMainList = false;
+    private static final int NUMBER_OF_POSTS = 20;
+
+    //todo: remove after testing
+    private static final String[] feedList = new String[]{
+            //"http://www.bgr.in/feed/", //problem feed
+            //"http://www.firstpost.com/tech/feed", //problem feed
+            "http://indianexpress.com/section/technology/feed/",//problem feed
+            "http://www.gizmodo.in/rss_section_feeds/23005095.cms" //problem feed
+            //,
+            /*"http://www.thehindu.com/sci-tech/?service=rss",
+            "http://www.digit.in/rss-feed/",
+            "http://www.ibtimes.co.in/rss",
+            "http://feeds.feedburner.com/igyaan",
+            "http://feeds.feedburner.com/Thegeekybyte",
+            "http://feeds2.feedburner.com/fone-arena",
+            "http://feeds.feedburner.com/ogfeed",
+            "http://feeds.feedblitz.com/gogi-technology",
+            "http://gadgets.ndtv.com/rss/news",
+            "http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss",
+            "http://www.techtree.com/rss.xml"*/
+    };
+
 }

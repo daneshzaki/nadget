@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.pleb.nadget" >
+    package="in.pleb.nadget">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -9,10 +9,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".NadgetMain"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,11 +22,20 @@
         <activity
             android:name=".PostView"
             android:label="@string/title_activity_post_view"
-            android:parentActivityName=".NadgetMain" >
+            android:parentActivityName=".NadgetMain">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.pleb.nadget.NadgetMain" />
         </activity>
+        <activity
+            android:name=".NadgetSettings"
+            android:label="@string/title_activity_nadget_settings"
+            android:parentActivityName=".NadgetMain">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.pleb.nadget.NadgetMain" />
+        </activity>
+        <activity android:name=".FeedSelector"></activity>
     </application>
 
 </manifest>
