@@ -209,12 +209,6 @@ public class NadgetMain extends Activity{
             //for feeds that need setting user agent use the extended parser
             ArrayList<RssItem> rssItems = null;
 
-
-           /* if(isUserAgentRequired)
-            {
-                return extendedParse(urls[0]);
-            }*/
-
             try
             {
                 rssItems = extendedParse(urls[0]);
@@ -253,8 +247,11 @@ public class NadgetMain extends Activity{
             Log.i(TAG, "***NadgetMain onPostExec titleList = "+titleList.toString());
 
             //create main list adapter
-            adapter = createMainListAdapter(titleArr, descriptionArr, linkArr, pubDateArr, imageLinkArr);
-            mainFragment.setArrayAdapter(adapter);
+            //adapter = createMainListAdapter(titleArr, descriptionArr, linkArr, pubDateArr, imageLinkArr);
+            //mainFragment.setArrayAdapter(adapter);
+
+            adapter = new MainViewAdapter(NadgetMain.this, R.layout.main_view_row,titleList,pubDateList,imageLinkList);
+            mainFragment.setListAdapter(adapter);
         }
     }
 
@@ -269,19 +266,6 @@ public class NadgetMain extends Activity{
             ExtendedRssParser extendedRssParser = new ExtendedRssParser(url, NUMBER_OF_POSTS);
             extendedRssParser.parse();
             rssItems = (ArrayList<RssItem>) extendedRssParser.getItems();
-        }
-        catch(SAXException e)
-        {
-            Log.e(TAG,"extendedParse exception "+ e.toString());
-
-            //return feed when limit reached
-            if(e.toString().contains("\nLimit reached"))
-            {
-                Log.e(TAG,"extendedParse limit reached check rssItems="+rssItems);
-
-                return rssItems;
-            }
-
         }
         catch (Exception e)
         {
@@ -323,6 +307,7 @@ public class NadgetMain extends Activity{
                                                final String[] linkArr, final String[] pubDateArr,
                                                final String[] imageLinkArr)
     {
+
         ArrayAdapter adapter = new ArrayAdapter(NadgetMain.this,android.R.layout.two_line_list_item, titleArr)
         {
             // layout for image and two text views
@@ -373,7 +358,7 @@ public class NadgetMain extends Activity{
                     ll2.addView(tv2, 1);
 
                     //TODO: display post image
-                    iv.setImageResource(R.drawable.ic_action_ng);
+                    //iv.setImageResource(R.drawable.ic_action_ng);
                     tv1.setText(titleArr[position]);
                     //Log.i(TAG, "tv1 setText " + titleArr[position]);
                     //Log.i(TAG, "tv1 setText " + pubDateArr[position] );
@@ -482,26 +467,16 @@ public class NadgetMain extends Activity{
         Log.i(TAG, "refreshMainList 1 isRefreshedMainList="+isRefreshedMainList);
         try
         {
-            //TODO: remove this after testing with multiple feeds
-            //isUserAgentRequired = true;
             if(!isRefreshedMainList)
             {
                 Log.i(TAG, "refreshMainList 2 isRefreshedMainList="+isRefreshedMainList);
                 isRefreshedMainList = true;
-                //TODO: move the block below to a method once settings - feed chooser is ready
-                //todo: remove the test block on success
-
-                //begin test block
                 //todo:restrict to less posts
-                /*for (int i = 0; i < feedList.length; i++)
+                for (int i = 0; i < feedList.length; i++)
                 {
                     Log.i(TAG,"executing feed"+feedList[i]);
                     new DownloadTask().execute(feedList[i]);
-                }*/
-                //end test block
-                //todo uncomment below after testing
-                new DownloadTask().execute(NDTV_NEWS_FEED);
-                new DownloadTask().execute(TIMES_FEED);
+                }
             }
         }
         catch (Exception e)
@@ -516,25 +491,16 @@ public class NadgetMain extends Activity{
     public void refreshForPull()
     {
         Log.i(TAG, "refreshForPull");
+
+        //clear the lists
+        clearAll();
         try
         {
-            //TODO: remove this after testing with multiple feeds
-            //isUserAgentRequired = true;
-
-            //TODO: move the block below to a method once settings - feed chooser is ready
-            //todo: remove the test block on success
-
-            //begin test block
             //todo:restrict to less posts
-            /*for (int i = 0; i < feedList.length; i++) {
+            for (int i = 0; i < feedList.length; i++) {
                 Log.i(TAG,"executing feed"+feedList[i]);
                 new DownloadTask().execute(feedList[i]);
-            }*/
-
-
-            //end test block
-            new DownloadTask().execute(NDTV_NEWS_FEED);
-            new DownloadTask().execute(TIMES_FEED);
+            }
         }
         catch (Exception e)
         {
@@ -593,30 +559,29 @@ public class NadgetMain extends Activity{
     private String[] imageLinkArr = null;
 
     private Typeface typeface = null;
-    private ArrayAdapter adapter = null;
+    private MainViewAdapter adapter = null;
     private ActionBar actionBar = null;
-    private boolean isUserAgentRequired = false;
     private boolean isRefreshedMainList = false;
-    private static final int NUMBER_OF_POSTS = 20;
+    private static final int NUMBER_OF_POSTS = 10;
 
     //todo: remove after testing
     private static final String[] feedList = new String[]{
             //"http://www.bgr.in/feed/", //problem feed
-            //"http://www.firstpost.com/tech/feed", //problem feed
-            "http://indianexpress.com/section/technology/feed/",//problem feed
-            "http://www.gizmodo.in/rss_section_feeds/23005095.cms" //problem feed
-            //,
-            /*"http://www.thehindu.com/sci-tech/?service=rss",
-            "http://www.digit.in/rss-feed/",
+            /*"http://www.firstpost.com/tech/feed",
+            "http://indianexpress.com/section/technology/feed/",
+            "http://www.gizmodo.in/rss_section_feeds/23005095.cms"
+            ,
+            "http://www.thehindu.com/sci-tech/?service=rss",
+            "http://www.digit.in/rss-feed/", //problem feed
             "http://www.ibtimes.co.in/rss",
-            "http://feeds.feedburner.com/igyaan",
+            "http://feeds.feedburner.com/igyaan",//problem feed - retest
             "http://feeds.feedburner.com/Thegeekybyte",
             "http://feeds2.feedburner.com/fone-arena",
             "http://feeds.feedburner.com/ogfeed",
-            "http://feeds.feedblitz.com/gogi-technology",
-            "http://gadgets.ndtv.com/rss/news",
-            "http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss",
-            "http://www.techtree.com/rss.xml"*/
+            "http://feeds.feedblitz.com/gogi-technology",*/
+            "http://gadgets.ndtv.com/rss/news",//working
+            "http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss"
+            //, "http://www.techtree.com/rss.xml"//problem feed
     };
 
 }

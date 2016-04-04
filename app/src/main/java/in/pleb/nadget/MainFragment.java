@@ -4,25 +4,16 @@ package in.pleb.nadget;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
 
 /**
  * Fragment for displaying the main list with posts
@@ -36,7 +27,6 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
                              Bundle savedInstanceState)
 	{
         View view = inflater.inflate(R.layout.list_fragment, container, false);
-        mainTextView = new TextView(getActivity());
 
 		// Retrieve the SwipeRefreshLayout and ListView instances
 		swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
@@ -59,12 +49,6 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
         getListView().setDivider(new ColorDrawable(Color.LTGRAY));
 		getListView().setBackgroundColor(Color.WHITE);
         getListView().setDividerHeight(1);
-		//emptyView = (TextView) getListView().findViewById(android.R.id.empty);
-		//Log.i(TAG, "mainfragment emptyView "+emptyView);
-		//Log.i(TAG, "mainfragment onActivityCreated setupUI complete");
-        //layout and load data
-
-
         getListView().setOnItemClickListener(this);
     }
 
@@ -127,15 +111,8 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
 		//stop the refreshing indicator
 		swipeRefreshLayout.setRefreshing(false);
 
-
 	}
 
-	//set list adapter
-	public void setArrayAdapter(ArrayAdapter arrayAdapter)
-	{
-		this.arrayAdapter = arrayAdapter;
-		this.setListAdapter(arrayAdapter);
-	}
 
 	//method to display any error
 	public void setError(String errorMsg)
@@ -144,16 +121,8 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
 		//emptyView.setText(errorMsg);
 	}
 
-	private ArrayAdapter arrayAdapter;
-    private TextView mainTextView;
-
-	//private TextView emptyView;
 	private SwipeRefreshLayout swipeRefreshLayout;
 
     private static final String TAG = "Nadget MainFragment";
-    private ArrayList<String> titleList = new ArrayList<>();
-    private ArrayList<String> descriptionList = new ArrayList<>();
-    private ArrayList<String> linkList = new ArrayList<>();
-    private ArrayList<String> imageLinkArr = new ArrayList<>();
 
 }
