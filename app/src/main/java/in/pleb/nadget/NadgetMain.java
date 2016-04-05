@@ -32,9 +32,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import com.shirwa.simplistic_rss.*;
-
-import org.xml.sax.SAXException;
 
 public class NadgetMain extends Activity{
 
@@ -206,232 +203,43 @@ public class NadgetMain extends Activity{
         protected ArrayList<RssItem> doInBackground(String... urls)
         {
             Log.i(TAG, "NadgetMain doInBg start");
-            //for feeds that need setting user agent use the extended parser
-            ArrayList<RssItem> rssItems = null;
 
             try
             {
-                rssItems = extendedParse(urls[0]);
-                //RssReader reader = new RssReader(urls[0]);
-                //rssItems = (ArrayList<RssItem>) reader.getItems();
-                //return loadFromNetwork(urls[0]);
+                ExtendedRssParser extendedRssParser = new ExtendedRssParser(urls[0], NUMBER_OF_POSTS);
+                extendedRssParser.parse();
+                rssItems.addAll(extendedRssParser.getItems());
             }
             catch (Exception e)
             {
                 Log.e(TAG,"doInBg exception"+ e.toString());
                 displayInternalError();
             }
-            //Log.i(TAG, "***NadgetMain doInBg rssItems = "+rssItems.toString());
-            //Log.i(TAG, "NadgetMain doInBg return");
             return rssItems;
         }
 
         /**
-         * Uses the logging framework to display the output of the fetch
-         * operation in the log fragment.
+         * Set the rss feed posts to the adapter
          */
         @Override
         protected void onPostExecute(ArrayList<RssItem> rssItems) {
             Log.i(TAG, "***NadgetMain onPostExec rssItems = "+rssItems);
-            Log.i(TAG, "***NadgetMain onPostExec rssItems = "+rssItems.toString());
-
-            //set post details
-            setPostDetails(rssItems);
-
-            titleArr = titleList.toArray(new String[titleList.size()]);
-            linkArr = linkList.toArray(new String[titleList.size()]);
-            descriptionArr = descriptionList.toArray(new String[titleList.size()]);
-            pubDateArr = pubDateList.toArray(new String[titleList.size()]);
-            imageLinkArr = imageLinkList.toArray(new String[titleList.size()]);
-
-            Log.i(TAG, "***NadgetMain onPostExec titleList = "+titleList.toString());
 
             //create main list adapter
-            //adapter = createMainListAdapter(titleArr, descriptionArr, linkArr, pubDateArr, imageLinkArr);
-            //mainFragment.setArrayAdapter(adapter);
-
-            adapter = new MainViewAdapter(NadgetMain.this, R.layout.main_view_row,titleList,pubDateList,imageLinkList);
-            mainFragment.setListAdapter(adapter);
+            adapter = new MainViewAdapter(NadgetMain.this, rssItems);
+            mainFragment.setAdapter(adapter);
         }
-    }
-
-    //use extended parser for feeds that require user agent to be set
-    private ArrayList<RssItem> extendedParse(String url)
-    {
-        ArrayList<RssItem> rssItems = null;
-
-        try
-        {
-            //take the number of posts from settings
-            ExtendedRssParser extendedRssParser = new ExtendedRssParser(url, NUMBER_OF_POSTS);
-            extendedRssParser.parse();
-            rssItems = (ArrayList<RssItem>) extendedRssParser.getItems();
-        }
-        catch (Exception e)
-        {
-            Log.e(TAG,"extendedParse exception"+ e.toString());
-            displayInternalError();
-        }
-
-        return rssItems;
-    }
-
-
-    //set post details
-    private void setPostDetails(ArrayList<RssItem> rssItems)
-    {
-        Log.i(TAG, "*** setPostDetails entry" );
-
-        //clearAll();
-
-        for (RssItem rssItem : rssItems) {
-            Log.i(TAG, "*** setPostDetails title: " + rssItem.getTitle());
-            setItemTitle(rssItem.getTitle());
-            setItemDescription(rssItem.getDescription());
-            setItemPubDate(rssItem.getPubDate());
-            //Log.i("Nadget", "URL: " + rssItem.getLink());
-            setItemLink(rssItem.getLink());
-            //Log.i("Nadget", "Image URL: " + rssItem.getImageUrl());
-            if(rssItem.getImageUrl() != null)
-            {
-                setItemLink(rssItem.getImageUrl());
-            }
-        }
-        Log.i(TAG, "*** setPostDetails exit" );
-
-
-    }
-
-    //create main list adapter
-    private ArrayAdapter createMainListAdapter(final String[] titleArr, final String[] descriptionArr,
-                                               final String[] linkArr, final String[] pubDateArr,
-                                               final String[] imageLinkArr)
-    {
-
-        ArrayAdapter adapter = new ArrayAdapter(NadgetMain.this,android.R.layout.two_line_list_item, titleArr)
-        {
-            // layout for image and two text views
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent)
-            {
-                //Log.i(TAG, "onActivityCreated getView starting...");
-                ImageView iv;
-                TextView tv1, tv2;
-                LinearLayout ll, ll2;
-
-                if (convertView == null)
-                {
-                    //Log.i(TAG, "onActivityCreated convertView null");
-                    iv = new ImageView(getContext());
-                    iv.setPadding(5, 10, 5, 10);
-                    //uncomment the line below if thumbnails are of different sizes
-                    //iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    tv1 = new TextView(getContext());
-                    tv1.setTypeface(typeface, Typeface.BOLD);
-                    tv1.setGravity(Gravity.LEFT);
-                    tv1.setTextSize(18.0f);
-                    tv1.setTextColor(android.graphics.Color.parseColor("#000000"));
-                    tv1.setPadding(7, 20, 7, 15);
-                    tv1.setLines(2);
-                    //tv1.setEllipsize(TextUtils.TruncateAt.END);
-                    tv1.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
-
-                    // second line text view
-                    tv2 = new TextView(getContext());
-                    tv2.setTypeface(typeface, Typeface.ITALIC);
-                    tv2.setGravity(Gravity.LEFT);
-                    tv2.setTextSize(14.0f);
-                    tv2.setTextColor(android.graphics.Color.parseColor("#000000"));
-                    tv2.setPadding(7, 15, 7, 20);
-                    tv2.setLines(1);
-                    tv2.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
-
-                    ll = new LinearLayout(getContext());
-                    ll.setOrientation(LinearLayout.HORIZONTAL);
-                    ll.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
-
-                    // layout for text views
-                    ll2 = new LinearLayout(getContext());
-                    ll2.setOrientation(LinearLayout.VERTICAL);
-                    ll2.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
-                    ll2.addView(tv1, 0);
-                    ll2.addView(tv2, 1);
-
-                    //TODO: display post image
-                    //iv.setImageResource(R.drawable.ic_action_ng);
-                    tv1.setText(titleArr[position]);
-                    //Log.i(TAG, "tv1 setText " + titleArr[position]);
-                    //Log.i(TAG, "tv1 setText " + pubDateArr[position] );
-                    tv2.setText(pubDateArr[position]);
-                    //Log.i(TAG, "onActivityCreated convertView null addView");
-                    ll.addView(iv);
-                    ll.addView(ll2);
-                } else
-                {
-                    //Log.i(TAG, "onActivityCreated else");
-                    ll = (LinearLayout) convertView;
-                    iv = (ImageView) ll.getChildAt(0);
-                    ll2 = (LinearLayout) (ll.getChildAt(1));
-                    tv1 = (TextView) (ll2.getChildAt(0));
-                    tv2 = (TextView) (ll2.getChildAt(1));
-
-                    // TODO:display post image
-                    //Log.i(TAG, "tv1 else setText " + titleArr[position] );
-                    //Log.i(TAG,"tv2 else setText "+pubDateArr[position]);
-
-                    tv1.setText(titleArr[position] );
-                    tv2.setText(pubDateArr[position]);
-                }
-
-                return ll;
-            }
-        };
-
-        return adapter;
-    }
-
-    //set item title
-    private void setItemTitle(String content)
-    {
-        //Log.i(TAG, "in set title with " + content);
-        titleList.add(content);
-
-    }
-
-    //set description
-    private void setItemDescription(String content)
-    {
-        //Log.i(TAG, "in set description with " + content);
-        descriptionList.add(content);
-    }
-
-    //set published Date
-    private void setItemPubDate(String content)
-    {
-        //Log.i(TAG, "in set description with " + content);
-        pubDateList.add(content);
-    }
-
-    //set item link
-    private void setItemLink(String content)
-    {
-        //Log.i(TAG, "in set item link with " + content);
-        linkList.add(content);
-
     }
 
     //clear all content
     private void clearAll()
     {
-        titleList.clear();
-        linkList.clear();
-        descriptionList.clear();
-        pubDateList.clear();
-        imageLinkList.clear();
+        rssItems.clear();
     }
 
     //check network state
-    private boolean isNetworkAvailable() {
+    private boolean isNetworkAvailable()
+    {
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 
@@ -446,7 +254,6 @@ public class NadgetMain extends Activity{
     public void displayNetworkError()
     {
         Log.i(TAG, "NadgetMain displayNetworkError");
-        //mainFragment.setError("Please check your network connection and try again");
         Toast.makeText(this, "Please check your network connection and try again", Toast.LENGTH_LONG).show();
         //Snackbar.make(this.findViewById(R.id.drawer_layout), "Please check your network connection and try again", Snackbar.LENGTH_LONG).show();
     }
@@ -454,22 +261,17 @@ public class NadgetMain extends Activity{
     //for all generic errors
     public void displayInternalError() {
         Log.i(TAG, "NadgetMain displayInternalError");
-        //mainFragment.setError("Please check your network connection and try again");
-        //Toast.makeText(this, "Sorry, an internal error occurred", Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(this, "Sorry, an internal error occurred", Toast.LENGTH_SHORT).show();
     }
-
-
 
     //method to refresh
     public void refreshMainList()
     {
-        Log.i(TAG, "refreshMainList 1 isRefreshedMainList="+isRefreshedMainList);
+        Log.i(TAG, "refreshMainList entry isRefreshedMainList="+isRefreshedMainList);
         try
         {
             if(!isRefreshedMainList)
             {
-                Log.i(TAG, "refreshMainList 2 isRefreshedMainList="+isRefreshedMainList);
                 isRefreshedMainList = true;
                 //todo:restrict to less posts
                 for (int i = 0; i < feedList.length; i++)
@@ -484,7 +286,7 @@ public class NadgetMain extends Activity{
             Log.e(TAG, e.toString());
             displayInternalError();
         }
-        Log.i(TAG, "refreshMainList 3 isRefreshedMainList="+isRefreshedMainList);
+        Log.i(TAG, "refreshMainList exit isRefreshedMainList="+isRefreshedMainList);
     }
 
     //method for pull to refresh
@@ -509,61 +311,25 @@ public class NadgetMain extends Activity{
         }
     }
 
-
-    //method to return post title
-    public String[] getItemTitle()
+    //method to return posts
+    public ArrayList<RssItem>  getItems()
     {
-        return titleArr;
+        return rssItems;
     }
-
-    public String[] getItemLink()
-    {
-        return linkArr;
-    }
-    public String[] getItemDescription()
-    {
-        return descriptionArr;
-    }
-    public String[] getItemPubDate()
-    {
-        return pubDateArr;
-    }
-    public String[] getItemImageLink()
-    {
-        return imageLinkArr;
-    }
-
 
     private static final String TAG = "Nadget Main";
-    private static final int POST_TITLE_LENGTH = 40;
-
     private MainFragment mainFragment;
-
-    private static final String NDTV_NEWS_FEED = "http://gadgets.ndtv.com/rss/news";
-    private static final String TIMES_FEED = "http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss";
 
     private String[] drawerItemLabels = new String[]{"Sign in", "Saved Articles", "Select Feeds", "Settings"};
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
-    private ArrayList<String> titleList = new ArrayList<>();
-    private ArrayList<String> descriptionList = new ArrayList<>();
-    private ArrayList<String> linkList = new ArrayList<>();
-    private ArrayList<String> imageLinkList = new ArrayList<>();
-    private ArrayList<String> pubDateList = new ArrayList<>();
-
-    private String[] titleArr = null;
-    private String[] linkArr = null;
-    private String[] descriptionArr = null;
-    private String[] pubDateArr = null;
-    private String[] imageLinkArr = null;
-
     private Typeface typeface = null;
     private MainViewAdapter adapter = null;
     private ActionBar actionBar = null;
     private boolean isRefreshedMainList = false;
     private static final int NUMBER_OF_POSTS = 10;
-
+    private ArrayList<RssItem> rssItems = new ArrayList<RssItem>();
     //todo: remove after testing
     private static final String[] feedList = new String[]{
             //"http://www.bgr.in/feed/", //problem feed

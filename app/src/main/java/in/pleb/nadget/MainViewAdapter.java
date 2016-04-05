@@ -2,46 +2,89 @@ package in.pleb.nadget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+
+
 import java.util.ArrayList;
 
 /**
  * Created by danesh on 03-04-2016.
  */
-public class MainViewAdapter extends BaseAdapter
+public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostViewHolder>
 {
-    public MainViewAdapter(Activity activity, int resource, ArrayList<String> titleList, ArrayList<String> pubDateList, ArrayList<String> imageLinkList)
+    public MainViewAdapter(Activity activity, ArrayList<RssItem> rssItems)
     {
         this.activity = activity;
-
-        titleArr = titleList.toArray(new String[titleList.size()]);
-
-        pubDateArr = pubDateList.toArray(new String[titleList.size()]);
-        imageLinkArr = imageLinkList.toArray(new String[titleList.size()]);
+        this.rssItems = rssItems;
+        Log.i(TAG,"MainViewAdapter rssItems ="+rssItems);
 
         //set fonts for all text
         typeface = Typeface.createFromAsset( this.activity.getResources().getAssets(), "SourceSansPro-Regular.otf");
-        inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public static class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        CardView cv;
+        TextView postTitleView;
+        TextView postDateView;
+        ImageView postImageView;
+
+        PostViewHolder(View itemView)
+        {
+            super(itemView);
+
+            cv = (CardView)itemView.findViewById(R.id.cv);
+
+            postTitleView = (TextView)itemView.findViewById(R.id.postTitle);
+            postDateView = (TextView)itemView.findViewById(R.id.postDate);
+            postImageView = (ImageView)itemView.findViewById(R.id.postImage);
+            itemView.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View view)
+        {
+            itemClickListener.onItemClick(getPosition(),view);
+        }
     }
 
     @Override
-    public int getCount()
+    public MainViewAdapter.PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        return titleArr.length;
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_view_row, parent, false);
+        PostViewHolder holder = new PostViewHolder(v);
+        return holder;
     }
 
     @Override
-    public Object getItem(int position)
+    public void onBindViewHolder(MainViewAdapter.PostViewHolder holder, int position)
     {
-        return position;
+        holder.postTitleView.setText(rssItems.get(position).getTitle());
+        Log.i(TAG,"MainViewAdapter onBindViewHolder position="+position);
+        holder.postDateView.setText(rssItems.get(position).getPubDate());
+        holder.postTitleView.setTypeface(typeface, Typeface.BOLD);
+        holder.postDateView.setTypeface(typeface, Typeface.ITALIC);
+
+        //TODO: set post image
+        //holder.postImageView.setImageResource();
+        //use setScaleType in image view to size images
+
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView)
+    {
+        super.onAttachedToRecyclerView(recyclerView);
     }
 
     @Override
@@ -50,46 +93,28 @@ public class MainViewAdapter extends BaseAdapter
         return position;
     }
 
-    //construct a row
-    public class Holder
-    {
-        ImageView postImageView;
-        TextView postTitleView, postDateView;
-    }
-
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
+    public int getItemCount()
     {
-        //Log.i(TAG, "onActivityCreated getView starting...");
-        Holder holder = new Holder();
-
-        View rowView;
-
-        rowView = inflater.inflate(R.layout.main_view_row, null);
-
-        holder.postTitleView=(TextView) rowView.findViewById(R.id.postTitle);
-        holder.postDateView=(TextView) rowView.findViewById(R.id.postDate);
-        holder.postImageView=(ImageView) rowView.findViewById(R.id.postImage);
-
-        holder.postTitleView.setText(titleArr[position]);
-        holder.postDateView.setText(pubDateArr[position]);
-        holder.postTitleView.setTypeface(typeface, Typeface.BOLD);
-        holder.postDateView.setTypeface(typeface, Typeface.ITALIC);
-
-        //TODO: set below attrib in XML
-        //TODO: set post image
-        //holder.postImageView.setImageResource();
-        //use setScaleType in image view to size images
-        return rowView;
+        //Log.i(TAG,"MainViewAdapter getItemCount titleArr len"+rssItems.size());
+        return rssItems.size();
     }
 
+    public interface ItemClickListener
+    {
+        public void onItemClick(int position, View v);
+    }
 
+    public void setOnItemClickListener(ItemClickListener itemClickListener)
+    {
+        this.itemClickListener = itemClickListener;
+    }
 
     private Typeface typeface = null;
     private Activity activity = null;
-    private String[] titleArr = null;
-    private String[] pubDateArr = null;
-    private String[] imageLinkArr = null;
-    private LayoutInflater inflater = null;
+    private ArrayList<RssItem> rssItems = null;
+
+    private static ItemClickListener itemClickListener = null;
+    private static final String TAG = "Nadget Main";
 
 }

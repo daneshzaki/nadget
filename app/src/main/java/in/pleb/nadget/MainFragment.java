@@ -1,24 +1,26 @@
 
 package in.pleb.nadget;
 
-import android.app.ListFragment;
+import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+
+
+import java.util.ArrayList;
 
 /**
  * Fragment for displaying the main list with posts
  */
-public class MainFragment extends ListFragment implements AdapterView.OnItemClickListener {
+public class MainFragment extends Fragment
+{
 
 	public MainFragment() {}
 
@@ -26,13 +28,18 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
 	{
-        View view = inflater.inflate(R.layout.list_fragment, container, false);
+        View view = inflater.inflate(R.layout.main_fragment, container, false);
 
 		// Retrieve the SwipeRefreshLayout and ListView instances
 		swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
 
 		// Set the color scheme of the SwipeRefreshLayout by providing 4 color resource ids
 		//swipeRefreshLayout.setColorScheme(R.color.swipe_color_1, R.color.swipe_color_2,R.color.swipe_color_3, R.color.swipe_color_4);
+		mainView = (RecyclerView)view.findViewById(R.id.mainView);
+		mainView.setHasFixedSize(true); //If you are sure that the size of the RecyclerView won't be changing
+
+		LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
+		mainView.setLayoutManager(llm);
 
 		//Log.i(TAG,"mainfragment onCreateView complete");
         return view;
@@ -44,12 +51,7 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
         super.onActivityCreated(savedInstanceState);
 
         //setup UI
-        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        getListView().setTextFilterEnabled(true);
-        getListView().setDivider(new ColorDrawable(Color.LTGRAY));
-		getListView().setBackgroundColor(Color.WHITE);
-        getListView().setDividerHeight(1);
-        getListView().setOnItemClickListener(this);
+		mainView.setBackgroundColor(Color.WHITE);
     }
 
 	@Override
@@ -66,39 +68,6 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
 		});
 	}
 
-	//handle row selects in list
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-
-        // call webView with post selected
-        // create a bundle with values to be passed to display screen
-		Bundle bundle = new Bundle();
-
-		// post title
-		bundle.putString("title", ((NadgetMain) (getActivity())).getItemTitle()[position]);
-
-		// post description
-		bundle.putString("description", ((NadgetMain) (getActivity())).getItemDescription()[position]);
-
-		// post link
-		bundle.putString("link", ((NadgetMain) (getActivity())).getItemLink()[position]);
-
-		// post date
-		bundle.putString("pubDate", ((NadgetMain) (getActivity())).getItemPubDate()[position]);
-
-		// post image link
-		bundle.putString("imageLink", ((NadgetMain) (getActivity())).getItemImageLink()[position]);
-
-		Log.i("Nadget", "onListItemClick bundle title = " + bundle.getString("title"));
-
-		// create an intent and add the bundle to it
-		Intent displayIntent = new Intent(getActivity(), PostView.class);
-
-		displayIntent.putExtra("post", bundle);
-
-		startActivity(displayIntent);
-
-    }
 
 	//refresh the list
 	private void initiateRefresh()
@@ -113,6 +82,41 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
 
 	}
 
+	//set the adapter for recycle view and the click listener
+	public void setAdapter(MainViewAdapter adapter)
+	{
+		Log.i(TAG, "mainfragment setAdapter");
+		mainView.setAdapter(adapter);
+		adapter.setOnItemClickListener(
+				new MainViewAdapter.ItemClickListener()
+				{
+					public void onItemClick(int position, View v){
+					Log.i(TAG, " Clicked on Item " + position);
+						// call webView with post selected
+						// create a bundle with values to be passed to display screen
+						Bundle bundle = new Bundle();
+						ArrayList<RssItem> rssItems = ((NadgetMain) (getActivity())).getItems();
+						// post title
+						bundle.putString("title", rssItems.get(position).getTitle());
+						// post description
+						bundle.putString("description", rssItems.get(position).getDescription());
+						// post link
+						bundle.putString("link", rssItems.get(position).getLink());
+						// post date
+						bundle.putString("pubDate", rssItems.get(position).getPubDate());
+						// post image link
+						bundle.putString("imageLink", rssItems.get(position).getImageUrl());
+
+						Log.i("Nadget", "onListItemClick bundle title = " + bundle.getString("title"));
+
+						// create an intent and add the bundle to it
+						Intent displayIntent = new Intent(getActivity(), PostView.class);
+						displayIntent.putExtra("post", bundle);
+						startActivity(displayIntent);
+
+				}});
+	}
+
 
 	//method to display any error
 	public void setError(String errorMsg)
@@ -122,6 +126,7 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
 	}
 
 	private SwipeRefreshLayout swipeRefreshLayout;
+	private RecyclerView mainView = null;
 
     private static final String TAG = "Nadget MainFragment";
 

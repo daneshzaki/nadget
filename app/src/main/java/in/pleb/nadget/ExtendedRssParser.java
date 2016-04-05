@@ -11,7 +11,6 @@ import java.net.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import java.util.*;
-import com.shirwa.simplistic_rss.RssItem;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -59,7 +58,7 @@ public class ExtendedRssParser extends DefaultHandler
             Log.i(TAG, "ExtendedRssParser parse "+e.toString());
         }
 
-        Log.i(TAG, "ExtendedRssParser list="+rssItemList);
+        //Log.i(TAG, "ExtendedRssParser list="+rssItemList);
 
     }
 
