@@ -17,10 +17,12 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+
 /**
  * Created by danesh on 03-04-2016.
  */
-public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostViewHolder>
+//public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostViewHolder>
+public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
     public MainViewAdapter(Activity activity, ArrayList<RssItem> rssItems)
     {
@@ -32,6 +34,21 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         typeface = Typeface.createFromAsset( this.activity.getResources().getAssets(), "SourceSansPro-Regular.otf");
     }
 
+    //for header
+    public static class HeaderHolder extends RecyclerView.ViewHolder{
+
+        TextView headerText;
+        ImageView headerImage;
+
+        HeaderHolder(View itemView)
+        {
+            super(itemView);
+            headerText = (TextView)itemView.findViewById(R.id.headerText);
+            headerImage = (ImageView)itemView.findViewById(R.id.headerImage);
+        }
+    }
+
+    //for rows
     public static class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         CardView cv;
         TextView postTitleView;
@@ -59,27 +76,56 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
     }
 
     @Override
-    public MainViewAdapter.PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_view_row, parent, false);
-        PostViewHolder holder = new PostViewHolder(v);
-        return holder;
+        if (viewType == TYPE_HEADER) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_header, parent, false);
+            HeaderHolder holder = new HeaderHolder(v);
+            return holder;
+        }
+        else if (viewType == TYPE_ITEM)
+        {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_view_row, parent, false);
+            PostViewHolder holder = new PostViewHolder(v);
+            return holder;
+        }
+        else
+        {
+            Log.i(TAG,"no header and no row!!!!!!!!!!");
+            return null;
+        }
     }
 
     @Override
-    public void onBindViewHolder(MainViewAdapter.PostViewHolder holder, int position)
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position)
     {
-        holder.postTitleView.setText(rssItems.get(position).getTitle());
-        Log.i(TAG,"MainViewAdapter onBindViewHolder position="+position);
-        holder.postDateView.setText(rssItems.get(position).getPubDate());
-        holder.postTitleView.setTypeface(typeface, Typeface.BOLD);
-        holder.postDateView.setTypeface(typeface, Typeface.ITALIC);
+        if(holder instanceof PostViewHolder)
+        {
+            ((PostViewHolder)holder).postTitleView.setText(rssItems.get(position).getTitle());
+            Log.i(TAG,"MainViewAdapter onBindViewHolder postiviewholder pos="+position);
+            ((PostViewHolder)holder).postDateView.setText(rssItems.get(position).getPubDate());
+            ((PostViewHolder)holder).postTitleView.setTypeface(typeface, Typeface.BOLD);
+            ((PostViewHolder)holder).postDateView.setTypeface(typeface, Typeface.ITALIC);
 
-        //TODO: set post image
-        //holder.postImageView.setImageResource();
-        //use setScaleType in image view to size images
+            //TODO: set post image
+            if((rssItems.get(position).getSource()).equals(NDTV_FEED))
+            {
+                ((PostViewHolder)holder).postImageView.setImageResource(R.drawable.ndtv);
+            }
+            else if((rssItems.get(position).getSource()).equals(TIMES_FEED))
+            {
+                ((PostViewHolder)holder).postImageView.setImageResource(R.drawable.times);
+            }
+            //use setScaleType in image view to size images
+        }
+        else if(holder instanceof HeaderHolder)
+        {
+            Log.i(TAG,"MainViewAdapter onBindViewHolder headerholder pos="+position);
+            ((HeaderHolder)holder).headerText.setTypeface(typeface);
+        }
 
     }
+
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView)
@@ -97,7 +143,21 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
     public int getItemCount()
     {
         //Log.i(TAG,"MainViewAdapter getItemCount titleArr len"+rssItems.size());
-        return rssItems.size();
+        return rssItems.size() ; //+1 for header
+    }
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        if (isPositionHeader(position))
+            return TYPE_HEADER;
+
+        return TYPE_ITEM;
+    }
+
+    private boolean isPositionHeader(int position)
+    {
+        return position == 0;
     }
 
     public interface ItemClickListener
@@ -116,5 +176,12 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
 
     private static ItemClickListener itemClickListener = null;
     private static final String TAG = "Nadget Main";
+
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
+
+    //TODO: move array here/find other ways to check source
+    private static String NDTV_FEED = "http://gadgets.ndtv.com/rss/news";
+    private static String TIMES_FEED = "http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss";
 
 }

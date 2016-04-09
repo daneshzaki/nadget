@@ -3,12 +3,6 @@ import android.util.Log;
 
 public class RssItem
 {
-    String title;
-    String description;
-    String link;
-    String imageUrl;
-    String pubDate;
-
     public String getDescription() {return description;}
 
     public String getImageUrl() { return imageUrl; }
@@ -59,6 +53,19 @@ public class RssItem
         this.title = title;
     }
 
+    //set the feed source
+    public void setSource(String source)
+    {
+        this.source = source;
+    }
+
+    public String getSource()
+    {
+        return source;
+    }
+
+
+
     @Override
     public String toString()
     {
@@ -76,4 +83,14 @@ public class RssItem
 
         return buffer.toString();
     }
+
+    private String title;
+    private String description;
+    private String link;
+    private String imageUrl;
+    private String pubDate;
+    private String source;
+
+
+
 }

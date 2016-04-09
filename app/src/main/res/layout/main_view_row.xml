@@ -36,7 +36,7 @@
             android:paddingLeft="7dp"
             android:paddingTop="20dp"
             android:paddingRight="7dp"
-            android:paddingBottom="15dp"
+            android:paddingBottom="5dp"
             android:lines="2" />
 
         <TextView
@@ -51,20 +51,20 @@
             android:textSize="14dp"
             android:textColor="#3B3131"
             android:paddingLeft="7dp"
-            android:paddingTop="20dp"
+            android:paddingTop="10dp"
             android:paddingRight="7dp"
-            android:paddingBottom="15dp"
+            android:paddingBottom="5dp"
             />
 
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/postImage"
             android:paddingLeft="7dp"
             android:paddingTop="20dp"
             android:paddingRight="7dp"
             android:paddingBottom="15dp"
-            />
+            android:layout_gravity="center_horizontal" />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

@@ -20,9 +20,9 @@ public class ExtendedRssParser extends DefaultHandler
 {
 
     //Constructor.
-    public ExtendedRssParser(String Url,int maximumResults){
+    public ExtendedRssParser(String url,int maximumResults){
         super();
-        this.Url=Url;
+        this.url=url;
         this.maximumResults=maximumResults;
     }
 
@@ -41,7 +41,7 @@ public class ExtendedRssParser extends DefaultHandler
             XMLReader xr = saxParser.getXMLReader();
             xr.setContentHandler(this);
             xr.setErrorHandler(this);
-            URL u=new URL(Url);
+            URL u=new URL(url);
             URLConnection UC=u.openConnection();
             Log.i(TAG, "ExtendedRssParser parse conn open");
                     /*If we don't set the user-agent property sites like
@@ -62,11 +62,6 @@ public class ExtendedRssParser extends DefaultHandler
 
     }
 
-
-
-    ////////////////////////////////////////////////////////////////////
-    // Event handlers.
-    ////////////////////////////////////////////////////////////////////
     // Called when the XML file begins.
     public void startDocument ()
     {
@@ -111,6 +106,7 @@ public class ExtendedRssParser extends DefaultHandler
             }
             //Create a new NewsItem to add data to.
             currentItem=new RssItem();
+            currentItem.setSource(url);
         }
     }
 
@@ -180,7 +176,7 @@ public class ExtendedRssParser extends DefaultHandler
     private int ecount=0;
     //Keep track of the current news item count.
     private int rcount=0;
-    private String Url="";//Url to parse.
+    private String url="";//Url to parse.
     //String to store parsed data to.
     private String output="<i>Error parsing RSS feed.</i>";
     //Current string being parsed.

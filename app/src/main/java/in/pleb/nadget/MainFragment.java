@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+
 /**
  * Fragment for displaying the main list with posts
  */
@@ -34,7 +35,9 @@ public class MainFragment extends Fragment
 		swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
 
 		// Set the color scheme of the SwipeRefreshLayout by providing 4 color resource ids
-		//swipeRefreshLayout.setColorScheme(R.color.swipe_color_1, R.color.swipe_color_2,R.color.swipe_color_3, R.color.swipe_color_4);
+		swipeRefreshLayout.setColorSchemeResources(R.color.cardview_shadow_start_color, R.color.cardview_dark_background);
+
+		//set the main view
 		mainView = (RecyclerView)view.findViewById(R.id.mainView);
 		mainView.setHasFixedSize(true); //If you are sure that the size of the RecyclerView won't be changing
 
@@ -52,17 +55,18 @@ public class MainFragment extends Fragment
 
         //setup UI
 		mainView.setBackgroundColor(Color.WHITE);
-    }
+
+	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState)
 	{
 		super.onViewCreated(view, savedInstanceState);
+
 		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
 				Log.i(TAG, "onRefresh called from SwipeRefreshLayout");
-
 				initiateRefresh();
 			}
 		});
@@ -87,6 +91,7 @@ public class MainFragment extends Fragment
 	{
 		Log.i(TAG, "mainfragment setAdapter");
 		mainView.setAdapter(adapter);
+
 		adapter.setOnItemClickListener(
 				new MainViewAdapter.ItemClickListener()
 				{
@@ -117,7 +122,6 @@ public class MainFragment extends Fragment
 				}});
 	}
 
-
 	//method to display any error
 	public void setError(String errorMsg)
 	{
@@ -127,7 +131,6 @@ public class MainFragment extends Fragment
 
 	private SwipeRefreshLayout swipeRefreshLayout;
 	private RecyclerView mainView = null;
-
-    private static final String TAG = "Nadget MainFragment";
+	private static final String TAG = "Nadget MainFragment";
 
 }

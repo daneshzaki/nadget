@@ -12,358 +12,316 @@
     android:background="#ffffff">
 
     <ScrollView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/scrollView"
         android:background="#ffffff">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#ffffff">
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView"
-                android:src="@drawable/ndtv" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/feedSelectorLinear"
+        android:orientation="vertical"
+        android:background="#ffffff">
 
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/checkBox1"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="false" />
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView2"
-                android:src="@drawable/times" />
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/checkBox2"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="false" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView3"
-                android:src="@drawable/firstpost" />
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/checkBox3"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="false" />
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView4"
-                android:src="@drawable/digit" />
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/checkBox4"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="false" />
-
-        </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView5"
-            android:src="@drawable/gizmodo"
-            android:layout_toStartOf="@+id/checkBox5"
-            android:layout_alignTop="@+id/checkBox5" />
+            android:id="@+id/toggleButton"
+            android:tag="ndtv"
+            android:onClick="save"
+            android:textOff=""
+            android:textOn="OK"
+            android:background="@drawable/ndtv"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="#000000"
+            android:textAlignment="textEnd"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
 
-        <CheckBox
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/checkBox5"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="false" />
+            android:id="@+id/toggleButton2"
+            android:tag="times"            android:textOff=""
+            android:textOn="OK"
 
-    </RelativeLayout>
+            android:background="@drawable/times"
+            android:textColor="#000000"
+            android:onClick="save"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:textSize="20dp"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView6"
-            android:src="@drawable/techtree" />
+            android:id="@+id/toggleButton3"            android:textOff=""
+            android:textOn="OK"
 
-        <CheckBox
+            android:tag="firstpost"
+            android:background="@drawable/firstpost"
+            android:textColor="#000000"
+            android:onClick="save"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:textSize="20dp"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
+
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/checkBox6"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="false" />
+            android:id="@+id/toggleButton4"            android:textOff=""
+            android:textOn="OK"
 
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+            android:tag="digit"
+            android:background="@drawable/digit"
+            android:textColor="#000000"
+            android:onClick="save"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:textSize="20dp"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
 
-        <ImageView
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView7"
-            android:src="@drawable/ibtimes"/>
+            android:id="@+id/toggleButton5"            android:textOff=""
+            android:textOn="OK"
 
-        <CheckBox
+            android:tag="gizmodo"
+            android:background="@drawable/gizmodo"
+            android:textColor="#000000"
+            android:onClick="save"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:textSize="20dp"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
+
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/checkBox7"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="false" />
+            android:id="@+id/toggleButton6"            android:textOff=""
+            android:textOn="OK"
 
-    </RelativeLayout>
+            android:tag="techtree"
+            android:background="@drawable/techtree"
+            android:textColor="#000000"
+            android:onClick="save"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:textSize="20dp"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView8"
-            android:src="@drawable/onlygizmos" />
+            android:id="@+id/toggleButton7"            android:textOff=""
+            android:textOn="OK"
 
-        <CheckBox
+            android:tag="ibtimes"
+            android:background="@drawable/ibtimes"
+            android:textColor="#000000"
+            android:onClick="save"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:textSize="20dp"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
+
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/checkBox8"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="false" />
-    </RelativeLayout>
+            android:id="@+id/toggleButton8"
+            android:tag="onlygizmos" android:textOff=""
+            android:textOn="OK"
+            android:background="@drawable/onlygizmos"
+            android:textColor="#000000"
+            android:onClick="save"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:textSize="20dp"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView9"
-            android:src="@drawable/indianexpress" />
+            android:id="@+id/toggleButton9"            android:textOff=""
+            android:textOn="OK"
 
-        <CheckBox
+            android:tag="indianexpress"
+            android:background="@drawable/indianexpress"
+            android:textColor="#000000"
+            android:onClick="save"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:textSize="20dp"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
+
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/checkBox9"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="false" />
+            android:id="@+id/toggleButton10"            android:textOff=""
+            android:textOn="OK"
 
-    </RelativeLayout>
+            android:tag="bgr"
+            android:background="@drawable/bgr"
+            android:textColor="#000000"
+            android:onClick="save"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:textSize="20dp"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView10"
-            android:src="@drawable/bgr" />
+            android:id="@+id/toggleButton11"            android:textOff=""
+            android:textOn="OK"
 
-        <CheckBox
+            android:tag="thehindu"
+            android:background="@drawable/thehindu"
+            android:textColor="#000000"
+            android:onClick="save"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:textSize="20dp"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
+
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/checkBox10"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="false" />
+            android:id="@+id/toggleButton12"            android:textOff=""
+            android:textOn="OK"
 
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+            android:tag="fonearena"
+            android:background="@drawable/fonearena"
+            android:textColor="#000000"
+            android:onClick="save"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:textSize="20dp"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
 
-        <ImageView
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView11"
-            android:src="@drawable/thehindu" />
+            android:id="@+id/toggleButton13"            android:textOff=""
+            android:textOn="OK"
 
-        <CheckBox
+            android:tag="igyaan"
+            android:background="@drawable/igyaan"
+            android:textColor="#000000"
+            android:onClick="save"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:textSize="20dp"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
+
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/checkBox11"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="false" />
+            android:id="@+id/toggleButton14"            android:textOff=""
+            android:textOn="OK"
 
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+            android:tag="gogi"
+            android:background="@drawable/gogi"
+            android:textColor="#000000"
+            android:onClick="save"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:textSize="20dp"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
 
-        <ImageView
+        <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView12"
-            android:src="@drawable/fonearena" />
+            android:id="@+id/toggleButton15"            android:textOff=""
+            android:textOn="OK"
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/checkBox12"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="false" />
-
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView13"
-            android:src="@drawable/igyaan" />
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/checkBox13"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="false" />
-
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView14"
-            android:src="@drawable/gogi" />
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/checkBox14"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="false" />
-
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView15"
-            android:src="@drawable/thegeekybyte" />
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/checkBox15"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="false" />
-
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView16"
-            android:src="@drawable/onlygizmos" />
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/checkBox16"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="false" />
-
-    </RelativeLayout>
+            android:tag="thegeekybyte"
+            android:background="@drawable/thegeekybyte"
+            android:textColor="#000000"
+            android:onClick="save"
+            android:textStyle="bold"
+            android:textAlignment="textEnd"
+            android:textSize="20dp"
+            android:checked="false"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:shadowColor="#e5e0e0" />
     </LinearLayout>
     </ScrollView>
 </LinearLayout>

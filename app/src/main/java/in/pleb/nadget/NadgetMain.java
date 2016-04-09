@@ -228,6 +228,9 @@ public class NadgetMain extends Activity{
             //create main list adapter
             adapter = new MainViewAdapter(NadgetMain.this, rssItems);
             mainFragment.setAdapter(adapter);
+
+            //set feed source
+
         }
     }
 
@@ -273,7 +276,8 @@ public class NadgetMain extends Activity{
             if(!isRefreshedMainList)
             {
                 isRefreshedMainList = true;
-                //todo:restrict to less posts
+                //todo: get feedlist from feed selector
+
                 for (int i = 0; i < feedList.length; i++)
                 {
                     Log.i(TAG,"executing feed"+feedList[i]);

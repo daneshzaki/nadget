@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#E0E0E0"
+    android:foregroundGravity="center">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="208dp"
+        android:id="@+id/headerImage"
+        android:src="@drawable/headerbg"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:id="@+id/headerText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="News about Gadgets"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#ffffff"
+        android:textAlignment="center"
+        android:typeface="sans"
+        android:layout_gravity="center"
+        android:paddingLeft="5dp"
+        android:paddingTop="10dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp"
+        android:gravity="center" />
+
+</FrameLayout>
