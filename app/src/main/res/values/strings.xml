@@ -6,11 +6,11 @@
     <string name="connection_error">Unable to connect. Please check your network connectivity</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
-    <string name="title_activity_post_view">PostView</string>
+    <string name="title_activity_post_view">View Post</string>
     <string name="disclaimer_text">All logos are respective trademarks of their owners.</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_nadget_settings">Settings</string>
-
+    <string name="title_activity_feed_selector">Select Feeds</string>
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->

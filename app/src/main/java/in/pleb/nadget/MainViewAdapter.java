@@ -1,10 +1,7 @@
 package in.pleb.nadget;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -29,6 +27,9 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.activity = activity;
         this.rssItems = rssItems;
         Log.i(TAG,"MainViewAdapter rssItems ="+rssItems);
+
+        //initialize the drawables
+        setupFeedDrawables();
 
         //set fonts for all text
         typeface = Typeface.createFromAsset( this.activity.getResources().getAssets(), "SourceSansPro-Regular.otf");
@@ -107,14 +108,11 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
             ((PostViewHolder)holder).postTitleView.setTypeface(typeface, Typeface.BOLD);
             ((PostViewHolder)holder).postDateView.setTypeface(typeface, Typeface.ITALIC);
 
-            //TODO: set post image
-            if((rssItems.get(position).getSource()).equals(NDTV_FEED))
+            //TODO: set post image - change to image from rss item post
+            if(feedDrawables.containsKey(rssItems.get(position).getSource()))
             {
-                ((PostViewHolder)holder).postImageView.setImageResource(R.drawable.ndtv);
-            }
-            else if((rssItems.get(position).getSource()).equals(TIMES_FEED))
-            {
-                ((PostViewHolder)holder).postImageView.setImageResource(R.drawable.times);
+                ((PostViewHolder)holder).postImageView.setImageResource(
+                        feedDrawables.get(rssItems.get(position).getSource()));
             }
             //use setScaleType in image view to size images
         }
@@ -170,6 +168,30 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.itemClickListener = itemClickListener;
     }
 
+    //initialize feed drawables
+    private static void setupFeedDrawables()
+    {
+        feedDrawables = new HashMap<String, Integer>();
+
+        feedDrawables.put("http://gadgets.ndtv.com/rss/news", R.drawable.ndtv);
+        feedDrawables.put("http://www.bgr.in/feed/", R.drawable.bgr);
+        feedDrawables.put("http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss", R.drawable.times);
+        feedDrawables.put("http://www.techtree.com/rss.xml", R.drawable.techtree);
+        feedDrawables.put("http://www.firstpost.com/tech/feed", R.drawable.firstpost);
+        feedDrawables.put("http://feeds.feedburner.com/igyaan", R.drawable.igyaan);
+        feedDrawables.put("http://indianexpress.com/section/technology/feed/", R.drawable.indianexpress);
+        feedDrawables.put("http://www.thehindu.com/sci-tech/?service=rss\"", R.drawable.thehindu);
+        feedDrawables.put("http://www.ibtimes.co.in/rss", R.drawable.ibtimes);
+        feedDrawables.put("http://www.gizmodo.in/rss_section_feeds/23005095.cms", R.drawable.gizmodo);
+        feedDrawables.put("http://www.digit.in/rss-feed/", R.drawable.digit);
+        feedDrawables.put("http://feeds.feedburner.com/Thegeekybyte", R.drawable.thegeekybyte);
+        feedDrawables.put("http://feeds2.feedburner.com/fone-arena", R.drawable.fonearena);
+        feedDrawables.put("http://feeds.feedblitz.com/gogi-technology", R.drawable.gogi);
+        feedDrawables.put("http://feeds.feedburner.com/ogfeed", R.drawable.onlygizmos);
+
+    }
+
+
     private Typeface typeface = null;
     private Activity activity = null;
     private ArrayList<RssItem> rssItems = null;
@@ -181,6 +203,8 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static final int TYPE_ITEM = 1;
 
     //TODO: move array here/find other ways to check source
+    private static HashMap<String,Integer> feedDrawables = null;
+
     private static String NDTV_FEED = "http://gadgets.ndtv.com/rss/news";
     private static String TIMES_FEED = "http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss";
 

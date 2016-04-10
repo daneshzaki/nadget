@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -31,6 +32,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 
 public class NadgetMain extends Activity{
@@ -141,6 +145,7 @@ public class NadgetMain extends Activity{
             if(position == 2)
             {
                 startActivity(new Intent(NadgetMain.this, FeedSelector.class));
+                drawerToggle.syncState();
             }
         }
     }
@@ -271,25 +276,11 @@ public class NadgetMain extends Activity{
     public void refreshMainList()
     {
         Log.i(TAG, "refreshMainList entry isRefreshedMainList="+isRefreshedMainList);
-        try
-        {
             if(!isRefreshedMainList)
             {
                 isRefreshedMainList = true;
-                //todo: get feedlist from feed selector
-
-                for (int i = 0; i < feedList.length; i++)
-                {
-                    Log.i(TAG,"executing feed"+feedList[i]);
-                    new DownloadTask().execute(feedList[i]);
-                }
+                refreshCore();
             }
-        }
-        catch (Exception e)
-        {
-            Log.e(TAG, e.toString());
-            displayInternalError();
-        }
         Log.i(TAG, "refreshMainList exit isRefreshedMainList="+isRefreshedMainList);
     }
 
@@ -300,12 +291,21 @@ public class NadgetMain extends Activity{
 
         //clear the lists
         clearAll();
+        refreshCore();
+    }
+
+    private void refreshCore()
+    {
         try
         {
-            //todo:restrict to less posts
-            for (int i = 0; i < feedList.length; i++) {
-                Log.i(TAG,"executing feed"+feedList[i]);
-                new DownloadTask().execute(feedList[i]);
+            //get prefs to store the values
+            sharedPreferences = getSharedPreferences(FEEDS_FILE_NAME, Context.MODE_PRIVATE);
+
+            Map<String,?> feeds = (Map<String, String>) sharedPreferences.getAll();
+
+            for (Map.Entry<String, ?> entry : feeds.entrySet())
+            {
+                new DownloadTask().execute((String) entry.getValue().toString());
             }
         }
         catch (Exception e)
@@ -313,8 +313,8 @@ public class NadgetMain extends Activity{
             Log.e(TAG, e.toString());
             displayInternalError();
         }
-    }
 
+    }
     //method to return posts
     public ArrayList<RssItem>  getItems()
     {
@@ -334,24 +334,9 @@ public class NadgetMain extends Activity{
     private boolean isRefreshedMainList = false;
     private static final int NUMBER_OF_POSTS = 10;
     private ArrayList<RssItem> rssItems = new ArrayList<RssItem>();
-    //todo: remove after testing
-    private static final String[] feedList = new String[]{
-            //"http://www.bgr.in/feed/", //problem feed
-            /*"http://www.firstpost.com/tech/feed",
-            "http://indianexpress.com/section/technology/feed/",
-            "http://www.gizmodo.in/rss_section_feeds/23005095.cms"
-            ,
-            "http://www.thehindu.com/sci-tech/?service=rss",
-            "http://www.digit.in/rss-feed/", //problem feed
-            "http://www.ibtimes.co.in/rss",
-            "http://feeds.feedburner.com/igyaan",//problem feed - retest
-            "http://feeds.feedburner.com/Thegeekybyte",
-            "http://feeds2.feedburner.com/fone-arena",
-            "http://feeds.feedburner.com/ogfeed",
-            "http://feeds.feedblitz.com/gogi-technology",*/
-            "http://gadgets.ndtv.com/rss/news",//working
-            "http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss"
-            //, "http://www.techtree.com/rss.xml"//problem feed
-    };
+    private SharedPreferences sharedPreferences;
+    private static final String FEEDS_FILE_NAME = "in.pleb.nadget.SelectedFeeds";
+
+
 
 }

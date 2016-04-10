@@ -3,9 +3,12 @@ package in.pleb.nadget;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -30,6 +33,11 @@ public class FeedSelector extends Activity
         actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Nadget</font>"));
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
+
+        //change the back arrow color
+        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        actionBar.setHomeAsUpIndicator(upArrow);
 
         //get prefs to store the values
         sharedPreferences = getSharedPreferences(FEEDS_FILE_NAME, Context.MODE_PRIVATE);
@@ -84,11 +92,19 @@ public class FeedSelector extends Activity
         }
 
     }
+    public void onBackPressed()
+    {
+        Log.i(TAG,"FeedSelector onBackPressed");
 
+        Intent intent = new Intent(this, NadgetMain.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
     //save selected feeds
     public void save(View v)
     {
-        //check if its checked
+        //add if its checked
         if(((ToggleButton)v).isChecked())
         {
             //get the tag
@@ -98,30 +114,15 @@ public class FeedSelector extends Activity
             Log.i(TAG,"FeedSelector save selected url = "+feedMaster.get(v.getTag()));
 
             //add to selectedFeeds
-            //TODO: remove selectedFeeds list after sharedprefs works
-            //selectedFeeds.add((String) feedMaster.get(v.getTag()));
             editor.putString((String )v.getTag(),((String) feedMaster.get(v.getTag())));
             editor.commit();
         }
+        else
+        {
+            //remove from selectedFeeds
+            editor.remove((String )v.getTag());
 
-        //Log.i(TAG,"FeedSelector save selectedFeeds "+selectedFeeds.toString());
-    }
-/*
-* TODO: 6. Store the selectedfeedlist as preferences/locally
-* TODO: x. NadgetMain should use the selectedfeedlist to fetch the feeds on load
-* */
-
-    //get selected feeds
-    public ArrayList<String> getSelectedFeeds()
-    {
-        Log.i(TAG,"FeedSelector getSelectedFeeds selectedFeeds "+selectedFeeds.toString());
-        return selectedFeeds;
-    }
-
-    //set selected feeds
-    public void setSelectedFeeds(ArrayList<String> selectedFeeds)
-    {
-        this.selectedFeeds = selectedFeeds;
+        }
     }
 
     //master list of feeds
@@ -131,8 +132,6 @@ public class FeedSelector extends Activity
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-    //selected feeds
-    private ArrayList<String> selectedFeeds = new ArrayList<String>();
     private ActionBar actionBar = null;
     private static final String FEEDS_FILE_NAME = "in.pleb.nadget.SelectedFeeds";
     private static final String TAG = "Nadget FeedSelector";

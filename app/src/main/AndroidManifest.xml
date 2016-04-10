@@ -35,7 +35,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.pleb.nadget.NadgetMain" />
         </activity>
-        <activity android:name=".FeedSelector"></activity>
+        <activity android:name=".FeedSelector"
+            android:label="@string/title_activity_feed_selector"
+            android:parentActivityName=".NadgetMain">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.pleb.nadget.NadgetMain" />
+
+        </activity>
     </application>
 
 </manifest>
