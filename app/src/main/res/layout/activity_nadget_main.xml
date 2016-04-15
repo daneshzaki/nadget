@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".NadgetMain">
-
     <!-- The main content view -->
     <FrameLayout
         android:id="@+id/content_frame"
@@ -17,7 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white"
-            android:text="@string/placeholder" />
+            android:text="@string/placeholder"
+            tools:layout="@layout/main_fragment" >
+
+            </fragment>
 
     </FrameLayout>
 
@@ -33,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="#EFEBE9"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/nadget2" />
 
         <ListView android:id="@+id/left_drawer"
             android:layout_width="240dp"

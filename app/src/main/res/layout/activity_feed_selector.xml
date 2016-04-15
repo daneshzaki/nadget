@@ -74,29 +74,6 @@
         <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/toggleButton3"            android:textOff=""
-            android:textOn="O"
-            android:layout_column="0"
-            android:tag="firstpost"
-            android:background="@drawable/firstpost"
-            android:textColor="#0d47a1"
-            android:onClick="save"
-            android:textStyle="bold"
-            android:textAlignment="textEnd"
-            android:textSize="20dp"
-            android:checked="false"
-            android:shadowColor="#e5e0e0"
-            android:layout_row="1"
-            android:layout_columnWeight="2"
-            android:layout_columnSpan="1"
-            android:layout_marginLeft="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginBottom="4dp" />
-
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/toggleButton4"            android:textOff=""
             android:textOn="O"
 

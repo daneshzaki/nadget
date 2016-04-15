@@ -2,6 +2,7 @@ package in.pleb.nadget;
 
 import android.app.Activity;
 import android.graphics.Typeface;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +23,11 @@ import java.util.HashMap;
 //public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostViewHolder>
 public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
-    public MainViewAdapter(Activity activity, ArrayList<RssItem> rssItems)
+    public MainViewAdapter(AppCompatActivity activity, ArrayList<RssItem> rssItems)
     {
         this.activity = activity;
         this.rssItems = rssItems;
-        Log.i(TAG,"MainViewAdapter rssItems ="+rssItems);
+        Log.i(TAG,"MainViewAdapter rssItems size ="+rssItems.size());
 
         //initialize the drawables
         setupFeedDrawables();
@@ -103,7 +104,6 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
         if(holder instanceof PostViewHolder)
         {
             ((PostViewHolder)holder).postTitleView.setText(rssItems.get(position).getTitle());
-            Log.i(TAG,"MainViewAdapter onBindViewHolder postiviewholder pos="+position);
             ((PostViewHolder)holder).postDateView.setText(rssItems.get(position).getPubDate());
             ((PostViewHolder)holder).postTitleView.setTypeface(typeface, Typeface.BOLD);
             ((PostViewHolder)holder).postDateView.setTypeface(typeface, Typeface.ITALIC);
@@ -111,6 +111,7 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
             //TODO: set post image - change to image from rss item post
             if(feedDrawables.containsKey(rssItems.get(position).getSource()))
             {
+                Log.i(TAG,"MainViewAdapter onBindViewHolder setting img="+position);
                 ((PostViewHolder)holder).postImageView.setImageResource(
                         feedDrawables.get(rssItems.get(position).getSource()));
             }
@@ -134,14 +135,16 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public long getItemId(int position)
     {
+        Log.i(TAG,"MainViewAdapter getItemId  pos="+position);
+
         return position;
     }
 
     @Override
     public int getItemCount()
     {
-        //Log.i(TAG,"MainViewAdapter getItemCount titleArr len"+rssItems.size());
-        return rssItems.size() ; //+1 for header
+        Log.i(TAG,"MainViewAdapter getItemCount size="+rssItems.size());
+        return rssItems.size() ; //+1 for header?
     }
 
     @Override
@@ -177,23 +180,22 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
         feedDrawables.put("http://www.bgr.in/feed/", R.drawable.bgr);
         feedDrawables.put("http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss", R.drawable.times);
         feedDrawables.put("http://www.techtree.com/rss.xml", R.drawable.techtree);
-        feedDrawables.put("http://www.firstpost.com/tech/feed", R.drawable.firstpost);
         feedDrawables.put("http://feeds.feedburner.com/igyaan", R.drawable.igyaan);
         feedDrawables.put("http://indianexpress.com/section/technology/feed/", R.drawable.indianexpress);
-        feedDrawables.put("http://www.thehindu.com/sci-tech/?service=rss\"", R.drawable.thehindu);
+        feedDrawables.put("http://www.thehindu.com/sci-tech/?service=rss", R.drawable.thehindu);
         feedDrawables.put("http://www.ibtimes.co.in/rss", R.drawable.ibtimes);
         feedDrawables.put("http://www.gizmodo.in/rss_section_feeds/23005095.cms", R.drawable.gizmodo);
         feedDrawables.put("http://www.digit.in/rss-feed/", R.drawable.digit);
         feedDrawables.put("http://feeds.feedburner.com/Thegeekybyte", R.drawable.thegeekybyte);
         feedDrawables.put("http://feeds2.feedburner.com/fone-arena", R.drawable.fonearena);
-        feedDrawables.put("http://feeds.feedblitz.com/gogi-technology", R.drawable.gogi);
+        feedDrawables.put("https://www.gogi.in/feed", R.drawable.gogi);
         feedDrawables.put("http://feeds.feedburner.com/ogfeed", R.drawable.onlygizmos);
 
     }
 
 
     private Typeface typeface = null;
-    private Activity activity = null;
+    private AppCompatActivity activity = null;
     private ArrayList<RssItem> rssItems = null;
 
     private static ItemClickListener itemClickListener = null;

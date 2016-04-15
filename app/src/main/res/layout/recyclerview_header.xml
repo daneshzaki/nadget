@@ -16,11 +16,11 @@
         android:id="@+id/headerText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="News about Gadgets"
+        android:text=" "
         android:layout_centerHorizontal="true"
         android:textStyle="bold"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#e1f4f6"
+        android:textColor="#3B3131"
         android:textAlignment="center"
         android:typeface="sans"
         android:layout_gravity="center"
@@ -29,6 +29,6 @@
         android:paddingRight="5dp"
         android:paddingBottom="5dp"
         android:gravity="center"
-        android:shadowColor="#0e0202" />
+        android:shadowColor="#a1887f" />
 
 </FrameLayout>

@@ -11,6 +11,8 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_nadget_settings">Settings</string>
     <string name="title_activity_feed_selector">Select Feeds</string>
+    <string name="no_data_available">Please choose a few feeds to get started</string>
+
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->

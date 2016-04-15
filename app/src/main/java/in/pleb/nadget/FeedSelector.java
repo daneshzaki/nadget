@@ -1,7 +1,6 @@
 package in.pleb.nadget;
 
-import android.app.ActionBar;
-import android.app.Activity;
+import android.support.v7.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,17 +9,19 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.ToggleButton;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
-public class FeedSelector extends Activity
+public class FeedSelector extends AppCompatActivity
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -28,9 +29,12 @@ public class FeedSelector extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed_selector);
         //set the action bar
-        actionBar = getActionBar();
+        actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
-        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Nadget</font>"));
+        //set the actionbar title
+        Spannable text = new SpannableString("Nadget");
+        text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        actionBar.setTitle(text);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
 
@@ -58,7 +62,6 @@ public class FeedSelector extends Activity
         feedMaster.put("bgr", "http://www.bgr.in/feed/");
         feedMaster.put("times", "http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss");
         feedMaster.put("techtree", "http://www.techtree.com/rss.xml");
-        feedMaster.put("firstpost", "http://www.firstpost.com/tech/feed");
         feedMaster.put("igyaan", "http://feeds.feedburner.com/igyaan");
         feedMaster.put("indianexpress", "http://indianexpress.com/section/technology/feed/");
         feedMaster.put("thehindu", "http://www.thehindu.com/sci-tech/?service=rss");
@@ -67,7 +70,7 @@ public class FeedSelector extends Activity
         feedMaster.put("digit", "http://www.digit.in/rss-feed/");
         feedMaster.put("thegeekybyte", "http://feeds.feedburner.com/Thegeekybyte");
         feedMaster.put("fonearena", "http://feeds2.feedburner.com/fone-arena");
-        feedMaster.put("gogi", "http://feeds.feedblitz.com/gogi-technology");
+        feedMaster.put("gogi", "https://www.gogi.in/feed");
         feedMaster.put("onlygizmos", "http://feeds.feedburner.com/ogfeed");
     }
 
@@ -81,7 +84,7 @@ public class FeedSelector extends Activity
 
         for (int i = 0; i <feedKeys.length ; i++)
         {
-            Log.i(TAG,"FeedSelector setupUI feedKeys"+feedKeys[i]);
+            //Log.i(TAG,"FeedSelector setupUI feedKeys"+feedKeys[i]);
 
             if(sharedPreferences.contains(feedKeys[i]))
             {
@@ -108,10 +111,10 @@ public class FeedSelector extends Activity
         if(((ToggleButton)v).isChecked())
         {
             //get the tag
-            Log.i(TAG,"FeedSelector save selected tag = "+v.getTag());
+            Log.i(TAG,"FeedSelector save selected add tag = "+v.getTag());
 
             //get feed url from feedMaster
-            Log.i(TAG,"FeedSelector save selected url = "+feedMaster.get(v.getTag()));
+            Log.i(TAG,"FeedSelector save selected add url = "+feedMaster.get(v.getTag()));
 
             //add to selectedFeeds
             editor.putString((String )v.getTag(),((String) feedMaster.get(v.getTag())));
@@ -120,8 +123,10 @@ public class FeedSelector extends Activity
         else
         {
             //remove from selectedFeeds
-            editor.remove((String )v.getTag());
+            Log.i(TAG,"FeedSelector save selected remove tag = "+v.getTag());
 
+            editor.remove((String )v.getTag());
+            editor.commit();
         }
     }
 

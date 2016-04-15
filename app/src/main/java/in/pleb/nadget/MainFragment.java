@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class MainFragment extends Fragment
 		//set the main view
 		mainView = (RecyclerView)view.findViewById(R.id.mainView);
 		mainView.setHasFixedSize(true); //If you are sure that the size of the RecyclerView won't be changing
+		emptyView = (TextView) view.findViewById(R.id.empty_view);
 
 		LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
 		mainView.setLayoutManager(llm);
@@ -122,6 +125,14 @@ public class MainFragment extends Fragment
 				}});
 	}
 
+	//method to show empty message
+	public void displayEmpty()
+	{
+		Log.i(TAG, "mainfragment displayEmpty");
+		emptyView.setVisibility(View.VISIBLE);
+	}
+
+
 	//method to display any error
 	public void setError(String errorMsg)
 	{
@@ -131,6 +142,8 @@ public class MainFragment extends Fragment
 
 	private SwipeRefreshLayout swipeRefreshLayout;
 	private RecyclerView mainView = null;
+	private TextView emptyView;
 	private static final String TAG = "Nadget MainFragment";
+
 
 }

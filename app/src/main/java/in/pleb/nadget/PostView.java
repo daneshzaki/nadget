@@ -3,12 +3,14 @@ package in.pleb.nadget;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -23,14 +25,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-public class PostView extends Activity
+public class PostView extends AppCompatActivity
 {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_post_view);
 
         //check network connectivity
@@ -58,9 +58,6 @@ public class PostView extends Activity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -71,13 +68,22 @@ public class PostView extends Activity
         return super.onOptionsItemSelected(item);
     }
 
+    public void onBackPressed()
+    {
+        Log.i(TAG," onBackPressed");
+
+        Intent intent = new Intent(this, NadgetMain.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
     //load the values in the screen
     private void loadValues()
     {
         //set the action bar
-        final ActionBar actionBar = getActionBar();
+        final android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
-        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Nadget</font>"));
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
 
@@ -96,9 +102,6 @@ public class PostView extends Activity
 
         webView.setWebViewClient(new WebViewClient());
 
-        Log.i(TAG, "loadValues Bundle is " + bundle);
-        Log.i(TAG, "loadValues link is " + bundle.getString("link"));
-
         if(bundle.getString("link") != null )
         {
             webView.loadUrl(bundle.getString("link"));
@@ -107,8 +110,6 @@ public class PostView extends Activity
         {
             webView.loadUrl("www.pleb.in");
         }
-
-        //setContentView(webView);
 
     }
 
@@ -129,8 +130,8 @@ public class PostView extends Activity
     {
         Log.i(TAG, "NadgetMain displayError");
         //mainFragment.setError("Please check your network connection and try again");
-        Toast.makeText(this, "Please check your network connection and try again", Toast.LENGTH_LONG).show();
-        //Snackbar.make(this.findViewById(R.id.drawer_layout), "Please check your network connection and try again", Snackbar.LENGTH_LONG).show();
+        //Toast.makeText(this, "Please check your network connection and try again", Toast.LENGTH_LONG).show();
+        Snackbar.make(this.findViewById(R.id.webView), "No network connection. Please refresh", Snackbar.LENGTH_LONG).show();
     }
     private static final String TAG = "Nadget PostView";
 

@@ -1,5 +1,8 @@
 package in.pleb.nadget;
 import android.util.Log;
+import org.ocpsoft.prettytime.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class RssItem
 {
@@ -14,13 +17,21 @@ public class RssItem
     public void setPubDate(String pubDate) {
         try
         {
-            //Log.i("Nadget RssItem in",pubDate);
-            //SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, DD MMM yyyy HH:mm:ss");
-            //Date pubDateDt = dateFormat.parse(pubDate);
+            Log.i(TAG, "date in="+pubDate);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
+            Date pubDateDt = dateFormat.parse(pubDate);
             //pubDate = dateFormat.format(pubDateDt);
+            PrettyTime prettyTime = new PrettyTime();
+            //pubDate = prettyTime.format(pubDateDt);
+            pubDate = prettyTime.formatDuration(pubDateDt) +" ago";
             this.pubDate = pubDate;
-            //Log.i("Nadget RssItem out",pubDate);
+            Log.i(TAG, "date out="+pubDate);
 
+        }
+        catch(java.text.ParseException pe)
+        {
+            pe.toString();
+            this.pubDate = pubDate;
         }
         catch(Exception e)
         {
@@ -90,6 +101,7 @@ public class RssItem
     private String imageUrl;
     private String pubDate;
     private String source;
+    private static final String TAG = "Nadget RssItem";
 
 
 

@@ -120,14 +120,14 @@ public class ExtendedRssParser extends DefaultHandler
         }*/
 
         if(qName.equals("title")&&currentItem!=null){//Are we parsing a news item?
-            currentItem.setTitle(currentText);
+            currentItem.setTitle(currentText.trim());
         }
         else if(qName.equals("link")&&currentItem!=null)
             currentItem.setLink(currentText);
         else if(qName.equals("pubDate")&&currentItem!=null)
-            currentItem.setPubDate(currentText);
+            currentItem.setPubDate(currentText.trim());
         else if(qName.equals("description")&&currentItem!=null)
-            currentItem.setDescription(currentText);
+            currentItem.setDescription(currentText.trim());
 
         //image url setting problem
         else if (qName.equals("media:thumbnail") || qName.equals("media:content") || qName.equals("image"))
