@@ -1,7 +1,5 @@
 package in.pleb.nadget;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,7 +15,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.Spannable;
@@ -27,15 +24,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
-
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -48,10 +41,8 @@ public class NadgetMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        //requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_nadget_main);
 
-        //font
         //set fonts for all text
         typeface = Typeface.createFromAsset( getResources().getAssets(), "SourceSansPro-Regular.otf");
 
@@ -194,7 +185,7 @@ public class NadgetMain extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
-        Log.i(TAG, "onPrepareOptionsMenu");
+        //Log.i(TAG, "onPrepareOptionsMenu");
         //boolean drawerOpen = drawerLayout.isDrawerOpen(drawerList);
         //TODO: hide actionbar items and make drawer appear over actionbar
         return super.onPrepareOptionsMenu(menu);
@@ -248,12 +239,13 @@ public class NadgetMain extends AppCompatActivity {
         protected void onPostExecute(ArrayList<RssItem> rssItems) {
             Log.i(TAG, "***NadgetMain onPostExec rssItems = "+rssItems);
 
+            //update adapter
             //create main list adapter
             adapter = new MainViewAdapter(NadgetMain.this, rssItems);
             mainFragment.setAdapter(adapter);
 
-            //update adapter
-            adapter.notifyDataSetChanged();
+            //adapter.notifyDataSetChanged();
+
         }
     }
 
@@ -325,7 +317,6 @@ public class NadgetMain extends AppCompatActivity {
 
             Map<String,?> feeds = (Map<String, String>) sharedPreferences.getAll();
 
-            Log.i(TAG,"NadgetMain refreshCore feeds = "+feeds);
             //check empty
             if(feeds == null || feeds.size()==0)
             {
@@ -334,10 +325,12 @@ public class NadgetMain extends AppCompatActivity {
                 Toast.makeText(this, "Please choose a few feeds to get started", Toast.LENGTH_SHORT).show();
             }
 
+
             //refresh main list with the feeds selected
             for (Map.Entry<String, ?> entry : feeds.entrySet())
             {
-                new DownloadTask().execute((String) entry.getValue().toString());
+                Log.i(TAG,"NadgetMain refreshCore feed = "+entry.getKey());
+                new DownloadTask().execute((String) entry.getKey().trim());
             }
         }
         catch (Exception e)
@@ -348,11 +341,12 @@ public class NadgetMain extends AppCompatActivity {
 
     }
 
+
     //dismiss Snackbars
     private void dismissSnackbars()
     {
-        Log.i(TAG,"dismissSnackbars snackbarInternal="+snackbarInternal);
-        Log.i(TAG,"dismissSnackbars snackbarNetwork="+snackbarNetwork);
+        //Log.i(TAG,"dismissSnackbars snackbarInternal="+snackbarInternal);
+        //Log.i(TAG,"dismissSnackbars snackbarNetwork="+snackbarNetwork);
 
         if(snackbarInternal!= null && snackbarInternal.isShown())
             snackbarInternal.dismiss();
@@ -375,7 +369,7 @@ public class NadgetMain extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
-    private Typeface typeface = null;
+    private Typeface typeface;
     private MainViewAdapter adapter = null;
     private android.support.v7.app.ActionBar actionBar;
     private boolean isRefreshedMainList = false;

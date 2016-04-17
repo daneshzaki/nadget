@@ -111,7 +111,6 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
             //TODO: set post image - change to image from rss item post
             if(feedDrawables.containsKey(rssItems.get(position).getSource()))
             {
-                Log.i(TAG,"MainViewAdapter onBindViewHolder setting img="+position);
                 ((PostViewHolder)holder).postImageView.setImageResource(
                         feedDrawables.get(rssItems.get(position).getSource()));
             }
@@ -135,15 +134,13 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public long getItemId(int position)
     {
-        Log.i(TAG,"MainViewAdapter getItemId  pos="+position);
-
         return position;
     }
 
     @Override
     public int getItemCount()
     {
-        Log.i(TAG,"MainViewAdapter getItemCount size="+rssItems.size());
+        //Log.i(TAG,"MainViewAdapter getItemCount size="+rssItems.size());
         return rssItems.size() ; //+1 for header?
     }
 
@@ -171,6 +168,12 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.itemClickListener = itemClickListener;
     }
 
+    //set rss items when available
+    public void setItems(ArrayList<RssItem> rssItems)
+    {
+        this.rssItems = rssItems;
+    }
+
     //initialize feed drawables
     private static void setupFeedDrawables()
     {
@@ -196,7 +199,7 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private Typeface typeface = null;
     private AppCompatActivity activity = null;
-    private ArrayList<RssItem> rssItems = null;
+    private ArrayList<RssItem> rssItems;
 
     private static ItemClickListener itemClickListener = null;
     private static final String TAG = "Nadget Main";
@@ -204,10 +207,6 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
 
-    //TODO: move array here/find other ways to check source
     private static HashMap<String,Integer> feedDrawables = null;
-
-    private static String NDTV_FEED = "http://gadgets.ndtv.com/rss/news";
-    private static String TIMES_FEED = "http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss";
 
 }

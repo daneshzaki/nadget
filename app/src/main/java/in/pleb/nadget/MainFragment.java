@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,10 +54,7 @@ public class MainFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState)
 	{
         super.onActivityCreated(savedInstanceState);
-
-        //setup UI
 		mainView.setBackgroundColor(Color.WHITE);
-
 	}
 
 	@Override
@@ -99,7 +95,7 @@ public class MainFragment extends Fragment
 				new MainViewAdapter.ItemClickListener()
 				{
 					public void onItemClick(int position, View v){
-					Log.i(TAG, " Clicked on Item " + position);
+					//Log.i(TAG, " Clicked on Item " + position);
 						// call webView with post selected
 						// create a bundle with values to be passed to display screen
 						Bundle bundle = new Bundle();
@@ -132,18 +128,9 @@ public class MainFragment extends Fragment
 		emptyView.setVisibility(View.VISIBLE);
 	}
 
-
-	//method to display any error
-	public void setError(String errorMsg)
-	{
-		Log.i(TAG, "mainfragment setError");
-		//emptyView.setText(errorMsg);
-	}
-
 	private SwipeRefreshLayout swipeRefreshLayout;
 	private RecyclerView mainView = null;
 	private TextView emptyView;
 	private static final String TAG = "Nadget MainFragment";
-
 
 }
