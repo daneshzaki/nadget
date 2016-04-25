@@ -15,7 +15,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -29,6 +31,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.Toast;
+
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -43,6 +46,7 @@ public class NadgetMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nadget_main);
 
+
         //set fonts for all text
         typeface = Typeface.createFromAsset( getResources().getAssets(), "SourceSansPro-Regular.otf");
 
@@ -55,12 +59,14 @@ public class NadgetMain extends AppCompatActivity {
 
         // set the nav drawer list's click listener
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
-        drawerLayout.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
-        drawerList.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
+        //drawerLayout.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
+        //drawerList.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
 
         //set the action bar main_toolbar
-        actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
+        setupToolbar();
+
+        //actionBar = getSupportActionBar();
+        /*actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
         //set the actionbar title
         Spannable text = new SpannableString("Nadget");
         text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
@@ -72,7 +78,8 @@ public class NadgetMain extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(upArrow);
 
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
+        actionBar.setHomeButtonEnabled(true);*/
+
 
         drawerToggle = new ActionBarDrawerToggle(
                 this,
@@ -98,6 +105,9 @@ public class NadgetMain extends AppCompatActivity {
             //handle instance state when exit
         }
         mainFragment = (MainFragment) getFragmentManager().findFragmentById(R.id.main_fragment);
+        //create main list adapter
+        adapter = new MainViewAdapter(NadgetMain.this, rssItems);
+        mainFragment.setAdapter(adapter);
 
         //check network connectivity
         if(!isNetworkAvailable())
@@ -202,6 +212,46 @@ public class NadgetMain extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);    }
 
+    private void setupToolbar()
+    {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+
+        if (toolbar != null)
+        {
+            setSupportActionBar(toolbar);
+            toolbar.setTitleTextAppearance(this, R.style.ToolBarTextStyle);
+            toolbar.setSubtitleTextColor(Color.WHITE);
+
+            actionBar = getSupportActionBar();
+            Log.i(TAG,"actionbar= "+actionBar);
+
+            if (actionBar != null)
+            {
+                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
+
+                //set the actionbar title
+                Spannable text = new SpannableString("Nadget");
+                text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+                actionBar.setTitle(text);
+                actionBar.setSubtitle("News about Gadgets");
+
+
+                //change the back arrow color
+                final Drawable upArrow = getResources().getDrawable(R.drawable.ic_drawer);
+                upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+                actionBar.setHomeAsUpIndicator(upArrow);
+
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setDisplayShowHomeEnabled(true);
+                actionBar.setDisplayShowTitleEnabled(true);
+                actionBar.setDisplayUseLogoEnabled(false);
+                actionBar.setHomeButtonEnabled(true);
+            }
+        }
+
+    }
+
     /**
      * Implementation of AsyncTask, to fetch the data in the background away from
      * the UI thread.
@@ -221,12 +271,13 @@ public class NadgetMain extends AppCompatActivity {
             }
             catch (ConnectException e)
             {
-                Log.e(TAG,"doInBg connect exception"+ e.toString());
+                Log.e(TAG,"doInBg connect exception "+ e.toString());
                 displayNetworkError();
             }
             catch (Exception e)
             {
-                Log.e(TAG,"doInBg exception"+ e.toString());
+                Log.e(TAG,"doInBg exception "+ e.toString());
+                e.printStackTrace();
                 displayInternalError();
             }
             return rssItems;
@@ -240,11 +291,8 @@ public class NadgetMain extends AppCompatActivity {
             Log.i(TAG, "***NadgetMain onPostExec rssItems = "+rssItems);
 
             //update adapter
-            //create main list adapter
-            adapter = new MainViewAdapter(NadgetMain.this, rssItems);
-            mainFragment.setAdapter(adapter);
 
-            //adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
 
         }
     }
@@ -323,6 +371,7 @@ public class NadgetMain extends AppCompatActivity {
                 Log.i(TAG,"NadgetMain refreshCore feeds empty");
                 mainFragment.displayEmpty();
                 Toast.makeText(this, "Please choose a few feeds to get started", Toast.LENGTH_SHORT).show();
+                return;
             }
 
 

@@ -3,6 +3,7 @@ package in.pleb.nadget;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -36,7 +37,7 @@ public class MainFragment extends Fragment
 		swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
 
 		// Set the color scheme of the SwipeRefreshLayout by providing 4 color resource ids
-		swipeRefreshLayout.setColorSchemeResources(R.color.cardview_shadow_start_color, R.color.cardview_dark_background);
+		swipeRefreshLayout.setColorSchemeResources(R.color.cardview_shadow_start_color, R.color.cardview_light_background);
 
 		//set the main view
 		mainView = (RecyclerView)view.findViewById(R.id.mainView);
@@ -95,7 +96,7 @@ public class MainFragment extends Fragment
 				new MainViewAdapter.ItemClickListener()
 				{
 					public void onItemClick(int position, View v){
-					//Log.i(TAG, " Clicked on Item " + position);
+					Log.i(TAG, "*** Clicked on Item " + position);
 						// call webView with post selected
 						// create a bundle with values to be passed to display screen
 						Bundle bundle = new Bundle();
@@ -111,7 +112,7 @@ public class MainFragment extends Fragment
 						// post image link
 						bundle.putString("imageLink", rssItems.get(position).getImageUrl());
 
-						Log.i("Nadget", "onListItemClick bundle title = " + bundle.getString("title"));
+						Log.i(TAG, "onListItemClick bundle title = " + bundle.getString("title"));
 
 						// create an intent and add the bundle to it
 						Intent displayIntent = new Intent(getActivity(), PostView.class);

@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#473e30"
+    android:background="#3B3131"
     android:foregroundGravity="center">
 
     <ImageView
@@ -10,17 +10,17 @@
         android:layout_height="208dp"
         android:id="@+id/headerImage"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/headerbg" />
+         />
 
     <TextView
         android:id="@+id/headerText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=" "
+        android:layout_height="208dp"
+        android:text="News about Gadgets"
         android:layout_centerHorizontal="true"
         android:textStyle="bold"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#3B3131"
+        android:textColor="#ffffff"
         android:textAlignment="center"
         android:typeface="sans"
         android:layout_gravity="center"
@@ -29,6 +29,7 @@
         android:paddingRight="5dp"
         android:paddingBottom="5dp"
         android:gravity="center"
-        android:shadowColor="#a1887f" />
+        android:shadowColor="#a1887f"
+        android:textSize="25sp" />
 
 </FrameLayout>

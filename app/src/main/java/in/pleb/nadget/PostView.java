@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -33,6 +34,14 @@ public class PostView extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_view);
 
+        //set values of the selected thing in the input fields
+        bundle = this.getIntent().getBundleExtra("post");
+
+        Log.i(TAG, "Before loadValues Bundle is " + bundle);
+
+
+        setupToolbar();
+
         //check network connectivity
         if(!isNetworkAvailable())
         {
@@ -40,10 +49,6 @@ public class PostView extends AppCompatActivity
             return;
         }
 
-        //set values of the selected thing in the input fields
-        bundle = this.getIntent().getBundleExtra("post");
-
-        Log.i(TAG, "Before loadValues Bundle is " + bundle);
 
         //load the thing values on the screen
         loadValues();
@@ -88,21 +93,7 @@ public class PostView extends AppCompatActivity
     //load the values in the screen
     private void loadValues()
     {
-        //set the action bar
-        final android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
 
-        //set the actionbar title
-        Spannable text = new SpannableString(bundle.getString("title"));
-        text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        actionBar.setTitle(text);
-
-        //change the back arrow color
-        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-        actionBar.setHomeAsUpIndicator(upArrow);
 
         //load the page in webview
         WebView webView = ((WebView) findViewById(R.id.webView));
@@ -116,6 +107,38 @@ public class PostView extends AppCompatActivity
         else
         {
             webView.loadUrl("www.pleb.in");
+        }
+
+    }
+
+    private void setupToolbar()
+    {
+        Log.i(TAG,"setupToolbar ***");
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+
+        if (toolbar != null)
+        {
+            setSupportActionBar(toolbar);
+
+            final android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+            Log.i(TAG,"actionbar= "+actionBar);
+
+            if (actionBar != null)
+            {
+                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
+                actionBar.setDisplayHomeAsUpEnabled(true);
+
+                //set the actionbar title
+                Spannable text = new SpannableString(bundle.getString("title"));
+                text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                actionBar.setTitle(text);
+
+                //change the back arrow color
+                final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+                actionBar.setHomeAsUpIndicator(upArrow);
+                actionBar.setHomeButtonEnabled(true);
+            }
         }
 
     }

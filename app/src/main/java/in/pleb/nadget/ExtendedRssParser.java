@@ -4,6 +4,7 @@ package in.pleb.nadget;
  * Created by danesh on 24-03-2016.
  */
 
+import android.provider.Settings;
 import android.util.Log;
 
 import java.io.*;
@@ -43,15 +44,20 @@ public class ExtendedRssParser extends DefaultHandler
             xr.setErrorHandler(this);
             URL u=new URL(url);
             URLConnection UC=u.openConnection();
-            Log.i(TAG, "ExtendedRssParser parse conn open");
-                    /*If we don't set the user-agent property sites like
-                      Google won't let you access their feeds.*/
+            //for instrumentation
+            long entryTime = System.currentTimeMillis();
+            Log.i(TAG, "ExtendedRssParser parse entry time="+entryTime);
+            //feeds not returned if user agent not set
             UC.setRequestProperty ( "User-Agent",
                     "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36");
+            Log.i(TAG, "ExtendedRssParser parse set agent done");
             InputStreamReader r = new InputStreamReader(UC.getInputStream());
             Log.i(TAG, "ExtendedRssParser calling super parse ");
             xr.parse(new InputSource(r));
+            long exitTime = System.currentTimeMillis();
+            long timeTaken = exitTime - entryTime;
 
+            Log.i(TAG, "ExtendedRssParser parse exit time="+timeTaken);
         }
         catch(SAXException e)
         {

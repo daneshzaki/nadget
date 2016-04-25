@@ -3,6 +3,7 @@ package in.pleb.nadget;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,8 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
             super(itemView);
             headerText = (TextView)itemView.findViewById(R.id.headerText);
             headerImage = (ImageView)itemView.findViewById(R.id.headerImage);
+
+
         }
     }
 
@@ -180,6 +183,7 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
         feedDrawables = new HashMap<String, Integer>();
 
         feedDrawables.put("http://gadgets.ndtv.com/rss/news", R.drawable.ndtv);
+        feedDrawables.put("http://gadgets.ndtv.com/rss/reviews", R.drawable.ndtv);
         feedDrawables.put("http://www.bgr.in/feed/", R.drawable.bgr);
         feedDrawables.put("http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss", R.drawable.times);
         feedDrawables.put("http://www.techtree.com/rss.xml", R.drawable.techtree);
@@ -198,7 +202,7 @@ public class MainViewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 
     private Typeface typeface = null;
-    private AppCompatActivity activity = null;
+    private static AppCompatActivity activity = null;
     private ArrayList<RssItem> rssItems;
 
     private static ItemClickListener itemClickListener = null;

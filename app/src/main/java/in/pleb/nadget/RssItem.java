@@ -30,8 +30,22 @@ public class RssItem
         }
         catch(java.text.ParseException pe)
         {
-            pe.toString();
-            this.pubDate = pubDate;
+            Log.e(TAG,"Different date format!!! "+pe.toString());
+
+            //sometimes another format
+            try
+            {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("EEE ,dd MMM yyyy HH:mm:ss Z");
+                Date pubDateDt = dateFormat.parse(pubDate);
+                PrettyTime prettyTime = new PrettyTime();
+                pubDate = prettyTime.formatDuration(pubDateDt) +" ago";
+                this.pubDate = pubDate;
+            }
+            catch(java.text.ParseException peinpe)
+            {
+                peinpe.toString();
+            }
+
         }
         catch(Exception e)
         {
