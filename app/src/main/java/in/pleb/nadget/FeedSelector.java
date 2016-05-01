@@ -110,10 +110,6 @@ public class FeedSelector extends AppCompatActivity
         });
 
         //set feed picker button state based on values in shared prefs
-        //Set<String> set = feedMaster.keySet();
-
-        //String[] feedKeys = (String[]) set.toArray(new String[set.size()]);
-
         feedPicker.setCheckedItems((HashMap<String, Object>) sharedPreferences.getAll());
 
     }
@@ -197,31 +193,6 @@ public class FeedSelector extends AppCompatActivity
         startActivity(intent);
         finish();
     }
-    //save selected feeds
-    /*public void save(View v)
-    {
-        //add if its checked
-        if(((ToggleButton)v).isChecked())
-        {
-            //get the tag
-            Log.i(TAG,"FeedSelector save selected add tag = "+v.getTag());
-
-            //get feed url from feedMaster
-            Log.i(TAG,"FeedSelector save selected add url = "+feedMaster.get(v.getTag()));
-
-            //add to selectedFeeds
-            editor.putString((String )v.getTag(),((String) feedMaster.get(v.getTag())));
-            editor.commit();
-        }
-        else
-        {
-            //remove from selectedFeeds
-            Log.i(TAG,"FeedSelector save selected remove tag = "+v.getTag());
-
-            editor.remove((String )v.getTag());
-            editor.commit();
-        }
-    }*/
 
     //master list of feeds
     private static HashMap<String,String> feedMaster;

@@ -1,6 +1,8 @@
 package in.pleb.nadget;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -13,9 +15,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -30,6 +34,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.net.ConnectException;
@@ -46,7 +51,6 @@ public class NadgetMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nadget_main);
 
-
         //set fonts for all text
         typeface = Typeface.createFromAsset( getResources().getAssets(), "SourceSansPro-Regular.otf");
 
@@ -59,27 +63,11 @@ public class NadgetMain extends AppCompatActivity {
 
         // set the nav drawer list's click listener
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
-        //drawerLayout.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
-        //drawerList.setBackgroundColor(android.graphics.Color.parseColor("#EFEBE9"));
 
         //set the action bar main_toolbar
         setupToolbar();
 
-        //actionBar = getSupportActionBar();
-        /*actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
-        //set the actionbar title
-        Spannable text = new SpannableString("Nadget");
-        text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        actionBar.setTitle(text);
-
-        //change the back arrow color
-        final Drawable upArrow = getResources().getDrawable(R.drawable.ic_drawer);
-        upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-        actionBar.setHomeAsUpIndicator(upArrow);
-
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);*/
-
+        emptyView = (TextView) findViewById(R.id.empty_view);
 
         drawerToggle = new ActionBarDrawerToggle(
                 this,
@@ -105,6 +93,7 @@ public class NadgetMain extends AppCompatActivity {
             //handle instance state when exit
         }
         mainFragment = (MainFragment) getFragmentManager().findFragmentById(R.id.main_fragment);
+
         //create main list adapter
         adapter = new MainViewAdapter(NadgetMain.this, rssItems);
         mainFragment.setAdapter(adapter);
@@ -214,6 +203,8 @@ public class NadgetMain extends AppCompatActivity {
 
     private void setupToolbar()
     {
+        Log.i(TAG,"setupToolbar");
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 
         if (toolbar != null)
@@ -250,6 +241,7 @@ public class NadgetMain extends AppCompatActivity {
             }
         }
 
+
     }
 
     /**
@@ -272,6 +264,13 @@ public class NadgetMain extends AppCompatActivity {
             catch (ConnectException e)
             {
                 Log.e(TAG,"doInBg connect exception "+ e.toString());
+
+                if(e.getMessage().contains("Connection timed out"))
+                {
+                    Log.e(TAG,"doInBg connection timed out for a feed.... ignoring");
+                    return rssItems;
+                }
+
                 displayNetworkError();
             }
             catch (Exception e)
@@ -291,7 +290,6 @@ public class NadgetMain extends AppCompatActivity {
             Log.i(TAG, "***NadgetMain onPostExec rssItems = "+rssItems);
 
             //update adapter
-
             adapter.notifyDataSetChanged();
 
         }
@@ -369,11 +367,17 @@ public class NadgetMain extends AppCompatActivity {
             if(feeds == null || feeds.size()==0)
             {
                 Log.i(TAG,"NadgetMain refreshCore feeds empty");
+
+                //hide recycler view to show empty message
                 mainFragment.displayEmpty();
-                Toast.makeText(this, "Please choose a few feeds to get started", Toast.LENGTH_SHORT).show();
+
+                //set empty message and show
+                emptyView.setText(R.string.no_data_available);
+                emptyView.setVisibility(View.VISIBLE);
+
+                Toast.makeText(this, R.string.no_data_available, Toast.LENGTH_LONG).show();
                 return;
             }
-
 
             //refresh main list with the feeds selected
             for (Map.Entry<String, ?> entry : feeds.entrySet())
@@ -428,7 +432,7 @@ public class NadgetMain extends AppCompatActivity {
     private static final String FEEDS_FILE_NAME = "in.pleb.nadget.SelectedFeeds";
     private Snackbar snackbarNetwork;
     private Snackbar snackbarInternal;
-
+    private TextView emptyView;
 
 
 }

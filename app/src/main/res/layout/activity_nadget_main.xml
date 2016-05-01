@@ -4,7 +4,9 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NadgetMain">
+    tools:context=".NadgetMain"
+    android:fitsSystemWindows="true">
+
 
     <!-- The main content view -->
     <FrameLayout
@@ -20,18 +22,31 @@
             android:titleTextColor="#ffffff"
             android:subtitleTextColor="#ffffff"
             android:elevation="4dp"
-            android:textAlignment="center" />
+            android:textAlignment="center" app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            />
 
-        <fragment
-            android:name="in.pleb.nadget.MainFragment"
-            android:id="@+id/main_fragment"
+
+        <TextView
+            android:id="@+id/empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:text="@string/placeholder"
-            tools:layout="@layout/main_fragment" >
+            android:gravity="center|center_vertical"
+            android:visibility="gone"
+            android:textColor="#3B3131"
+            android:textStyle="bold"
+            android:textSize="16dp"
+            android:text="@string/no_data_available" />
 
-            </fragment>
+        <fragment
+                android:name="in.pleb.nadget.MainFragment"
+                android:id="@+id/main_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:text="@string/placeholder"
+                tools:layout="@layout/main_fragment" >
+
+        </fragment>
 
     </FrameLayout>
 

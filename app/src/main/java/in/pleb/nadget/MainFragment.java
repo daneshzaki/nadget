@@ -3,7 +3,6 @@ package in.pleb.nadget;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -41,15 +40,43 @@ public class MainFragment extends Fragment
 
 		//set the main view
 		mainView = (RecyclerView)view.findViewById(R.id.mainView);
-		mainView.setHasFixedSize(true); //If you are sure that the size of the RecyclerView won't be changing
-		emptyView = (TextView) view.findViewById(R.id.empty_view);
+		mainView.setHasFixedSize(true);
 
+		//set a linear layout
 		LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
 		mainView.setLayoutManager(llm);
+
+		//load more impl
+		mainView.addOnScrollListener(new EndlessRecyclerViewScrollListener(llm) {
+			@Override
+			public void onLoadMore(int page, int totalItemsCount) {
+				// Triggered only when new data needs to be appended to the list
+				// Add whatever code is needed to append new items to the bottom of the list
+				Log.i(TAG,"customLoadMoreDataFromApi");
+				customLoadMoreDataFromApi(page);
+			}
+		});
 
 		//Log.i(TAG,"mainfragment onCreateView complete");
         return view;
     }
+
+	// Append more data into the adapter
+	// This method probably sends out a network request and appends new data items to your adapter.
+	public void customLoadMoreDataFromApi(int offset) {
+		// Send an API request to retrieve appropriate data using the offset value as a parameter.
+		// Deserialize API response and then construct new objects to append to the adapter
+		// Add the new objects to the data source for the adapter
+
+		//TODO: get more items added
+
+		// For efficiency purposes, notify the adapter of only the elements that got changed
+		// curSize will equal to the index of the first element inserted because the list is 0-indexed
+
+		//int curSize = adapter.getItemCount();
+
+		//adapter.notifyItemRangeInserted(curSize, items.size() - 1);
+	}
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
@@ -59,7 +86,7 @@ public class MainFragment extends Fragment
 	}
 
 	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState)
+	public void onViewCreated(final View view, Bundle savedInstanceState)
 	{
 		super.onViewCreated(view, savedInstanceState);
 
@@ -67,6 +94,7 @@ public class MainFragment extends Fragment
 			@Override
 			public void onRefresh() {
 				Log.i(TAG, "onRefresh called from SwipeRefreshLayout");
+				Toast.makeText(view.getContext(), "Refreshing", Toast.LENGTH_SHORT).show();
 				initiateRefresh();
 			}
 		});
@@ -78,6 +106,13 @@ public class MainFragment extends Fragment
 	{
 		Log.i(TAG, "****MainFragment*****");
 		Log.i(TAG, "MainFragment initiateRefresh");
+
+		swipeRefreshLayout.post(new Runnable() {
+			@Override
+			public void run() {
+				swipeRefreshLayout.setRefreshing(true);
+			}
+		});
 
 		//call asynctask to refresh
 		((NadgetMain)(getActivity())).refreshForPull();
@@ -122,16 +157,15 @@ public class MainFragment extends Fragment
 				}});
 	}
 
-	//method to show empty message
+	//method to hide recycler view to show empty message
 	public void displayEmpty()
 	{
 		Log.i(TAG, "mainfragment displayEmpty");
-		emptyView.setVisibility(View.VISIBLE);
+		mainView.setVisibility(View.GONE);
 	}
 
 	private SwipeRefreshLayout swipeRefreshLayout;
 	private RecyclerView mainView = null;
-	private TextView emptyView;
 	private static final String TAG = "Nadget MainFragment";
 
 }
