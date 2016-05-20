@@ -14,6 +14,8 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -31,8 +33,7 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         Log.i(TAG,"MainViewAdapter rssItems size ="+rssItems.size());
 
         //initialize the drawables
-        setupFeedDrawables();
-
+        //setupFeedDrawables();
         //set fonts for all text
         typeface = Typeface.createFromAsset( this.activity.getResources().getAssets(), "SourceSansPro-Regular.otf");
     }
@@ -81,12 +82,24 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         holder.postTitleView.setTypeface(typeface, Typeface.BOLD);
         holder.postDateView.setTypeface(typeface, Typeface.ITALIC);
 
-        //TODO: set post image - change to image from rss item post
-        if(feedDrawables.containsKey(rssItems.get(position).getSource()))
+        Log.i(TAG,"MainViewAdapter imgurl = "+rssItems.get(position).getImageUrl());
+        if(rssItems.get(position).getImageUrl()!=null && rssItems.get(position).getImageUrl().trim().length()>0)
+        {
+            Picasso.with(activity.getBaseContext())
+                    .load(rssItems.get(position).getImageUrl())
+                    .placeholder(R.drawable.ic_action_ng)
+                    .error(R.drawable.ic_action_ng)
+                    .resize(1000, 500)
+                    .centerCrop()
+                    .into(holder.postImageView);
+
+        }
+
+        /*if(feedDrawables.containsKey(rssItems.get(position).getSource()))
         {
             holder.postImageView.setImageResource(feedDrawables.get(
                     rssItems.get(position).getSource()));
-        }
+        }*/
 
         //use setScaleType in image view to size images
 
@@ -157,8 +170,9 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
     private ArrayList<RssItem> rssItems;
 
     private static ItemClickListener itemClickListener = null;
-    private static final String TAG = "Nadget Main";
+    private static final String TAG = "Nadget";
 
     private static HashMap<String,Integer> feedDrawables = null;
+    //private ArrayList<RssItem> updatedItems = new ArrayList<RssItem>();
 
 }

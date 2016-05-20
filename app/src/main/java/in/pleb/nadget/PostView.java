@@ -83,10 +83,6 @@ public class PostView extends AppCompatActivity
     public void onBackPressed()
     {
         Log.i(TAG," onBackPressed");
-
-        Intent intent = new Intent(this, NadgetMain.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
         finish();
     }
 
@@ -163,7 +159,7 @@ public class PostView extends AppCompatActivity
         //Toast.makeText(this, "Please check your network connection and try again", Toast.LENGTH_LONG).show();
         Snackbar.make(this.findViewById(R.id.webView), "No network connection. Please refresh", Snackbar.LENGTH_LONG).show();
     }
-    private static final String TAG = "Nadget PostView";
+    private static final String TAG = "Nadget";
 
     //bundle for getting data from main list
     private Bundle bundle = null;

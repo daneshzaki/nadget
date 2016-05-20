@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.TextView;
@@ -77,12 +78,12 @@ public class NadgetMain extends AppCompatActivity {
                 R.string.drawer_close
         ) {
             public void onDrawerClosed(View view) {
-                actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Nadget</font>"));
+                //actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Nadget</font>"));
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
-                actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Nadget</font>"));
+                //actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Nadget</font>"));
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
@@ -206,28 +207,31 @@ public class NadgetMain extends AppCompatActivity {
         Log.i(TAG,"setupToolbar");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        Spannable text = new SpannableString("Nadget");
+        text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         if (toolbar != null)
         {
             setSupportActionBar(toolbar);
-            toolbar.setTitleTextAppearance(this, R.style.ToolBarTextStyle);
-            toolbar.setSubtitleTextColor(Color.WHITE);
+            //toolbar.setTitleTextAppearance(this, R.style.ToolBarTextStyle);
+            //toolbar.setSubtitleTextColor(Color.WHITE);
+            //toolbar.setBackground(new ColorDrawable(Color.parseColor("#3B3131")));
+
+            CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+            //collapsingToolbar.setBackgroundColor(Color.parseColor("#3B3131"));
+            collapsingToolbar.setTitleEnabled(false);
+            ImageView header = (ImageView) findViewById(R.id.header);
 
             actionBar = getSupportActionBar();
             Log.i(TAG,"actionbar= "+actionBar);
 
             if (actionBar != null)
             {
-                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
+                //actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
 
                 //set the actionbar title
-                Spannable text = new SpannableString("Nadget");
-                text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-
-                actionBar.setTitle(text);
-                actionBar.setSubtitle("News about Gadgets");
-
-
+                actionBar.setTitle("");
+                //actionBar.setSubtitle("News about Gadgets");
                 //change the back arrow color
                 final Drawable upArrow = getResources().getDrawable(R.drawable.ic_drawer);
                 upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
@@ -240,8 +244,6 @@ public class NadgetMain extends AppCompatActivity {
                 actionBar.setHomeButtonEnabled(true);
             }
         }
-
-
     }
 
     /**
@@ -320,6 +322,7 @@ public class NadgetMain extends AppCompatActivity {
         Log.i(TAG, "NadgetMain displayNetworkError");
         snackbarNetwork = Snackbar.make(this.findViewById(R.id.content_frame), "No network connection. Please refresh", Snackbar.LENGTH_INDEFINITE);
         snackbarNetwork.show();
+        //TODO: add button to refresh
     }
 
     //for all generic errors
@@ -328,6 +331,7 @@ public class NadgetMain extends AppCompatActivity {
 
         snackbarInternal = Snackbar.make(this.findViewById(R.id.content_frame), "Internal Error. Please restart the app", Snackbar.LENGTH_INDEFINITE);
         snackbarInternal.show();
+        //TODO: add button to restart
     }
 
     //method to refresh
@@ -383,8 +387,10 @@ public class NadgetMain extends AppCompatActivity {
             for (Map.Entry<String, ?> entry : feeds.entrySet())
             {
                 Log.i(TAG,"NadgetMain refreshCore feed = "+entry.getKey());
-                new DownloadTask().execute((String) entry.getKey().trim());
+                //new DownloadTask().execute((String) entry.getKey().trim());
+                new DownloadTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, (String) entry.getKey().trim());
             }
+
         }
         catch (Exception e)
         {
@@ -415,7 +421,7 @@ public class NadgetMain extends AppCompatActivity {
         return rssItems;
     }
 
-    private static final String TAG = "Nadget Main";
+    private static final String TAG = "Nadget";
     private MainFragment mainFragment;
 
     private String[] drawerItemLabels = new String[]{"Sign in", "Saved Articles", "Select Feeds", "Settings"};

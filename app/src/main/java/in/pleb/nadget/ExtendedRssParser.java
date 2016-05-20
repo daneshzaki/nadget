@@ -4,8 +4,13 @@ package in.pleb.nadget;
  * Created by danesh on 24-03-2016.
  */
 
+import android.os.AsyncTask;
 import android.provider.Settings;
 import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 import java.io.*;
 import java.net.*;
@@ -129,7 +134,15 @@ public class ExtendedRssParser extends DefaultHandler
             currentItem.setTitle(currentText.trim());
         }
         else if(qName.equals("link")&&currentItem!=null)
+        {
             currentItem.setLink(currentText);
+            //get images for feeds
+            ImageUrlParser imageUrlParser = new ImageUrlParser();
+            //imageUrlParser.setAdapter(adapter);
+            imageUrlParser.execute(currentItem);
+            //imageUrlParser.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentItem);
+
+        }
         else if(qName.equals("pubDate")&&currentItem!=null)
             currentItem.setPubDate(currentText.trim());
         else if(qName.equals("description")&&currentItem!=null)
@@ -138,12 +151,12 @@ public class ExtendedRssParser extends DefaultHandler
         //image url setting problem
         else if (qName.equals("media:thumbnail") || qName.equals("media:content") || qName.equals("image"))
         {
+            Log.i(TAG, "ExtendedRssParser checking image url "+currentItem);
             if(currentItem != null)
             {
                 currentItem.setImageUrl(currentText);
                 Log.i(TAG, "ExtendedRssParser setting image url"+currentText);
             }
-
         }
         
         //Make sure we don't attempt to parse too long of a document.
@@ -172,6 +185,7 @@ public class ExtendedRssParser extends DefaultHandler
         return rssItemList;
     }
 
+
     //How many RSS news items should we load before stopping.
     private int maximumResults = 20;
     /*How many elements should we allow before stopping the parse
@@ -192,5 +206,5 @@ public class ExtendedRssParser extends DefaultHandler
     //ArrayList of all current rssItemList Items.
     private ArrayList rssItemList=new ArrayList();
 
-    private final String TAG = "Nadget ";
+    private final String TAG = "Nadget";
 }

@@ -79,7 +79,6 @@ public class FeedSelector extends AppCompatActivity
     private void setupUI()
     {
         //values to be displayed in feedpicker
-        //TODO: Change case of display values
         feedPickerValues = new ArrayList<>();
         feedPickerValues.add(new Item("http://gadgets.ndtv.com/rss/news","Gadgets 360 News"));
         feedPickerValues.add(new Item("http://gadgets.ndtv.com/rss/reviews","Gadgets 360 Reviews"));
@@ -205,5 +204,5 @@ public class FeedSelector extends AppCompatActivity
 
     private ActionBar actionBar = null;
     private static final String FEEDS_FILE_NAME = "in.pleb.nadget.SelectedFeeds";
-    private static final String TAG = "Nadget FeedSelector";
+    private static final String TAG = "Nadget";
 }
