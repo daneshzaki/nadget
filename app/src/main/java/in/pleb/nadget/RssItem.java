@@ -41,9 +41,11 @@ public class RssItem
                 pubDate = prettyTime.formatDuration(pubDateDt) +" ago";
                 this.pubDate = pubDate;
             }
+            //beyond that format just display the input
             catch(java.text.ParseException peinpe)
             {
                 peinpe.toString();
+                this.pubDate = pubDate;
             }
 
         }

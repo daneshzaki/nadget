@@ -1,15 +1,12 @@
 package in.pleb.nadget;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -18,11 +15,8 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -41,6 +35,7 @@ import android.widget.Toast;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 
 
 public class NadgetMain extends AppCompatActivity {
@@ -250,7 +245,14 @@ public class NadgetMain extends AppCompatActivity {
      * Implementation of AsyncTask, to fetch the data in the background away from
      * the UI thread.
      */
-    private class DownloadTask extends AsyncTask<String, Void, ArrayList<RssItem> > {
+    private class RssReaderTask extends AsyncTask<String, Void, ArrayList<RssItem> >
+    {
+        @Override
+        protected void onPreExecute()
+        {
+            Log.i(TAG, "NadgetMain onPreExecute");
+            mainFragment.getSwipeRefreshLayout().setRefreshing(true);
+        }
 
         @Override
         protected ArrayList<RssItem> doInBackground(String... urls)
@@ -290,7 +292,7 @@ public class NadgetMain extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<RssItem> rssItems) {
             Log.i(TAG, "***NadgetMain onPostExec rssItems = "+rssItems);
-
+            mainFragment.getSwipeRefreshLayout().setRefreshing(false);
             //update adapter
             adapter.notifyDataSetChanged();
 
@@ -353,8 +355,24 @@ public class NadgetMain extends AppCompatActivity {
 
         //clear the lists
         clearAll();
-        refreshCore();
+        //refreshCore();
+        //refresh the first displayed feed
+        new RssReaderTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, (String) feedKeys[feedKeys.length-1].trim());
+
     }
+
+    /*
+    * Load more logic implemented in refreshCore and refreshMore methods
+    * Get all feeds from shared prefs file
+    * Count the number of entries from selected feeds- feed size
+    * 1. Initial load
+    * feed index = n-1
+    * call RssReaderTask with last feed (feed index)
+    * 2. on load more
+    * feed index - 1
+    * check if i>0, then call RssReaderTask with feed index
+
+    * */
 
     private void refreshCore()
     {
@@ -383,14 +401,54 @@ public class NadgetMain extends AppCompatActivity {
                 return;
             }
 
+            //load more logic begin
+            Set<String> set = feeds.keySet();
+            feedKeys = set.toArray(new String[set.size()]);
+            feedIndex = feedKeys.length -1;
+            Log.i(TAG,"NadgetMain refreshCore feedKeys length = "+feedKeys.length);
+            Log.i(TAG,"NadgetMain refreshCore executing "+feedKeys[feedIndex]);
+
+            //execute first key
+            new RssReaderTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, (String) feedKeys[feedIndex].trim());
+
+            //load more logic end
+
+            //non-load more uncomment from here
             //refresh main list with the feeds selected
-            for (Map.Entry<String, ?> entry : feeds.entrySet())
+            /*for (Map.Entry<String, ?> entry : feeds.entrySet())
             {
                 Log.i(TAG,"NadgetMain refreshCore feed = "+entry.getKey());
-                //new DownloadTask().execute((String) entry.getKey().trim());
-                new DownloadTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, (String) entry.getKey().trim());
+                //new RssReaderTask().execute((String) entry.getKey().trim());
+                new RssReaderTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, (String) entry.getKey().trim());
+            }*/
+            //non-load more uncomment till here
+
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, e.toString());
+            displayInternalError();
+        }
+
+    }
+
+    public void refreshMore()
+    {
+        try
+        {
+            feedIndex = feedIndex -1;
+            Log.i(TAG,"NadgetMain refreshMore feedIndex= "+feedIndex);
+
+            //if only feed is selected no work to be done
+            if(feedIndex <0)
+            {
+                return;
             }
 
+            Log.i(TAG,"NadgetMain refreshMore executing "+feedKeys[feedIndex]);
+
+            //execute the feed
+            new RssReaderTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, (String) feedKeys[feedIndex].trim());
         }
         catch (Exception e)
         {
@@ -439,6 +497,12 @@ public class NadgetMain extends AppCompatActivity {
     private Snackbar snackbarNetwork;
     private Snackbar snackbarInternal;
     private TextView emptyView;
+
+    //all feeds from shared prefs
+    private String[] feedKeys;
+
+    //current executing feed index
+    private int feedIndex = 0;
 
 
 }

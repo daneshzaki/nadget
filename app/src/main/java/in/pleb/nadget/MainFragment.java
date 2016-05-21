@@ -46,6 +46,19 @@ public class MainFragment extends Fragment
 		LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
 		mainView.setLayoutManager(llm);
 
+		// Add the scroll listener
+		mainView.addOnScrollListener(new EndlessRecyclerViewScrollListener(llm) {
+			@Override
+			public void onLoadMore(int page, int totalItemsCount) {
+				// Triggered only when new data needs to be appended to the list
+				//call asynctask to refresh
+				Log.i(TAG, "MainFragment onLoadMore");
+
+				((NadgetMain)(getActivity())).refreshMore();
+				adapter.notifyDataSetChanged();
+			}
+		});
+
 		//Log.i(TAG,"mainfragment onCreateView complete");
         return view;
     }
@@ -96,6 +109,7 @@ public class MainFragment extends Fragment
 	public void setAdapter(MainViewAdapter adapter)
 	{
 		Log.i(TAG, "mainfragment setAdapter");
+		this.adapter = adapter;
 		mainView.setAdapter(adapter);
 
 		adapter.setOnItemClickListener(
@@ -135,7 +149,14 @@ public class MainFragment extends Fragment
 		mainView.setVisibility(View.GONE);
 	}
 
+	//share the swiperefreshlayout
+	public SwipeRefreshLayout getSwipeRefreshLayout()
+	{
+		return swipeRefreshLayout;
+	}
+
 	private SwipeRefreshLayout swipeRefreshLayout;
+	private MainViewAdapter adapter;
 	private RecyclerView mainView = null;
 	private static final String TAG = "Nadget";
 

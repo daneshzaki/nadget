@@ -4,6 +4,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 
 /**
  * Created by danesh on 30-04-2016.
@@ -13,6 +14,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     // The minimum amount of items to have below your current scroll position
     // before loading more.
     private int visibleThreshold = 5;
+
     // The current offset index of data you have loaded
     private int currentPage = 0;
     // The total number of items in the dataset after the last load
@@ -68,9 +70,16 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         } else if (mLayoutManager instanceof GridLayoutManager) {
             lastVisibleItemPosition = ((GridLayoutManager) mLayoutManager).findLastVisibleItemPosition();
         }
+        Log.i(TAG, "***EndlessRecyclerViewScrollListener onScrolled***");
+        Log.i(TAG, "EndlessRecyclerViewScrollListener totalItemCount="+totalItemCount);
+        Log.i(TAG, "EndlessRecyclerViewScrollListener previousTotalItemCount="+previousTotalItemCount);
+        Log.i(TAG, "EndlessRecyclerViewScrollListener loading="+loading);
+        Log.i(TAG, "EndlessRecyclerViewScrollListener lastVisibleItemPosition="+lastVisibleItemPosition);
+
 
         // If the total item count is zero and the previous isn't, assume the
         // list is invalidated and should be reset back to initial state
+
         if (totalItemCount < previousTotalItemCount) {
             this.currentPage = this.startingPageIndex;
             this.previousTotalItemCount = totalItemCount;
@@ -90,7 +99,9 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         // the visibleThreshold and need to reload more data.
         // If we do need to reload some more data, we execute onLoadMore to fetch the data.
         // threshold should reflect how many total columns there are too
-        if (!loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
+        //if (!loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
+        if ((lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
+            Log.i(TAG, "--EndlessRecyclerViewScrollListener calling onLoadMore--");
             currentPage++;
             onLoadMore(currentPage, totalItemCount);
             loading = true;
@@ -99,5 +110,5 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
     // Defines the process for actually loading more data based on page
     public abstract void onLoadMore(int page, int totalItemsCount);
-
+    private static final String TAG = "Nadget";
 }

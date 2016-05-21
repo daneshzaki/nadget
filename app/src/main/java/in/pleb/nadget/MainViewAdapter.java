@@ -34,6 +34,7 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
 
         //initialize the drawables
         //setupFeedDrawables();
+        setupFeedNames();
         //set fonts for all text
         typeface = Typeface.createFromAsset( this.activity.getResources().getAssets(), "SourceSansPro-Regular.otf");
     }
@@ -78,7 +79,14 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
     {
         holder.postTitleView.setText(rssItems.get(position).getTitle());
         Log.i(TAG,"MainViewAdapter onBindViewHolder position="+position);
-        holder.postDateView.setText(rssItems.get(position).getPubDate());
+
+        //append feed name to date
+        if(feedNames.containsKey(rssItems.get(position).getSource()))
+        {
+            holder.postDateView.setText(feedNames.get(
+                    rssItems.get(position).getSource()) + rssItems.get(position).getPubDate());
+        }
+
         holder.postTitleView.setTypeface(typeface, Typeface.BOLD);
         holder.postDateView.setTypeface(typeface, Typeface.ITALIC);
 
@@ -100,9 +108,6 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
             holder.postImageView.setImageResource(feedDrawables.get(
                     rssItems.get(position).getSource()));
         }*/
-
-        //use setScaleType in image view to size images
-
     }
 
 
@@ -149,7 +154,7 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         feedDrawables.put("http://gadgets.ndtv.com/rss/news", R.drawable.ndtv);
         feedDrawables.put("http://gadgets.ndtv.com/rss/reviews", R.drawable.ndtv);
         feedDrawables.put("http://www.bgr.in/feed/", R.drawable.bgr);
-        feedDrawables.put("http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss", R.drawable.times);
+        feedDrawables.put("http://timesofindia.indiatimes.com/rssfeeds/5880659.cms", R.drawable.times);
         feedDrawables.put("http://www.techtree.com/rss.xml", R.drawable.techtree);
         feedDrawables.put("http://feeds.feedburner.com/igyaan", R.drawable.igyaan);
         feedDrawables.put("http://indianexpress.com/section/technology/feed/", R.drawable.indianexpress);
@@ -164,6 +169,29 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
 
     }
 
+    //initialize feed drawables
+    private static void setupFeedNames()
+    {
+        feedNames = new HashMap<String, String>();
+
+        feedNames.put("http://gadgets.ndtv.com/rss/news", "Gadgets 360 News ");
+        feedNames.put("http://gadgets.ndtv.com/rss/reviews", "Gadgets 360 Reviews ");
+        feedNames.put("http://www.bgr.in/feed/", "BGR ");
+        feedNames.put("http://timesofindia.indiatimes.com/rssfeeds/5880659.cms", "Times Tech ");
+        feedNames.put("http://www.techtree.com/rss.xml", "Techtree ");
+        feedNames.put("http://feeds.feedburner.com/igyaan", "iGyaan ");
+        feedNames.put("http://indianexpress.com/section/technology/feed/", "Indian Express Tech ");
+        feedNames.put("http://www.thehindu.com/sci-tech/?service=rss", "The Hindu Tech ");
+        feedNames.put("http://www.ibtimes.co.in/rss", "IBTimes ");
+        feedNames.put("http://www.gizmodo.in/rss_section_feeds/23005095.cms", "Gizmodo ");
+        feedNames.put("http://www.digit.in/rss-feed/", "Digit ");
+        feedNames.put("http://feeds.feedburner.com/Thegeekybyte", "The Geeky Byte ");
+        feedNames.put("http://feeds2.feedburner.com/fone-arena", "FoneArena ");
+        feedNames.put("https://www.gogi.in/feed", "gogi.in ");
+        feedNames.put("http://feeds.feedburner.com/ogfeed", "Only Gizmos");
+
+    }
+
 
     private Typeface typeface = null;
     private static AppCompatActivity activity = null;
@@ -173,6 +201,8 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
     private static final String TAG = "Nadget";
 
     private static HashMap<String,Integer> feedDrawables = null;
+    private static HashMap<String,String> feedNames = null;
+
     //private ArrayList<RssItem> updatedItems = new ArrayList<RssItem>();
 
 }

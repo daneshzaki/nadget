@@ -59,7 +59,7 @@ public class FeedSelector extends AppCompatActivity
         feedMaster.put("http://gadgets.ndtv.com/rss/news","Gadgets 360 News");
         feedMaster.put("http://gadgets.ndtv.com/rss/reviews","Gadgets 360 Reviews");
         feedMaster.put("http://www.bgr.in/feed/", "BGR");
-        feedMaster.put("http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss","Times of India");
+        feedMaster.put("http://timesofindia.indiatimes.com/rssfeeds/5880659.cms","Times of India");
         feedMaster.put("http://www.techtree.com/rss.xml","TechTree");
         feedMaster.put("http://feeds.feedburner.com/igyaan","iGyaan" );
         feedMaster.put("http://indianexpress.com/section/technology/feed/", "Indian Express Tech" );
@@ -71,7 +71,6 @@ public class FeedSelector extends AppCompatActivity
         feedMaster.put("http://feeds2.feedburner.com/fone-arena","Fonearena");
         feedMaster.put("https://www.gogi.in/feed","gogi.in");
         feedMaster.put("http://feeds.feedburner.com/ogfeed","Only Gizmos");
-        
 
     }
 
@@ -83,7 +82,7 @@ public class FeedSelector extends AppCompatActivity
         feedPickerValues.add(new Item("http://gadgets.ndtv.com/rss/news","Gadgets 360 News"));
         feedPickerValues.add(new Item("http://gadgets.ndtv.com/rss/reviews","Gadgets 360 Reviews"));
         feedPickerValues.add(new Item("http://www.bgr.in/feed/", "BGR"));
-        feedPickerValues.add(new Item("http://timesofindia.feedsportal.com/c/33039/f/533923/index.rss","Times of India"));
+        feedPickerValues.add(new Item("http://timesofindia.indiatimes.com/rssfeeds/5880659.cms","Times of India"));
         feedPickerValues.add(new Item("http://www.techtree.com/rss.xml","TechTree"));
         feedPickerValues.add(new Item("http://feeds.feedburner.com/igyaan","iGyaan" ));
         feedPickerValues.add(new Item("http://indianexpress.com/section/technology/feed/", "Indian Express Tech" ));
