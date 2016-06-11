@@ -138,9 +138,9 @@ public class ExtendedRssParser extends DefaultHandler
             currentItem.setLink(currentText);
             //get images for feeds
             ImageUrlParser imageUrlParser = new ImageUrlParser();
-            //imageUrlParser.setAdapter(adapter);
-            imageUrlParser.execute(currentItem);
-            //imageUrlParser.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentItem);
+            imageUrlParser.setAdapter(adapter);
+            //imageUrlParser.execute(currentItem);
+            imageUrlParser.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentItem);
 
         }
         else if(qName.equals("pubDate")&&currentItem!=null)
@@ -184,6 +184,13 @@ public class ExtendedRssParser extends DefaultHandler
     {
         return rssItemList;
     }
+
+    public void setAdapter(MainViewAdapter adapter)
+    {
+        this.adapter = adapter;
+    }
+
+    private MainViewAdapter adapter;
 
 
     //How many RSS news items should we load before stopping.

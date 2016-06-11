@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 
 import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -146,6 +148,14 @@ public class NadgetMain extends AppCompatActivity {
                 startActivity(new Intent(NadgetMain.this, FeedSelector.class));
                 drawerToggle.syncState();
             }
+
+            //settings clicked
+            if(position == 3)
+            {
+                startActivity(new Intent(NadgetMain.this, NadgetSettings.class));
+                drawerToggle.syncState();
+            }
+
         }
     }
 
@@ -182,7 +192,6 @@ public class NadgetMain extends AppCompatActivity {
         // If the nav drawer is open, hide action items related to the content view
         //Log.i(TAG, "onPrepareOptionsMenu");
         //boolean drawerOpen = drawerLayout.isDrawerOpen(drawerList);
-        //TODO: hide actionbar items and make drawer appear over actionbar
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -210,22 +219,22 @@ public class NadgetMain extends AppCompatActivity {
             setSupportActionBar(toolbar);
             //toolbar.setTitleTextAppearance(this, R.style.ToolBarTextStyle);
             //toolbar.setSubtitleTextColor(Color.WHITE);
-            //toolbar.setBackground(new ColorDrawable(Color.parseColor("#3B3131")));
+            toolbar.setBackground(new ColorDrawable(Color.parseColor("#3B3131")));
 
             CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-            //collapsingToolbar.setBackgroundColor(Color.parseColor("#3B3131"));
+            collapsingToolbar.setBackgroundColor(Color.parseColor("#3B3131"));
             collapsingToolbar.setTitleEnabled(false);
-            ImageView header = (ImageView) findViewById(R.id.header);
+
 
             actionBar = getSupportActionBar();
             Log.i(TAG,"actionbar= "+actionBar);
 
             if (actionBar != null)
             {
-                //actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
+                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
 
                 //set the actionbar title
-                actionBar.setTitle("");
+                actionBar.setTitle(R.string.app_name);
                 //actionBar.setSubtitle("News about Gadgets");
                 //change the back arrow color
                 final Drawable upArrow = getResources().getDrawable(R.drawable.ic_drawer);
@@ -262,6 +271,7 @@ public class NadgetMain extends AppCompatActivity {
             try
             {
                 ExtendedRssParser extendedRssParser = new ExtendedRssParser(urls[0], NUMBER_OF_POSTS);
+                extendedRssParser.setAdapter(adapter);
                 extendedRssParser.parse();
                 rssItems.addAll(extendedRssParser.getItems());
             }
@@ -352,12 +362,15 @@ public class NadgetMain extends AppCompatActivity {
     public void refreshForPull()
     {
         Log.i(TAG, "refreshForPull");
+        dismissSnackbars();
 
         //clear the lists
         clearAll();
         //refreshCore();
         //refresh the first displayed feed
-        new RssReaderTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, (String) feedKeys[feedKeys.length-1].trim());
+        //new RssReaderTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, (String) feedKeys[feedKeys.length-1].trim());
+        feedIndex = feedKeys.length -1;
+        new RssReaderTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (String) feedKeys[feedIndex].trim());
 
     }
 
@@ -409,7 +422,8 @@ public class NadgetMain extends AppCompatActivity {
             Log.i(TAG,"NadgetMain refreshCore executing "+feedKeys[feedIndex]);
 
             //execute first key
-            new RssReaderTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, (String) feedKeys[feedIndex].trim());
+            //new RssReaderTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, (String) feedKeys[feedIndex].trim());
+            new RssReaderTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (String) feedKeys[feedIndex].trim());
 
             //load more logic end
 
@@ -436,6 +450,8 @@ public class NadgetMain extends AppCompatActivity {
     {
         try
         {
+            Log.i(TAG,"NadgetMain refreshMore feedIndex init= "+feedIndex);
+
             feedIndex = feedIndex -1;
             Log.i(TAG,"NadgetMain refreshMore feedIndex= "+feedIndex);
 
@@ -448,7 +464,7 @@ public class NadgetMain extends AppCompatActivity {
             Log.i(TAG,"NadgetMain refreshMore executing "+feedKeys[feedIndex]);
 
             //execute the feed
-            new RssReaderTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, (String) feedKeys[feedIndex].trim());
+            new RssReaderTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (String) feedKeys[feedIndex].trim());
         }
         catch (Exception e)
         {

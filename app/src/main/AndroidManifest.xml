@@ -47,6 +47,35 @@
                 android:value="in.pleb.nadget.NadgetMain" />
 
         </activity>
+        <activity android:name=".SuggestFeeds"
+            android:label="@string/title_activity_suggest_feed"
+            android:parentActivityName=".NadgetSettings"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.pleb.nadget.NadgetSettings" />
+
+        </activity>
+        <activity android:name=".AboutNadget"
+            android:label="@string/title_about"
+            android:parentActivityName=".NadgetSettings"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.pleb.nadget.NadgetSettings" />
+
+        </activity>
+
+        <activity android:name=".OpenSrcLicenses"
+            android:label="@string/title_activity_licenses"
+            android:parentActivityName=".NadgetSettings"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.pleb.nadget.NadgetSettings" />
+
+        </activity>
+
     </application>
 
 </manifest>

@@ -64,9 +64,9 @@ public class FeedSelector extends AppCompatActivity
         feedMaster.put("http://feeds.feedburner.com/igyaan","iGyaan" );
         feedMaster.put("http://indianexpress.com/section/technology/feed/", "Indian Express Tech" );
         feedMaster.put("http://www.thehindu.com/sci-tech/?service=rss","The Hindu Tech");
-        feedMaster.put("http://www.ibtimes.co.in/rss","IBTimes");
+        feedMaster.put("http://www.ibtimes.co.in/rss/technology","IBTimes");
         feedMaster.put("http://www.gizmodo.in/rss_section_feeds/23005095.cms","Gizmodo");
-        feedMaster.put("http://www.digit.in/rss-feed/","Digit");
+        feedMaster.put("http://feeds.feedburner.com/digit/latest-from-digit","Digit");
         feedMaster.put("http://feeds.feedburner.com/Thegeekybyte","The Geeky Byte");
         feedMaster.put("http://feeds2.feedburner.com/fone-arena","Fonearena");
         feedMaster.put("https://www.gogi.in/feed","gogi.in");
@@ -87,9 +87,9 @@ public class FeedSelector extends AppCompatActivity
         feedPickerValues.add(new Item("http://feeds.feedburner.com/igyaan","iGyaan" ));
         feedPickerValues.add(new Item("http://indianexpress.com/section/technology/feed/", "Indian Express Tech" ));
         feedPickerValues.add(new Item("http://www.thehindu.com/sci-tech/?service=rss","The Hindu Tech"));
-        feedPickerValues.add(new Item("http://www.ibtimes.co.in/rss","IBTimes"));
+        feedPickerValues.add(new Item("http://www.ibtimes.co.in/rss/technology","IBTimes"));
         feedPickerValues.add(new Item("http://www.gizmodo.in/rss_section_feeds/23005095.cms","Gizmodo"));
-        feedPickerValues.add(new Item("http://www.digit.in/rss-feed/","Digit"));
+        feedPickerValues.add(new Item("http://feeds.feedburner.com/digit/latest-from-digit","Digit"));
         feedPickerValues.add(new Item("http://feeds.feedburner.com/Thegeekybyte","The Geeky Byte"));
         feedPickerValues.add(new Item("http://feeds2.feedburner.com/fone-arena","Fonearena"));
         feedPickerValues.add(new Item("https://www.gogi.in/feed","gogi.in"));

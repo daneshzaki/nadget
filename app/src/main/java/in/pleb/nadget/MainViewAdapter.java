@@ -102,6 +102,13 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
                     .into(holder.postImageView);
 
         }
+        else
+        {
+            Picasso.with(activity.getBaseContext())
+                    .load(R.drawable.ic_action_ng)
+                    .into(holder.postImageView);
+
+        }
 
         /*if(feedDrawables.containsKey(rssItems.get(position).getSource()))
         {
@@ -159,9 +166,9 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         feedDrawables.put("http://feeds.feedburner.com/igyaan", R.drawable.igyaan);
         feedDrawables.put("http://indianexpress.com/section/technology/feed/", R.drawable.indianexpress);
         feedDrawables.put("http://www.thehindu.com/sci-tech/?service=rss", R.drawable.thehindu);
-        feedDrawables.put("http://www.ibtimes.co.in/rss", R.drawable.ibtimes);
+        feedDrawables.put("http://www.ibtimes.co.in/rss/technology", R.drawable.ibtimes);
         feedDrawables.put("http://www.gizmodo.in/rss_section_feeds/23005095.cms", R.drawable.gizmodo);
-        feedDrawables.put("http://www.digit.in/rss-feed/", R.drawable.digit);
+        feedDrawables.put("http://feeds.feedburner.com/digit/latest-from-digit", R.drawable.digit);
         feedDrawables.put("http://feeds.feedburner.com/Thegeekybyte", R.drawable.thegeekybyte);
         feedDrawables.put("http://feeds2.feedburner.com/fone-arena", R.drawable.fonearena);
         feedDrawables.put("https://www.gogi.in/feed", R.drawable.gogi);
@@ -182,9 +189,9 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         feedNames.put("http://feeds.feedburner.com/igyaan", "iGyaan ");
         feedNames.put("http://indianexpress.com/section/technology/feed/", "Indian Express Tech ");
         feedNames.put("http://www.thehindu.com/sci-tech/?service=rss", "The Hindu Tech ");
-        feedNames.put("http://www.ibtimes.co.in/rss", "IBTimes ");
+        feedNames.put("http://www.ibtimes.co.in/rss/technology", "IBTimes ");
         feedNames.put("http://www.gizmodo.in/rss_section_feeds/23005095.cms", "Gizmodo ");
-        feedNames.put("http://www.digit.in/rss-feed/", "Digit ");
+        feedNames.put("http://feeds.feedburner.com/digit/latest-from-digit", "Digit ");
         feedNames.put("http://feeds.feedburner.com/Thegeekybyte", "The Geeky Byte ");
         feedNames.put("http://feeds2.feedburner.com/fone-arena", "FoneArena ");
         feedNames.put("https://www.gogi.in/feed", "gogi.in ");

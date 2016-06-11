@@ -26,7 +26,7 @@ public class ImageUrlParser extends AsyncTask<RssItem, Void, RssItem >
         Log.i(TAG, "***ImageUrlParser onPostExec rssItems = "+rssItems);
 
         //update adapter
-        //adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
 
     }
 

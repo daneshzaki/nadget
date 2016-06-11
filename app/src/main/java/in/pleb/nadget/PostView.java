@@ -95,6 +95,7 @@ public class PostView extends AppCompatActivity
         WebView webView = ((WebView) findViewById(R.id.webView));
 
         webView.setWebViewClient(new WebViewClient());
+        webView.getSettings().setJavaScriptEnabled(true);
 
         if(bundle.getString("link") != null )
         {

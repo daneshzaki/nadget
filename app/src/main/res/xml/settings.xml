@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <SwitchPreference
-        android:enabled="true"
-        android:key="notifications"
-        android:selectable="true"
-        android:summary="Notify on new feeds"
-        android:title="Notifications" />
     <Preference
         android:enabled="true"
-        android:key="import"
+        android:key="suggestFeeds"
         android:selectable="true"
-        android:summary="Import feeds from file"
-        android:title="Import" />
+        android:summary="Suggest Feeds"
+        android:title="Suggest Feeds" />
     <Preference
         android:enabled="true"
         android:key="export"
         android:selectable="true"
-        android:summary="Export feeds to file"
+        android:summary="Export feeds and saved articles to Dropbox"
         android:title="Export" />
+    <Preference
+        android:enabled="true"
+        android:key="import"
+        android:selectable="true"
+        android:summary="Import feeds and saved articles from Dropbox"
+        android:title="Import" />
     <Preference
         android:enabled="true"
         android:key="aboutPref"
