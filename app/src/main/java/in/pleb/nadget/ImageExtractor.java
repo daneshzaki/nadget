@@ -8,6 +8,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.helper.Validate;
+import org.jsoup.select.Elements;
 
 /**
  * Given a url to a web page, extract a suitable image from that page. This will
@@ -33,11 +34,11 @@ public class ImageExtractor {
 
         String imageUrl = null;
 
-        /*imageUrl = getImageFromSchema(document);
+        imageUrl = getImageFromSchema(document);
         Log.i(TAG, "ImageExtractor imageUrl = "+imageUrl);
         if (imageUrl != null) {
             return imageUrl;
-        }*/
+        }
 
         imageUrl = getImageFromOpenGraph(document);
         Log.i(TAG, "ImageExtractor imageUrl = "+imageUrl);
@@ -45,13 +46,13 @@ public class ImageExtractor {
             return imageUrl;
         }
 
-        /*imageUrl = getImageFromTwitterCard(document);
+        imageUrl = getImageFromTwitterCard(document);
         Log.i(TAG, "ImageExtractor imageUrl = "+imageUrl);
         if (imageUrl != null) {
             return imageUrl;
-        }*/
+        }
 
-        /*imageUrl = getImageFromTwitterShared(document);
+        imageUrl = getImageFromTwitterShared(document);
         Log.i(TAG, "ImageExtractor imageUrl = "+imageUrl);
         if (imageUrl != null) {
             return imageUrl;
@@ -67,7 +68,13 @@ public class ImageExtractor {
         Log.i(TAG, "ImageExtractor imageUrl = "+imageUrl);
         if (imageUrl != null) {
             return imageUrl;
-        }*/
+        }
+
+        imageUrl = getImageFromBlog(document);
+        Log.i(TAG, "ImageExtractor imageUrl = "+imageUrl);
+        if (imageUrl != null) {
+            return imageUrl;
+        }
 
         return imageUrl;
     }
@@ -141,5 +148,49 @@ public class ImageExtractor {
         }
         return image.absUrl("src");
     }
+
+    //added by Danesh 8/7/16
+    private static String getImageFromBlog(Document document) {
+        Log.i(TAG, "ImageExtractor getImageFromBlog ");
+
+        /*Element container =
+                document.select("div.entry-content img").first();
+        Log.i(TAG, "ImageExtractor getImageFromBlog container = "+container);
+        if (container == null) {
+            return null;
+        }*/
+
+        //Element image = container.select("img[itemprop=contentUrl]").first();
+        Element image = document.select("div.entry-content img").first();
+        Log.i(TAG, "ImageExtractor getImageFromBlog image = "+image);
+
+        if (image == null) {
+            return null;
+        }
+        return image.absUrl("src");
+    }
+
+    //added by Danesh 8/7/16 for TOI
+    private static String getImageFromSite(Document document) {
+        Log.i(TAG, "ImageExtractor getImageFromSite document = "+document.html());
+
+        /*Element container =
+                document.select("div.entry-content img").first();
+        Log.i(TAG, "ImageExtractor getImageFromBlog container = "+container);
+        if (container == null) {
+            return null;
+        }*/
+
+        String selector ="[property= ~og:image]";
+        Elements image = document.select(selector);
+        Log.i(TAG, "ImageExtractor getImageFromSite images size = "+image.size());
+
+        if (image == null) {
+            return null;
+        }
+        //Log.i(TAG, "ImageExtractor getImageFromSite image = "+image.select("[href]"));
+        return image.text();
+    }
+
     private static final String TAG = "Nadget";
 }

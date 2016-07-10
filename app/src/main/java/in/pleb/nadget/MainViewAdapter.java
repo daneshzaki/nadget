@@ -95,8 +95,8 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         {
             Picasso.with(activity.getBaseContext())
                     .load(rssItems.get(position).getImageUrl())
-                    .placeholder(R.drawable.ic_action_ng)
-                    .error(R.drawable.ic_action_ng)
+                    .placeholder(R.drawable.robot)
+                    .error(R.drawable.robot)
                     .resize(1000, 500)
                     .centerCrop()
                     .into(holder.postImageView);
@@ -105,16 +105,10 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         else
         {
             Picasso.with(activity.getBaseContext())
-                    .load(R.drawable.ic_action_ng)
+                    .load(R.drawable.robot)
                     .into(holder.postImageView);
-
         }
 
-        /*if(feedDrawables.containsKey(rssItems.get(position).getSource()))
-        {
-            holder.postImageView.setImageResource(feedDrawables.get(
-                    rssItems.get(position).getSource()));
-        }*/
     }
 
 
@@ -153,28 +147,6 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         this.rssItems = rssItems;
     }
 
-    //initialize feed drawables
-    private static void setupFeedDrawables()
-    {
-        feedDrawables = new HashMap<String, Integer>();
-
-        feedDrawables.put("http://gadgets.ndtv.com/rss/news", R.drawable.ndtv);
-        feedDrawables.put("http://gadgets.ndtv.com/rss/reviews", R.drawable.ndtv);
-        feedDrawables.put("http://www.bgr.in/feed/", R.drawable.bgr);
-        feedDrawables.put("http://timesofindia.indiatimes.com/rssfeeds/5880659.cms", R.drawable.times);
-        feedDrawables.put("http://www.techtree.com/rss.xml", R.drawable.techtree);
-        feedDrawables.put("http://feeds.feedburner.com/igyaan", R.drawable.igyaan);
-        feedDrawables.put("http://indianexpress.com/section/technology/feed/", R.drawable.indianexpress);
-        feedDrawables.put("http://www.thehindu.com/sci-tech/?service=rss", R.drawable.thehindu);
-        feedDrawables.put("http://www.ibtimes.co.in/rss/technology", R.drawable.ibtimes);
-        feedDrawables.put("http://www.gizmodo.in/rss_section_feeds/23005095.cms", R.drawable.gizmodo);
-        feedDrawables.put("http://feeds.feedburner.com/digit/latest-from-digit", R.drawable.digit);
-        feedDrawables.put("http://feeds.feedburner.com/Thegeekybyte", R.drawable.thegeekybyte);
-        feedDrawables.put("http://feeds2.feedburner.com/fone-arena", R.drawable.fonearena);
-        feedDrawables.put("https://www.gogi.in/feed", R.drawable.gogi);
-        feedDrawables.put("http://feeds.feedburner.com/ogfeed", R.drawable.onlygizmos);
-
-    }
 
     //initialize feed drawables
     private static void setupFeedNames()
@@ -184,19 +156,19 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         feedNames.put("http://gadgets.ndtv.com/rss/news", "Gadgets 360 News ");
         feedNames.put("http://gadgets.ndtv.com/rss/reviews", "Gadgets 360 Reviews ");
         feedNames.put("http://www.bgr.in/feed/", "BGR ");
-        feedNames.put("http://timesofindia.indiatimes.com/rssfeeds/5880659.cms", "Times Tech ");
+        feedNames.put("http://timesofindia.indiatimes.com/rssfeeds/5880659.cms", "TOI Tech ");
         feedNames.put("http://www.techtree.com/rss.xml", "Techtree ");
         feedNames.put("http://feeds.feedburner.com/igyaan", "iGyaan ");
         feedNames.put("http://indianexpress.com/section/technology/feed/", "Indian Express Tech ");
-        feedNames.put("http://www.thehindu.com/sci-tech/?service=rss", "The Hindu Tech ");
+        feedNames.put("http://www.tribuneindia.com/rss/feed.aspx?cat_id=18","Tribune Tech ");
         feedNames.put("http://www.ibtimes.co.in/rss/technology", "IBTimes ");
         feedNames.put("http://www.gizmodo.in/rss_section_feeds/23005095.cms", "Gizmodo ");
         feedNames.put("http://feeds.feedburner.com/digit/latest-from-digit", "Digit ");
-        feedNames.put("http://feeds.feedburner.com/Thegeekybyte", "The Geeky Byte ");
-        feedNames.put("http://feeds2.feedburner.com/fone-arena", "FoneArena ");
-        feedNames.put("https://www.gogi.in/feed", "gogi.in ");
-        feedNames.put("http://feeds.feedburner.com/ogfeed", "Only Gizmos");
-
+        feedNames.put("http://www.news18.com/rss/tech.xml","News 18 Tech ");
+        feedNames.put("http://feeds2.feedburner.com/fone-arena","Fonearena ");
+        feedNames.put("http://www.gizbot.com/rss/gizbot-fb.xml", "Gizbot ");
+        feedNames.put("http://feeds.feedburner.com/ogfeed", "Only Gizmos ");
+        feedNames.put("http://trak.in/feed/", "Trak.in ");
     }
 
 

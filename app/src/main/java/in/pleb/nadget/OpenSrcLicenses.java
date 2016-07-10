@@ -33,7 +33,8 @@ public class OpenSrcLicenses extends AppCompatActivity
         setupToolbar();
 
         //open src licenses
-        String licenses[] = {"\njsoup \nhttps://jsoup.org\n ",
+        String licenses[] = {"\nIcons by Icons8 \nhttps://icons8.com\n",
+                "\njsoup \nhttps://jsoup.org\n ",
         "\nThe MIT License (MIT)\n",
         "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), " ,
                 "to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense," ,
@@ -88,12 +89,12 @@ public class OpenSrcLicenses extends AppCompatActivity
                 actionBar.setDisplayHomeAsUpEnabled(true);
 
                 //set the actionbar title
-                Spannable text = new SpannableString("Licenses");
+                Spannable text = new SpannableString("          ");
                 text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-                actionBar.setTitle(text);
+                actionBar.setTitle(R.string.title_activity_licenses);
 
                 //change the back arrow color
-                final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material );
                 upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                 actionBar.setHomeAsUpIndicator(upArrow);
                 actionBar.setHomeButtonEnabled(true);

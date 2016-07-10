@@ -17,19 +17,12 @@
         android:layout_alignParentEnd="true" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Suggest a News Source"
-        android:id="@+id/suggestTextView"
-        android:gravity="center" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text=" Name"
-        android:id="@+id/feedNameView" />
+        android:id="@+id/feedNameView"
+        android:paddingTop="4dp" />
 
     <EditText
         android:layout_width="match_parent"
@@ -65,6 +58,7 @@
         android:layout_height="wrap_content"
         android:text="Submit"
         android:id="@+id/okbutton"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:onClick="sendMail" />
 
 </LinearLayout>

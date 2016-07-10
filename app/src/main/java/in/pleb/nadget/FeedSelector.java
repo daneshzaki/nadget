@@ -11,14 +11,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ToggleButton;
 
 import com.anton46.collectionitempicker.CollectionPicker;
 import com.anton46.collectionitempicker.Item;
@@ -26,7 +23,6 @@ import com.anton46.collectionitempicker.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,22 +55,23 @@ public class FeedSelector extends AppCompatActivity
         feedMaster.put("http://gadgets.ndtv.com/rss/news","Gadgets 360 News");
         feedMaster.put("http://gadgets.ndtv.com/rss/reviews","Gadgets 360 Reviews");
         feedMaster.put("http://www.bgr.in/feed/", "BGR");
-        feedMaster.put("http://timesofindia.indiatimes.com/rssfeeds/5880659.cms","Times of India");
+        feedMaster.put("http://timesofindia.indiatimes.com/rssfeeds/5880659.cms","TOI Tech");
         feedMaster.put("http://www.techtree.com/rss.xml","TechTree");
         feedMaster.put("http://feeds.feedburner.com/igyaan","iGyaan" );
         feedMaster.put("http://indianexpress.com/section/technology/feed/", "Indian Express Tech" );
-        feedMaster.put("http://www.thehindu.com/sci-tech/?service=rss","The Hindu Tech");
+        feedMaster.put("http://www.tribuneindia.com/rss/feed.aspx?cat_id=18","Tribune Tech");
         feedMaster.put("http://www.ibtimes.co.in/rss/technology","IBTimes");
         feedMaster.put("http://www.gizmodo.in/rss_section_feeds/23005095.cms","Gizmodo");
         feedMaster.put("http://feeds.feedburner.com/digit/latest-from-digit","Digit");
-        feedMaster.put("http://feeds.feedburner.com/Thegeekybyte","The Geeky Byte");
+        feedMaster.put("http://www.news18.com/rss/tech.xml","News 18 Tech");
         feedMaster.put("http://feeds2.feedburner.com/fone-arena","Fonearena");
-        feedMaster.put("https://www.gogi.in/feed","gogi.in");
+        feedMaster.put("http://www.gizbot.com/rss/gizbot-fb.xml","Gizbot");
         feedMaster.put("http://feeds.feedburner.com/ogfeed","Only Gizmos");
+        feedMaster.put("http://trak.in/feed/", "Trak.in ");
 
     }
 
-    //setup UI
+    //setup feed picker UI
     private void setupUI()
     {
         //values to be displayed in feedpicker
@@ -82,18 +79,20 @@ public class FeedSelector extends AppCompatActivity
         feedPickerValues.add(new Item("http://gadgets.ndtv.com/rss/news","Gadgets 360 News"));
         feedPickerValues.add(new Item("http://gadgets.ndtv.com/rss/reviews","Gadgets 360 Reviews"));
         feedPickerValues.add(new Item("http://www.bgr.in/feed/", "BGR"));
-        feedPickerValues.add(new Item("http://timesofindia.indiatimes.com/rssfeeds/5880659.cms","Times of India"));
+        feedPickerValues.add(new Item("http://timesofindia.indiatimes.com/rssfeeds/5880659.cms","TOI Tech"));
         feedPickerValues.add(new Item("http://www.techtree.com/rss.xml","TechTree"));
         feedPickerValues.add(new Item("http://feeds.feedburner.com/igyaan","iGyaan" ));
         feedPickerValues.add(new Item("http://indianexpress.com/section/technology/feed/", "Indian Express Tech" ));
-        feedPickerValues.add(new Item("http://www.thehindu.com/sci-tech/?service=rss","The Hindu Tech"));
+        feedPickerValues.add(new Item("http://www.tribuneindia.com/rss/feed.aspx?cat_id=18","Tribune Tech"));
         feedPickerValues.add(new Item("http://www.ibtimes.co.in/rss/technology","IBTimes"));
         feedPickerValues.add(new Item("http://www.gizmodo.in/rss_section_feeds/23005095.cms","Gizmodo"));
         feedPickerValues.add(new Item("http://feeds.feedburner.com/digit/latest-from-digit","Digit"));
-        feedPickerValues.add(new Item("http://feeds.feedburner.com/Thegeekybyte","The Geeky Byte"));
+        feedPickerValues.add(new Item("http://www.news18.com/rss/tech.xml","News 18 Tech"));
         feedPickerValues.add(new Item("http://feeds2.feedburner.com/fone-arena","Fonearena"));
-        feedPickerValues.add(new Item("https://www.gogi.in/feed","gogi.in"));
+        feedPickerValues.add(new Item("http://www.gizbot.com/rss/gizbot-fb.xml","Gizbot"));
         feedPickerValues.add(new Item("http://feeds.feedburner.com/ogfeed","Only Gizmos"));
+        feedPickerValues.add(new Item("http://trak.in/feed/", "Trak.in "));
+
 
         //setup feed Picker with values
         feedPicker = (CollectionPicker) findViewById(R.id.feed_picker);
@@ -129,12 +128,12 @@ public class FeedSelector extends AppCompatActivity
                 actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
 
                 //set the actionbar title
-                Spannable text = new SpannableString("Nadget");
+                Spannable text = new SpannableString("Select Feeds");
                 text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                 actionBar.setTitle(text);
 
                 //change the back arrow color
-                final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material );
                 upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                 actionBar.setHomeAsUpIndicator(upArrow);
 

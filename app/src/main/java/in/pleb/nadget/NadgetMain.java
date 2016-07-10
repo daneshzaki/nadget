@@ -30,9 +30,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-
+import com.wang.avi.AVLoadingIndicatorView;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,7 +64,8 @@ public class NadgetMain extends AppCompatActivity {
         //set the action bar main_toolbar
         setupToolbar();
 
-        emptyView = (TextView) findViewById(R.id.empty_view);
+        emptyView = (ImageView) findViewById(R.id.empty_view);
+        loadingView = (com.wang.avi.AVLoadingIndicatorView) findViewById(R.id.loading_view);
 
         drawerToggle = new ActionBarDrawerToggle(
                 this,
@@ -142,13 +142,18 @@ public class NadgetMain extends AppCompatActivity {
         public void onItemClick(AdapterView parent, View view, int position, long id) {
             Log.i(TAG, "Nav bar item clicked is "+drawerItemLabels[position]);
 
+            //saved articles clicked
+            if(position == 1)
+            {
+                startActivity(new Intent(NadgetMain.this, SavedFeeds.class));
+                drawerToggle.syncState();
+            }
             //feed selector clicked
             if(position == 2)
             {
                 startActivity(new Intent(NadgetMain.this, FeedSelector.class));
                 drawerToggle.syncState();
             }
-
             //settings clicked
             if(position == 3)
             {
@@ -261,6 +266,7 @@ public class NadgetMain extends AppCompatActivity {
         {
             Log.i(TAG, "NadgetMain onPreExecute");
             mainFragment.getSwipeRefreshLayout().setRefreshing(true);
+
         }
 
         @Override
@@ -302,6 +308,13 @@ public class NadgetMain extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<RssItem> rssItems) {
             Log.i(TAG, "***NadgetMain onPostExec rssItems = "+rssItems);
+
+            //show recycler view to show empty/loading message
+            mainFragment.setMainViewVisible(true);
+
+            //hide loading message
+            loadingView.setVisibility(View.GONE);
+
             mainFragment.getSwipeRefreshLayout().setRefreshing(false);
             //update adapter
             adapter.notifyDataSetChanged();
@@ -393,7 +406,13 @@ public class NadgetMain extends AppCompatActivity {
         {
             dismissSnackbars();
 
-            //get prefs to store the values
+            //set loading message and show
+            loadingView.setVisibility(View.VISIBLE);
+
+            //hide recycler view to show empty/loading message
+            mainFragment.setMainViewVisible(false);
+
+            //get prefs to get the values
             sharedPreferences = getSharedPreferences(FEEDS_FILE_NAME, Context.MODE_PRIVATE);
 
             Map<String,?> feeds = (Map<String, String>) sharedPreferences.getAll();
@@ -403,14 +422,14 @@ public class NadgetMain extends AppCompatActivity {
             {
                 Log.i(TAG,"NadgetMain refreshCore feeds empty");
 
-                //hide recycler view to show empty message
-                mainFragment.displayEmpty();
+                //hide recycler view to show empty/loading message
+                //mainFragment.setMainViewVisible(false);
 
                 //set empty message and show
-                emptyView.setText(R.string.no_data_available);
                 emptyView.setVisibility(View.VISIBLE);
+                loadingView.setVisibility(View.GONE);
 
-                Toast.makeText(this, R.string.no_data_available, Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, R.string.no_data_available, Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -422,20 +441,7 @@ public class NadgetMain extends AppCompatActivity {
             Log.i(TAG,"NadgetMain refreshCore executing "+feedKeys[feedIndex]);
 
             //execute first key
-            //new RssReaderTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, (String) feedKeys[feedIndex].trim());
             new RssReaderTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (String) feedKeys[feedIndex].trim());
-
-            //load more logic end
-
-            //non-load more uncomment from here
-            //refresh main list with the feeds selected
-            /*for (Map.Entry<String, ?> entry : feeds.entrySet())
-            {
-                Log.i(TAG,"NadgetMain refreshCore feed = "+entry.getKey());
-                //new RssReaderTask().execute((String) entry.getKey().trim());
-                new RssReaderTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, (String) entry.getKey().trim());
-            }*/
-            //non-load more uncomment till here
 
         }
         catch (Exception e)
@@ -478,9 +484,6 @@ public class NadgetMain extends AppCompatActivity {
     //dismiss Snackbars
     private void dismissSnackbars()
     {
-        //Log.i(TAG,"dismissSnackbars snackbarInternal="+snackbarInternal);
-        //Log.i(TAG,"dismissSnackbars snackbarNetwork="+snackbarNetwork);
-
         if(snackbarInternal!= null && snackbarInternal.isShown())
             snackbarInternal.dismiss();
 
@@ -512,7 +515,9 @@ public class NadgetMain extends AppCompatActivity {
     private static final String FEEDS_FILE_NAME = "in.pleb.nadget.SelectedFeeds";
     private Snackbar snackbarNetwork;
     private Snackbar snackbarInternal;
-    private TextView emptyView;
+
+    private ImageView emptyView;
+    private com.wang.avi.AVLoadingIndicatorView loadingView;
 
     //all feeds from shared prefs
     private String[] feedKeys;

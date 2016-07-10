@@ -1,9 +1,8 @@
 package in.pleb.nadget;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -14,14 +13,12 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -65,26 +62,21 @@ public class PostView extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //android.R.id.home
-        if (id == android.R.id.home)
+        if(id == R.id.action_favorite)
         {
-            onBackPressed();
+            saveFavorite();
             return true;
         }
 
-
-        if (id == R.id.action_settings) {
+        if(id == R.id.action_share)
+        {
+            shareLink();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void onBackPressed()
-    {
-        Log.i(TAG," onBackPressed");
-        finish();
-    }
 
     //load the values in the screen
     private void loadValues()
@@ -99,7 +91,9 @@ public class PostView extends AppCompatActivity
 
         if(bundle.getString("link") != null )
         {
-            webView.loadUrl(bundle.getString("link"));
+            link = bundle.getString("link");
+            webView.loadUrl(link);
+            title = bundle.getString("title");
         }
         else
         {
@@ -131,7 +125,7 @@ public class PostView extends AppCompatActivity
                 actionBar.setTitle(text);
 
                 //change the back arrow color
-                final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material );
                 upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                 actionBar.setHomeAsUpIndicator(upArrow);
                 actionBar.setHomeButtonEnabled(true);
@@ -152,10 +146,49 @@ public class PostView extends AppCompatActivity
         return isAvailable;
     }
 
+    //save favorite
+    private void saveFavorite()
+    {
+        favoriteSet = true;
+        Log.i(TAG, "PostView saveFavorite");
+        //get prefs to store the values
+        sharedPreferences = getSharedPreferences(FAVS_FILE_NAME, Context.MODE_PRIVATE);
+
+        //setup for writing
+        editor = sharedPreferences.edit();
+
+        //if favorite exists, remove it else add it
+        if(sharedPreferences.contains(link))
+        {
+            editor.remove(link);
+            Toast.makeText(this, "Article removed from favorites", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            //write link, title to shared prefs file
+            editor.putString(link,title);
+            Toast.makeText(this, "Article added to favorites", Toast.LENGTH_SHORT).show();
+        }
+
+        editor.commit();
+
+        Log.i(TAG, "PostView saveFavorite : link - title "+link +" - "+title);
+    }
+
+    //show share dialog
+    private void shareLink()
+    {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, title +"\n "+link);
+        sendIntent.setType("text/plain");
+        startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.action_share)));
+    }
+
     //method to display error on no connection
     public void displayNetworkError()
     {
-        Log.i(TAG, "NadgetMain displayError");
+        Log.i(TAG, "PostView displayError");
         //mainFragment.setError("Please check your network connection and try again");
         //Toast.makeText(this, "Please check your network connection and try again", Toast.LENGTH_LONG).show();
         Snackbar.make(this.findViewById(R.id.webView), "No network connection. Please refresh", Snackbar.LENGTH_LONG).show();
@@ -164,5 +197,11 @@ public class PostView extends AppCompatActivity
 
     //bundle for getting data from main list
     private Bundle bundle = null;
+    private String link = "";
+    private String title = "";
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private boolean favoriteSet = false;
+    private static final String FAVS_FILE_NAME = "in.pleb.nadget.FavoriteFeeds";
 
 }

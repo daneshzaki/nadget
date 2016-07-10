@@ -142,11 +142,20 @@ public class MainFragment extends Fragment
 				}});
 	}
 
-	//method to hide recycler view to show empty message
-	public void displayEmpty()
+	//method to show/hide recycler view to show empty or loading message
+	public void setMainViewVisible(boolean visible)
 	{
-		Log.i(TAG, "mainfragment displayEmpty");
-		mainView.setVisibility(View.GONE);
+		Log.i(TAG, "mainfragment setMainViewVisible");
+
+		if(visible)
+		{
+			mainView.setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			mainView.setVisibility(View.GONE);
+		}
+
 	}
 
 	//share the swiperefreshlayout

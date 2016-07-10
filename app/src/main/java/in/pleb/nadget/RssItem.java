@@ -18,6 +18,7 @@ public class RssItem
         try
         {
             Log.i(TAG, "date in="+pubDate);
+            //format for almost all feeds
             SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
             Date pubDateDt = dateFormat.parse(pubDate);
             //pubDate = dateFormat.format(pubDateDt);
@@ -32,7 +33,7 @@ public class RssItem
         {
             Log.e(TAG,"Different date format!!! "+pe.toString());
 
-            //sometimes another format
+            //format for some feeds
             try
             {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("EEE ,dd MMM yyyy HH:mm:ss Z");
@@ -44,8 +45,46 @@ public class RssItem
             //beyond that format just display the input
             catch(java.text.ParseException peinpe)
             {
-                peinpe.toString();
-                this.pubDate = pubDate;
+                //Gizmodo format
+                try
+                {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy, HH:mm");
+                    Date pubDateDt = dateFormat.parse(pubDate);
+                    PrettyTime prettyTime = new PrettyTime();
+                    pubDate = prettyTime.formatDuration(pubDateDt) +" ago";
+                    this.pubDate = pubDate;
+                }
+                catch(java.text.ParseException anotherEx)
+                {
+                    //Digit format
+                    try
+                    {
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ"	);
+                        //                                                 "2016-06-24T20:42:33+05:30"
+                        Date pubDateDt = dateFormat.parse(pubDate);
+                        PrettyTime prettyTime = new PrettyTime();
+                        pubDate = prettyTime.formatDuration(pubDateDt) +" ago";
+                        this.pubDate = pubDate;
+                    }
+                    catch(java.text.ParseException yetAnotherEx) {
+                        //News18 format
+                        try {
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ssZ");
+                            //                                                 "Fri, 8 Jul 2016 14:14:12+05:30"
+                            Date pubDateDt = dateFormat.parse(pubDate);
+                            PrettyTime prettyTime = new PrettyTime();
+                            pubDate = prettyTime.formatDuration(pubDateDt) + " ago";
+                            this.pubDate = pubDate;
+                        }
+                        //beyond that format just display the input date
+                        catch(java.text.ParseException anotherEx2)
+                        {
+                            anotherEx2.toString();
+                            this.pubDate = pubDate;
+                        }
+                    }
+                }
+
             }
 
         }

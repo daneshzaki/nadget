@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".NadgetMain"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:background="#ffffff">
 
 
     <!-- The main content view -->
@@ -46,7 +47,7 @@
                 </android.support.design.widget.CollapsingToolbarLayout>
                 </android.support.design.widget.AppBarLayout>
 
-            <TextView
+            <ImageView
                 android:id="@+id/empty_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -55,7 +56,16 @@
                 android:textColor="#3B3131"
                 android:textStyle="bold"
                 android:textSize="16dp"
+                android:src="@drawable/empty_message"
                 android:text="@string/no_data_available" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/loading_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:indicator="BallGridPulse"
+                app:indicator_color="#3B3131" />
 
             <fragment
                     android:name="in.pleb.nadget.MainFragment"

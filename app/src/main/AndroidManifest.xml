@@ -9,8 +9,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        >
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".NadgetMain"
             android:label="@string/app_name">
@@ -23,8 +22,7 @@
         <activity
             android:name=".PostView"
             android:label="@string/title_activity_post_view"
-            android:parentActivityName=".NadgetMain"
-            >
+            android:parentActivityName=".NadgetMain">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.pleb.nadget.NadgetMain" />
@@ -32,48 +30,51 @@
         <activity
             android:name=".NadgetSettings"
             android:label="@string/title_activity_nadget_settings"
-            android:parentActivityName=".NadgetMain"
-            >
+            android:parentActivityName=".NadgetMain">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.pleb.nadget.NadgetMain" />
         </activity>
-        <activity android:name=".FeedSelector"
+        <activity android:name=".SavedFeeds"
+            android:label="@string/title_activity_saved_feeds"
+            android:parentActivityName=".NadgetMain">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.pleb.nadget.NadgetMain" />
+
+        </activity>
+
+        <activity
+            android:name=".FeedSelector"
             android:label="@string/title_activity_feed_selector"
-            android:parentActivityName=".NadgetMain"
-            >
+            android:parentActivityName=".NadgetMain">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.pleb.nadget.NadgetMain" />
-
         </activity>
-        <activity android:name=".SuggestFeeds"
+        <activity
+            android:name=".SuggestFeeds"
             android:label="@string/title_activity_suggest_feed"
-            android:parentActivityName=".NadgetSettings"
-            >
+            android:parentActivityName=".NadgetSettings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.pleb.nadget.NadgetSettings" />
-
         </activity>
-        <activity android:name=".AboutNadget"
+        <activity
+            android:name=".AboutNadget"
             android:label="@string/title_about"
-            android:parentActivityName=".NadgetSettings"
-            >
+            android:parentActivityName=".NadgetSettings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.pleb.nadget.NadgetSettings" />
-
         </activity>
-
-        <activity android:name=".OpenSrcLicenses"
+        <activity
+            android:name=".OpenSrcLicenses"
             android:label="@string/title_activity_licenses"
-            android:parentActivityName=".NadgetSettings"
-            >
+            android:parentActivityName=".NadgetSettings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.pleb.nadget.NadgetSettings" />
-
         </activity>
 
     </application>

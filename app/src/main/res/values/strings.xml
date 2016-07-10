@@ -8,6 +8,8 @@
     <string name="drawer_close">Close</string>
     <string name="title_activity_post_view">View Post</string>
     <string name="title_activity_suggest_feed">Suggest News Source</string>
+    <string name="title_activity_select_feeds">Select Feeds</string>
+    <string name="title_activity_saved_feeds">Saved Articles</string>
     <string name="title_activity_licenses">Licenses</string>
     <string name="title_about">About Nadget</string>
 
@@ -19,7 +21,8 @@
     <string name="dialog_message">No content</string>
     <string name="ok">OK</string>
     <string name="settings">Settings</string>
-
-
+    <string name="action_favorite">Favorite</string>
+    <string name="action_share">Share</string>
+    <string name="no_favorites">No saved articles </string>
 
 </resources>

@@ -179,11 +179,11 @@ public class NadgetSettings extends PreferenceActivity {
         if(actionBar!= null)
         {
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
-            actionBar.setTitle("Settings");
+            actionBar.setTitle(R.string.settings);
             actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE);
 
             //change the back arrow color
-            final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material );
             upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
             actionBar.setHomeAsUpIndicator(upArrow);
             actionBar.setHomeButtonEnabled(true);
