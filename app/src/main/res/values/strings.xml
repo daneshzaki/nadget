@@ -21,7 +21,7 @@
     <string name="dialog_message">No content</string>
     <string name="ok">OK</string>
     <string name="settings">Settings</string>
-    <string name="action_favorite">Favorite</string>
+    <string name="action_favorite">Save for later</string>
     <string name="action_share">Share</string>
     <string name="no_favorites">No saved articles </string>
 

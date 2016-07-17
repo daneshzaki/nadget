@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -30,8 +31,19 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
+import android.view.View;
 import android.widget.Toast;
 
+import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.android.AndroidAuthSession;
+import com.dropbox.client2.session.AppKeyPair;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.net.ConnectException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -48,23 +60,10 @@ public class NadgetSettings extends PreferenceActivity {
 
         setupToolbar();
 
-        // handle preference actions
-
-        // suggest feeds
-        Preference suggestPref = (Preference) findPreference("suggestFeeds");
-
-        suggestPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-
-                                                   public boolean onPreferenceClick(Preference preference) {
-                                                       Log.i("Preferences", "suggest clicked");
-
-                                                       // display about screen
-                                                       startActivity(new Intent(NadgetSettings.this, SuggestFeeds.class));
-                                                       return true;
-                                                   }
-                                               }
-
-        );
+        //initialize Dropbox
+        AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
+        AndroidAuthSession session = new AndroidAuthSession(appKeys);
+        dbApi = new DropboxAPI<AndroidAuthSession>(session);
 
         // about dialog
         Preference aboutPref = (Preference) findPreference("aboutPref");
@@ -72,7 +71,7 @@ public class NadgetSettings extends PreferenceActivity {
         aboutPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
                                                    public boolean onPreferenceClick(Preference preference) {
-                                                       Log.i("Preferences", "about clicked");
+                                                       Log.i(TAG, "about clicked");
 
                                                        // display about screen
                                                        startActivity(new Intent(NadgetSettings.this, AboutNadget.class));
@@ -90,9 +89,9 @@ public class NadgetSettings extends PreferenceActivity {
 
                                                 public boolean onPreferenceClick(Preference preference)
                                                 {
-                                                    Log.i("Preferences", "open src clicked");
+                                                    Log.i(TAG, "open src clicked");
 
-                                                    // display about screen
+                                                    // display licenses screen
                                                     startActivity(new Intent(NadgetSettings.this, OpenSrcLicenses.class));
                                                     return true;
                                                 }
@@ -108,11 +107,9 @@ public class NadgetSettings extends PreferenceActivity {
 
                                                     public boolean onPreferenceClick(Preference preference)
                                                     {
-                                                        Log.i("Preferences", "export clicked");
-                                                        //display toast with status
-                                                        //TODO:export to Dropbox
-                                                        //Toast.makeText(getBaseContext(), "Feeds & saved articles exported successfully", Toast.LENGTH_SHORT).show();
-                                                        Snackbar.make(getListView(), "Feeds & saved articles exported successfully", Snackbar.LENGTH_LONG).show();
+                                                        Log.i(TAG, "export clicked");
+                                                        dbExport = true;
+                                                        dbApi.getSession().startOAuth2Authentication(NadgetSettings.this);
                                                         return true;
                                                     }
                                                 }
@@ -126,12 +123,9 @@ public class NadgetSettings extends PreferenceActivity {
 
                                                     public boolean onPreferenceClick(Preference preference)
                                                     {
-                                                        Log.i("Preferences", "import clicked");
-
-                                                        //display toast with status
-                                                        //TODO:import from Dropbox
-                                                        //Toast.makeText(getBaseContext(), "Feeds & saved articles imported successfully", Toast.LENGTH_SHORT).show();
-                                                        Snackbar.make(getListView(), "Feeds & saved articles imported successfully", Snackbar.LENGTH_LONG).show();
+                                                        Log.i(TAG, "import clicked");
+                                                        dbImport = true;
+                                                        dbApi.getSession().startOAuth2Authentication(NadgetSettings.this);
                                                         return true;
                                                     }
                                                 }
@@ -139,6 +133,33 @@ public class NadgetSettings extends PreferenceActivity {
 
     }
 
+    protected void onResume()
+    {
+        super.onResume();
+
+        if (dbApi.getSession().authenticationSuccessful()) {
+            try {
+                // Required to complete auth, sets the access token on the session
+                dbApi.getSession().finishAuthentication();
+                Log.i(TAG, "onResume auth success");
+                if(dbExport)
+                {
+                    Log.i(TAG, "onResume calling upload task");
+                    new UploadTask().execute();
+                }
+
+                if(dbImport)
+                {
+                    Log.i(TAG, "onResume calling download task");
+                    new DownloadTask().execute();
+                }
+
+                String accessToken = dbApi.getSession().getOAuth2AccessToken();
+            } catch (IllegalStateException e) {
+                Log.i(TAG, "Error authenticating", e);
+            }
+        }
+    }
     // show previous activity
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem)
@@ -156,7 +177,7 @@ public class NadgetSettings extends PreferenceActivity {
     @Override
     public void onBackPressed()
     {
-        Log.i("Preferences","onBackPressed");
+        Log.i(TAG,"onBackPressed");
 
         //sending back to the main activity
         Intent intent = new Intent(this, NadgetMain.class);
@@ -193,6 +214,216 @@ public class NadgetSettings extends PreferenceActivity {
 
     }
 
+    /**
+     * Implementation of AsyncTask to upload file to dropbox
+     */
+    private class UploadTask extends AsyncTask<Void, Void, Boolean >
+    {
+        @Override
+        protected Boolean doInBackground(Void... voids)
+        {
+            Log.i(TAG, "UploadTask doInBg start");
+
+            try
+            {
+                exportToDropbox();
+            }
+            catch (Exception e)
+            {
+                Log.e(TAG,"UploadTask exception "+ e.toString());
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Check status
+         */
+        @Override
+        protected void onPostExecute(Boolean status) {
+            Log.i(TAG, "***UploadTask onPostExec ");
+
+            if(status)
+            {
+                Snackbar.make(getListView(), "Feeds & saved articles exported successfully", Snackbar.LENGTH_LONG).show();
+            }
+            else
+            {
+                Snackbar.make(getListView(), "Error exporting to Dropbox", Snackbar.LENGTH_LONG).show();
+            }
+
+
+        }
+    }
+
+    /**
+     * Implementation of AsyncTask to download file to dropbox
+     */
+    private class DownloadTask extends AsyncTask<Void, Void, Boolean >
+    {
+        @Override
+        protected Boolean doInBackground(Void... voids)
+        {
+            Log.i(TAG, "DownloadTask doInBg start");
+
+            try
+            {
+                importFromDropbox();
+            }
+            catch (Exception e)
+            {
+                Log.e(TAG,"DownloadTask exception "+ e.toString());
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Check status
+         */
+        @Override
+        protected void onPostExecute(Boolean status)
+        {
+            Log.i(TAG, "***DownloadTask onPostExec ");
+            if(status)
+            {
+                Snackbar.make(getListView().getSelectedView(), "Feeds & saved articles imported successfully", Snackbar.LENGTH_LONG).show();
+            }
+            else
+            {
+                Snackbar.make(getListView(), "Error importing from Dropbox", Snackbar.LENGTH_LONG).show();
+            }
+
+        }
+    }
+
+    private void importFromDropbox()
+    {
+        Log.i(TAG,"import from Dropbox ");
+
+        FileOutputStream outputStreamSelFeeds = null;
+        FileOutputStream outputStreamSavedArt = null;
+
+        try
+        {
+            //download selected feeds
+            File sharedPrefsPath = new File(SHARED_PREFS_PATH);
+            File selectedFeedsFile = new File(SHARED_PREFS_PATH + FEEDS_FILE_NAME);
+            Log.i(TAG, "shared prefs path.exists()? " + sharedPrefsPath.exists());
+            if(!sharedPrefsPath.exists())
+            {
+                boolean pathCreated = sharedPrefsPath.mkdirs();
+                Log.i(TAG, "pathCreated? " + sharedPrefsPath.getPath());
+            }
+
+            Log.i(TAG, "selectedFeedsFile.exists()? " + selectedFeedsFile.exists());
+            if(!selectedFeedsFile.exists())
+            {
+                boolean fileCreated = selectedFeedsFile.createNewFile();
+                Log.i(TAG, "fileCreated? " + fileCreated);
+            }
+
+            outputStreamSelFeeds = new FileOutputStream(selectedFeedsFile);
+            DropboxAPI.DropboxFileInfo infoSelFeeds = dbApi.getFile(FEEDS_FILE_NAME, null, outputStreamSelFeeds, null);
+            Log.i(TAG, "The downloaded selected fields file's rev is: " + infoSelFeeds.getMetadata().rev);
+
+            //download saved articles
+            File savedArticlesFile = new File(SHARED_PREFS_PATH + FAVS_FILE_NAME);
+            outputStreamSavedArt = new FileOutputStream(savedArticlesFile);
+            DropboxAPI.DropboxFileInfo infoSavedArt = dbApi.getFile(FAVS_FILE_NAME, null, outputStreamSavedArt, null);
+            Log.i(TAG, "The downloaded saved articlesfile's rev is: " + infoSavedArt.getMetadata().rev);
+            dbImport = false;
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (outputStreamSelFeeds != null) {
+                    outputStreamSelFeeds.close();
+                }
+
+                if (outputStreamSavedArt != null) {
+                    outputStreamSavedArt.close();
+                }
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
+        }
+
+    }
+
+    private void exportToDropbox()
+    {
+        Log.i(TAG,"exportToDropbox");
+
+        FileInputStream inputStreamSelFeeds = null;
+        FileInputStream inputStreamSavedArt = null;
+
+        try
+        {
+            //upload saved articles
+            File savedArticlesFile = new File(SHARED_PREFS_PATH + FAVS_FILE_NAME);
+            inputStreamSavedArt = new FileInputStream(savedArticlesFile);
+            DropboxAPI.UploadRequest reqSavedArt = dbApi.putFileOverwriteRequest(FAVS_FILE_NAME, inputStreamSavedArt,
+                    savedArticlesFile.length(), null);
+            reqSavedArt.upload();
+            Log.i(TAG, "Upload Saved Articles successful ");
+
+            //upload selected feeds
+            File selectedFeedsFile = new File(SHARED_PREFS_PATH + FEEDS_FILE_NAME);
+            inputStreamSelFeeds = new FileInputStream(selectedFeedsFile);
+            DropboxAPI.UploadRequest reqSelFeeds = dbApi.putFileOverwriteRequest(FEEDS_FILE_NAME, inputStreamSelFeeds,
+                    selectedFeedsFile.length(), null);
+            reqSelFeeds.upload();
+            Log.i(TAG, "Upload Selected Files successful ");
+
+            dbExport = true;
+
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+        finally {
+            try
+            {
+                if(inputStreamSelFeeds != null)
+                {
+                    inputStreamSelFeeds.close();
+                }
+
+                if(inputStreamSavedArt != null)
+                {
+                    inputStreamSavedArt.close();
+                }
+            }
+            catch(Exception e)
+            {
+                Log.e(TAG, e.toString());
+            }
+
+        }
+
+    }
+
+    private DropboxAPI<AndroidAuthSession> dbApi;
+
+    private boolean dbExport = false;
+
+    private boolean dbImport = false;
+
     private static final String TAG = "Nadget";
+    final static private String APP_KEY = "gmxms24fwnzvnub";
+    final static private String APP_SECRET = "mqz4z4gzk7dxmjr";
+
+    ///Format: data/data/com.your.package/shared_prefs/com.your.package_preferences.xml
+    private static final String SHARED_PREFS_PATH="/data/data/in.pleb.nadget/shared_prefs/";
+    private static final String FAVS_FILE_NAME = "in.pleb.nadget.FavoriteFeeds.xml";
+    private static final String FEEDS_FILE_NAME = "in.pleb.nadget.SelectedFeeds.xml";
+
 
 }

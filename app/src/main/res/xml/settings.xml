@@ -2,12 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <Preference
         android:enabled="true"
-        android:key="suggestFeeds"
-        android:selectable="true"
-        android:summary="Suggest Feeds"
-        android:title="Suggest Feeds" />
-    <Preference
-        android:enabled="true"
         android:key="export"
         android:selectable="true"
         android:summary="Export feeds and saved articles to Dropbox"

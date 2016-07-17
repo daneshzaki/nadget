@@ -95,8 +95,8 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         {
             Picasso.with(activity.getBaseContext())
                     .load(rssItems.get(position).getImageUrl())
-                    .placeholder(R.drawable.robot)
-                    .error(R.drawable.robot)
+                    .placeholder(R.drawable.spinner)
+                    .error(R.drawable.ic_action_ng)
                     .resize(1000, 500)
                     .centerCrop()
                     .into(holder.postImageView);
@@ -105,7 +105,7 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         else
         {
             Picasso.with(activity.getBaseContext())
-                    .load(R.drawable.robot)
+                    .load(R.drawable.ic_action_ng)
                     .into(holder.postImageView);
         }
 

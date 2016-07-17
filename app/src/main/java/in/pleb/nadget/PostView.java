@@ -161,13 +161,13 @@ public class PostView extends AppCompatActivity
         if(sharedPreferences.contains(link))
         {
             editor.remove(link);
-            Toast.makeText(this, "Article removed from favorites", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Article removed from reading list", Toast.LENGTH_SHORT).show();
         }
         else
         {
             //write link, title to shared prefs file
             editor.putString(link,title);
-            Toast.makeText(this, "Article added to favorites", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Article saved to reading list", Toast.LENGTH_SHORT).show();
         }
 
         editor.commit();

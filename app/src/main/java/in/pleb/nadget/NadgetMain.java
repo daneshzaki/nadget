@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -22,6 +23,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.wang.avi.AVLoadingIndicatorView;
 import java.net.ConnectException;
@@ -47,9 +50,6 @@ public class NadgetMain extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nadget_main);
-
-        //set fonts for all text
-        typeface = Typeface.createFromAsset( getResources().getAssets(), "SourceSansPro-Regular.otf");
 
         //navigation drawer
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -142,16 +142,24 @@ public class NadgetMain extends AppCompatActivity {
         public void onItemClick(AdapterView parent, View view, int position, long id) {
             Log.i(TAG, "Nav bar item clicked is "+drawerItemLabels[position]);
 
+            //{"Saved Articles", "Select Feeds", "Suggest Feeds", "Settings"};
+
             //saved articles clicked
-            if(position == 1)
+            if(position == 0)
             {
                 startActivity(new Intent(NadgetMain.this, SavedFeeds.class));
                 drawerToggle.syncState();
             }
             //feed selector clicked
-            if(position == 2)
+            if(position == 1)
             {
                 startActivity(new Intent(NadgetMain.this, FeedSelector.class));
+                drawerToggle.syncState();
+            }
+            //suggest feeds clicked
+            if(position == 2)
+            {
+                startActivity(new Intent(NadgetMain.this, SuggestFeeds.class));
                 drawerToggle.syncState();
             }
             //settings clicked
@@ -216,8 +224,8 @@ public class NadgetMain extends AppCompatActivity {
         Log.i(TAG,"setupToolbar");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        Spannable text = new SpannableString("Nadget");
-        text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        //Spannable text = new SpannableString("Nadget");
+        //text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         if (toolbar != null)
         {
@@ -228,7 +236,7 @@ public class NadgetMain extends AppCompatActivity {
 
             CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
             collapsingToolbar.setBackgroundColor(Color.parseColor("#3B3131"));
-            collapsingToolbar.setTitleEnabled(false);
+            //collapsingToolbar.setTitleEnabled(false);
 
 
             actionBar = getSupportActionBar();
@@ -237,19 +245,18 @@ public class NadgetMain extends AppCompatActivity {
             if (actionBar != null)
             {
                 actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
-
                 //set the actionbar title
-                actionBar.setTitle(R.string.app_name);
-                //actionBar.setSubtitle("News about Gadgets");
+                actionBar.setLogo(R.drawable.nadget_logo_white_large);
+                actionBar.setDisplayUseLogoEnabled(true);
+                actionBar.setDisplayShowCustomEnabled(true);
+
                 //change the back arrow color
                 final Drawable upArrow = getResources().getDrawable(R.drawable.ic_drawer);
                 upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                 actionBar.setHomeAsUpIndicator(upArrow);
-
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setDisplayShowHomeEnabled(true);
-                actionBar.setDisplayShowTitleEnabled(true);
-                actionBar.setDisplayUseLogoEnabled(false);
+                actionBar.setDisplayShowTitleEnabled(false);
                 actionBar.setHomeButtonEnabled(true);
             }
         }
@@ -501,11 +508,12 @@ public class NadgetMain extends AppCompatActivity {
     private static final String TAG = "Nadget";
     private MainFragment mainFragment;
 
-    private String[] drawerItemLabels = new String[]{"Sign in", "Saved Articles", "Select Feeds", "Settings"};
+    private String[] drawerItemLabels = new String[]{"Saved Articles", "Select Feeds", "Suggest Feeds", "Settings"};
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
-    private Typeface typeface;
+
+
     private MainViewAdapter adapter = null;
     private android.support.v7.app.ActionBar actionBar;
     private boolean isRefreshedMainList = false;

@@ -33,7 +33,8 @@ public class OpenSrcLicenses extends AppCompatActivity
         setupToolbar();
 
         //open src licenses
-        String licenses[] = {"\nIcons by Icons8 \nhttps://icons8.com\n",
+        String licenses[] = {"\nUses code EndlessRecyclerViewScrollListener https://gist.github.com/nesquena/d09dc68ff07e845cc622\n",
+                "\nIcons by Icons8 \nhttps://icons8.com\n",
                 "\njsoup \nhttps://jsoup.org\n ",
         "\nThe MIT License (MIT)\n",
         "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), " ,
@@ -89,9 +90,9 @@ public class OpenSrcLicenses extends AppCompatActivity
                 actionBar.setDisplayHomeAsUpEnabled(true);
 
                 //set the actionbar title
-                Spannable text = new SpannableString("          ");
+                Spannable text = new SpannableString("Licenses");
                 text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-                actionBar.setTitle(R.string.title_activity_licenses);
+                actionBar.setTitle(text);
 
                 //change the back arrow color
                 final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material );
