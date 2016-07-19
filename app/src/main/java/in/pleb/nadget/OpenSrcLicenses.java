@@ -75,6 +75,8 @@ public class OpenSrcLicenses extends AppCompatActivity
     private void setupToolbar()
     {
         Log.i(TAG,"setupToolbar ***");
+        getWindow().setStatusBarColor(Color.parseColor("#423131"));
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 
         if (toolbar != null)

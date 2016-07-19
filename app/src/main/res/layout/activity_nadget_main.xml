@@ -43,12 +43,6 @@
                         app:layout_collapseMode="pin"
                         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-                        <ImageView
-                            android:id="@+id/logo_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="left"
-                            android:src="@drawable/nadget_logo_white_large" />
                         </android.support.v7.widget.Toolbar>
 
                 </android.support.design.widget.CollapsingToolbarLayout>

@@ -1,6 +1,9 @@
 package in.pleb.nadget;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -8,10 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 
 import com.squareup.picasso.Picasso;
@@ -45,6 +51,8 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         TextView postTitleView;
         TextView postDateView;
         ImageView postImageView;
+        ImageButton shareArticle;
+        ImageButton saveArticle;
 
         PostViewHolder(View itemView)
         {
@@ -55,6 +63,9 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
             postTitleView = (TextView)itemView.findViewById(R.id.postTitle);
             postDateView = (TextView)itemView.findViewById(R.id.postDate);
             postImageView = (ImageView)itemView.findViewById(R.id.postImage);
+            shareArticle = (ImageButton) itemView.findViewById(R.id.shareArticle);
+            saveArticle = (ImageButton) itemView.findViewById(R.id.saveArticle);
+
             itemView.setOnClickListener(this);
 
         }
@@ -77,7 +88,24 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
     @Override
     public void onBindViewHolder(MainViewAdapter.PostViewHolder holder, int position)
     {
-        holder.postTitleView.setText(rssItems.get(position).getTitle());
+        final String title = rssItems.get(position).getTitle();
+        final String link = rssItems.get(position).getLink();
+
+        holder.postTitleView.setText(title);
+        holder.saveArticle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveFavorite(title, link);
+            }
+        });
+
+        holder.shareArticle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shareLink(title, link);
+            }
+        });
+
         Log.i(TAG,"MainViewAdapter onBindViewHolder position="+position);
 
         //append feed name to date
@@ -108,6 +136,45 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
                     .load(R.drawable.ic_action_ng)
                     .into(holder.postImageView);
         }
+
+    }
+
+    public void saveFavorite(String title, String link)
+    {
+        Log.i(TAG, "saveFavorite : link - titleSelected "+ link +" - "+ title);
+
+        //get prefs to store the values
+        sharedPreferences = this.activity.getSharedPreferences(FAVS_FILE_NAME, Context.MODE_PRIVATE);
+
+        //setup for writing
+        editor = sharedPreferences.edit();
+
+        //if favorite exists, remove it else add it
+        if(sharedPreferences.contains(link))
+        {
+            editor.remove(link);
+            Toast.makeText(this.activity, "Article removed from reading list", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            //write link, titleSelected to shared prefs file
+            editor.putString(link, title);
+            Toast.makeText(this.activity, "Article saved to reading list", Toast.LENGTH_SHORT).show();
+        }
+
+        editor.commit();
+
+
+    }
+
+    public void shareLink(String title, String link)
+    {
+        Log.i(TAG, "shareLink : link - titleSelected "+ link +" - "+ title);
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, title +"\n "+ link);
+        sendIntent.setType("text/plain");
+        this.activity.startActivity(Intent.createChooser(sendIntent, this.activity.getResources().getText(R.string.action_share)));
 
     }
 
@@ -181,6 +248,9 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
 
     private static HashMap<String,Integer> feedDrawables = null;
     private static HashMap<String,String> feedNames = null;
+    private SharedPreferences.Editor editor;
+    private static final String FAVS_FILE_NAME = "in.pleb.nadget.FavoriteFeeds";
+    private SharedPreferences sharedPreferences;
 
     //private ArrayList<RssItem> updatedItems = new ArrayList<RssItem>();
 

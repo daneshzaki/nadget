@@ -85,6 +85,7 @@ public class MainFragment extends Fragment
 		});
 	}
 
+
 	//refresh the list
 	private void initiateRefresh()
 	{

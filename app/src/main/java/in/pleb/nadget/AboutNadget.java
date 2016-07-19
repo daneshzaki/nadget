@@ -20,8 +20,10 @@ public class AboutNadget extends AppCompatActivity {
         this.getWindow().setStatusBarColor(Color.parseColor("#fff3f3f3"));
         setContentView(R.layout.activity_about_nadget);
         //set fonts for all text
-        Typeface typeface = Typeface.createFromAsset( getResources().getAssets(), "SourceSansPro-Regular.otf");
+        Typeface typeface = Typeface.createFromAsset( getResources().getAssets(), "AgencyFB-Bold.ttf");
         ((TextView)findViewById( R.id.title)).setTypeface(typeface, Typeface.BOLD);
+        typeface = Typeface.createFromAsset( getResources().getAssets(), "SourceSansPro-Regular.otf");
+
         ((TextView)findViewById( R.id.description)).setTypeface(typeface);
         ((TextView)findViewById( R.id.version)).setTypeface(typeface);
 

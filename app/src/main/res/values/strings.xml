@@ -24,5 +24,6 @@
     <string name="action_favorite">Save for later</string>
     <string name="action_share">Share</string>
     <string name="no_favorites">No saved articles </string>
+    <string name="logo">n@dget</string>
 
 </resources>

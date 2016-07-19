@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -19,11 +18,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,12 +27,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
-import com.wang.avi.AVLoadingIndicatorView;
 import java.net.ConnectException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -75,12 +68,10 @@ public class NadgetMain extends AppCompatActivity {
                 R.string.drawer_close
         ) {
             public void onDrawerClosed(View view) {
-                //actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Nadget</font>"));
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
-                //actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Nadget</font>"));
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
@@ -219,10 +210,12 @@ public class NadgetMain extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);    }
 
+
     private void setupToolbar()
     {
         Log.i(TAG,"setupToolbar");
 
+        getWindow().setStatusBarColor(Color.parseColor("#423131"));
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         //Spannable text = new SpannableString("Nadget");
         //text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
@@ -245,8 +238,18 @@ public class NadgetMain extends AppCompatActivity {
             if (actionBar != null)
             {
                 actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
-                //set the actionbar title
-                actionBar.setLogo(R.drawable.nadget_logo_white_large);
+                //set the actionbar titleSelected
+                TextView titleView = (TextView) new TextView(getBaseContext());
+                Typeface font = Typeface.createFromAsset(getResources().getAssets(),"AgencyFB-Bold.ttf");
+                titleView.setTypeface(font);
+                titleView.setTextSize(36.0f);
+                titleView.setText(R.string.logo);
+                titleView.setTextColor(Color.WHITE);
+
+                actionBar.setCustomView(titleView);
+
+                //actionBar.setTitle(R.string.app_name);
+                //actionBar.setLogo(R.drawable.nadget_logo_white_large);
                 actionBar.setDisplayUseLogoEnabled(true);
                 actionBar.setDisplayShowCustomEnabled(true);
 
@@ -486,7 +489,6 @@ public class NadgetMain extends AppCompatActivity {
         }
 
     }
-
 
     //dismiss Snackbars
     private void dismissSnackbars()

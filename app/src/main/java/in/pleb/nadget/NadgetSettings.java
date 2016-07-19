@@ -29,9 +29,11 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
@@ -57,8 +59,6 @@ public class NadgetSettings extends PreferenceActivity {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.settings);
-
-        setupToolbar();
 
         //initialize Dropbox
         AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
@@ -133,6 +133,31 @@ public class NadgetSettings extends PreferenceActivity {
 
     }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        getWindow().setStatusBarColor(Color.parseColor("#423131"));
+
+        LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
+        Toolbar bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
+        //change the back arrow color
+        bar.getNavigationIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+
+
+
+        Spannable text = new SpannableString("Settings");
+        text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        bar.setTitle(text);
+
+        root.addView(bar, 0); // insert at top
+        bar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
     protected void onResume()
     {
         super.onResume();
@@ -192,27 +217,6 @@ public class NadgetSettings extends PreferenceActivity {
         super.onDestroy();
     }
 
-
-    private void setupToolbar()
-    {
-        Log.i(TAG,"setupToolbar ***");
-        ActionBar actionBar = getActionBar();
-        if(actionBar!= null)
-        {
-            actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
-            actionBar.setTitle(R.string.settings);
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE);
-
-            //change the back arrow color
-            final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material );
-            upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-            actionBar.setHomeAsUpIndicator(upArrow);
-            actionBar.setHomeButtonEnabled(true);
-
-        }
-
-
-    }
 
     /**
      * Implementation of AsyncTask to upload file to dropbox

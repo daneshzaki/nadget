@@ -67,6 +67,8 @@ public class SavedFeeds extends AppCompatActivity implements AdapterView.OnItemC
     private void setupToolbar()
     {
         Log.i(TAG,"setupToolbar ***");
+        getWindow().setStatusBarColor(Color.parseColor("#423131"));
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 
         if (toolbar != null)
