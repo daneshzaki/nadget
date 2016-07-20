@@ -198,19 +198,6 @@ public class NadgetSettings extends PreferenceActivity {
         return true;
     }
 
-    //handle back button
-    @Override
-    public void onBackPressed()
-    {
-        Log.i(TAG,"onBackPressed");
-
-        //sending back to the main activity
-        Intent intent = new Intent(this, NadgetMain.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
-
-
     //cleanup
     protected void onDestroy()
     {

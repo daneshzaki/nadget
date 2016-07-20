@@ -19,6 +19,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -103,6 +104,7 @@ public class NadgetMain extends AppCompatActivity {
     public void onResume()
     {
         super.onResume();
+
         if(!isNetworkAvailable())
         {
             displayNetworkError();
@@ -128,6 +130,10 @@ public class NadgetMain extends AppCompatActivity {
 
     }
 
+    public void closeDrawer(){
+        drawerLayout.closeDrawer(Gravity.LEFT);
+    }
+
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
@@ -139,24 +145,28 @@ public class NadgetMain extends AppCompatActivity {
             if(position == 0)
             {
                 startActivity(new Intent(NadgetMain.this, SavedFeeds.class));
+                closeDrawer();
                 drawerToggle.syncState();
             }
             //feed selector clicked
             if(position == 1)
             {
                 startActivity(new Intent(NadgetMain.this, FeedSelector.class));
+                closeDrawer();
                 drawerToggle.syncState();
             }
             //suggest feeds clicked
             if(position == 2)
             {
                 startActivity(new Intent(NadgetMain.this, SuggestFeeds.class));
+                closeDrawer();
                 drawerToggle.syncState();
             }
             //settings clicked
             if(position == 3)
             {
                 startActivity(new Intent(NadgetMain.this, NadgetSettings.class));
+                closeDrawer();
                 drawerToggle.syncState();
             }
 
@@ -356,17 +366,30 @@ public class NadgetMain extends AppCompatActivity {
     {
         Log.i(TAG, "NadgetMain displayNetworkError");
         snackbarNetwork = Snackbar.make(this.findViewById(R.id.content_frame), "No network connection. Please refresh", Snackbar.LENGTH_INDEFINITE);
+        snackbarNetwork.setAction("Refresh", new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Log.i(TAG, "NadgetMain Refresh");
+            refreshMainList();
+        }
+    });
         snackbarNetwork.show();
-        //TODO: add button to refresh
     }
 
     //for all generic errors
     public void displayInternalError() {
         Log.i(TAG, "NadgetMain displayInternalError");
 
-        snackbarInternal = Snackbar.make(this.findViewById(R.id.content_frame), "Internal Error. Please restart the app", Snackbar.LENGTH_INDEFINITE);
+        snackbarInternal = Snackbar.make(this.findViewById(R.id.content_frame), "Internal Error. Please refresh", Snackbar.LENGTH_INDEFINITE);
+        snackbarInternal.setAction("Refresh", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "NadgetMain Refresh");
+                refreshMainList();
+            }
+        });
+
         snackbarInternal.show();
-        //TODO: add button to restart
     }
 
     //method to refresh
@@ -389,11 +412,20 @@ public class NadgetMain extends AppCompatActivity {
 
         //clear the lists
         clearAll();
-        //refreshCore();
-        //refresh the first displayed feed
-        //new RssReaderTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, (String) feedKeys[feedKeys.length-1].trim());
-        feedIndex = feedKeys.length -1;
-        new RssReaderTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (String) feedKeys[feedIndex].trim());
+
+        //to handle network issues
+        if(feedKeys != null)
+        {
+            Log.i(TAG, "refreshForPull not null");
+            feedIndex = feedKeys.length -1;
+            new RssReaderTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (String) feedKeys[feedIndex].trim());
+
+        }
+        else
+        {
+            Log.i(TAG, "refreshForPull null");
+            mainFragment.getSwipeRefreshLayout().setRefreshing(false);
+        }
 
     }
 

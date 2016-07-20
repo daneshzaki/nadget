@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -25,10 +26,12 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.Map;
 import java.util.Set;
 
-public class SavedFeeds extends AppCompatActivity implements AdapterView.OnItemClickListener
+public class SavedFeeds extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener
 {
 
     @Override
@@ -62,6 +65,33 @@ public class SavedFeeds extends AppCompatActivity implements AdapterView.OnItemC
         displayIntent.putExtra("post", bundle);
         startActivity(displayIntent);
 
+    }
+
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l)
+    {
+        Log.i(TAG,"onItemLongClick title = "+feedValues[i]);
+        Log.i(TAG,"onItemLongClick link = "+feedKeys[i]);
+        //remove or add article
+        editor = sharedPreferences.edit();
+
+        //if favorite exists, remove it else add it
+        if(sharedPreferences.contains(feedKeys[i]))
+        {
+            editor.remove(feedKeys[i]);
+            Toast.makeText(this, "Article removed from reading list", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            //write link, title to shared prefs file
+            editor.putString(feedKeys[i],feedValues[i]);
+            Toast.makeText(this, "Article saved to reading list", Toast.LENGTH_SHORT).show();
+        }
+
+        editor.commit();
+
+        return false;
     }
 
     private void setupToolbar()
@@ -133,6 +163,7 @@ public class SavedFeeds extends AppCompatActivity implements AdapterView.OnItemC
         ArrayAdapter adapter = createFavListAdapter(feedKeys);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
     }
 
     private ArrayAdapter createFavListAdapter(final String[] feedKeys)
@@ -155,14 +186,17 @@ public class SavedFeeds extends AppCompatActivity implements AdapterView.OnItemC
                     tv1.setTypeface(null, Typeface.BOLD);
                     tv1.setGravity(Gravity.LEFT);
                     tv1.setTextSize(16.0f);
-                    tv1.setPadding(5, 10, 5, 10);
+                    tv1.setPadding(10, 15, 10, 15);
+                    tv1.setElevation(16.0f);
+                    tv1.setTextColor(Color.parseColor("#3b3131"));
 
                     //fav link
                     tv2 = new TextView(getContext());
                     tv2.setTypeface(null, Typeface.ITALIC);
                     tv2.setGravity(Gravity.LEFT);
                     tv2.setTextSize(12.0f);
-                    tv2.setPadding(5, 10, 5, 10);
+                    tv2.setPadding(10, 15, 10, 15);
+                    tv1.setElevation(16.0f);
 
                     ll = new LinearLayout(getContext());
                     ll.setOrientation(LinearLayout.HORIZONTAL);
@@ -207,8 +241,8 @@ public class SavedFeeds extends AppCompatActivity implements AdapterView.OnItemC
     private String[] feedValues;
     private static final String TAG = "Nadget";
     private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
     private static final String FAVS_FILE_NAME = "in.pleb.nadget.FavoriteFeeds";
     private TextView emptyView;
     private ListView listView;
-
 }

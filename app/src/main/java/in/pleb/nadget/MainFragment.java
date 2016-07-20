@@ -99,7 +99,7 @@ public class MainFragment extends Fragment
 			}
 		});
 
-		//call asynctask to refresh
+		//call main to refresh
 		((NadgetMain)(getActivity())).refreshForPull();
 		//stop the refreshing indicator
 		swipeRefreshLayout.setRefreshing(false);

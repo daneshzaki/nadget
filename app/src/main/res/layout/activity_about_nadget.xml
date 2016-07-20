@@ -49,7 +49,8 @@
         android:layout_weight="0.09"
         android:textColor="#3B3131"
         android:typeface="normal"
-        android:textStyle="normal" />
+        android:textStyle="normal"
+        android:autoLink="web" />
 
 
 </LinearLayout>
