@@ -5,11 +5,7 @@ package in.pleb.nadget;
  */
 
 import android.os.AsyncTask;
-import android.provider.Settings;
 import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 import java.io.*;

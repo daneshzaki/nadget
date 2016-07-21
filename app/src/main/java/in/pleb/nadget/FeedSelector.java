@@ -174,7 +174,7 @@ public class FeedSelector extends AppCompatActivity
         Log.i(TAG,"feedPicker selected items keys= "+set.toString());
         //Log.i(TAG,"feedPicker selected items entries= "+entrySet.toString());
 
-        String[] feedKeys = (String[]) set.toArray(new String[set.size()]);
+        String[] feedKeys = set.toArray(new String[set.size()]);
 
         for (int i = 0; i <feedKeys.length ; i++)
         {

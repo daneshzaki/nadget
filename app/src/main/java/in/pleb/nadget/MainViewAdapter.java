@@ -1,17 +1,14 @@
 package in.pleb.nadget;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,7 +31,7 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
 {
     public MainViewAdapter(AppCompatActivity activity, ArrayList<RssItem> rssItems)
     {
-        this.activity = activity;
+        MainViewAdapter.activity = activity;
         this.rssItems = rssItems;
         Log.i(TAG,"MainViewAdapter rssItems size ="+rssItems.size());
 
@@ -42,7 +39,7 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         //setupFeedDrawables();
         setupFeedNames();
         //set fonts for all text
-        typeface = Typeface.createFromAsset( this.activity.getResources().getAssets(), "SourceSansPro-Regular.otf");
+        typeface = Typeface.createFromAsset( MainViewAdapter.activity.getResources().getAssets(), "SourceSansPro-Regular.otf");
     }
 
     //for rows
@@ -144,7 +141,7 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         Log.i(TAG, "saveFavorite : link - titleSelected "+ link +" - "+ title);
 
         //get prefs to store the values
-        sharedPreferences = this.activity.getSharedPreferences(FAVS_FILE_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = activity.getSharedPreferences(FAVS_FILE_NAME, Context.MODE_PRIVATE);
 
         //setup for writing
         editor = sharedPreferences.edit();
@@ -153,13 +150,13 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         if(sharedPreferences.contains(link))
         {
             editor.remove(link);
-            Toast.makeText(this.activity, "Article removed from reading list", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Article removed from reading list", Toast.LENGTH_SHORT).show();
         }
         else
         {
             //write link, titleSelected to shared prefs file
             editor.putString(link, title);
-            Toast.makeText(this.activity, "Article saved to reading list", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Article saved to reading list", Toast.LENGTH_SHORT).show();
         }
 
         editor.commit();
@@ -174,7 +171,7 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, title +"\n "+ link);
         sendIntent.setType("text/plain");
-        this.activity.startActivity(Intent.createChooser(sendIntent, this.activity.getResources().getText(R.string.action_share)));
+        activity.startActivity(Intent.createChooser(sendIntent, activity.getResources().getText(R.string.action_share)));
 
     }
 
@@ -200,12 +197,12 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
 
     public interface ItemClickListener
     {
-        public void onItemClick(int position, View v);
+        void onItemClick(int position, View v);
     }
 
     public void setOnItemClickListener(ItemClickListener itemClickListener)
     {
-        this.itemClickListener = itemClickListener;
+        MainViewAdapter.itemClickListener = itemClickListener;
     }
 
     //set rss items when available

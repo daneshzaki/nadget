@@ -7,7 +7,6 @@ import java.net.URL;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.helper.Validate;
 import org.jsoup.select.Elements;
 
 /**

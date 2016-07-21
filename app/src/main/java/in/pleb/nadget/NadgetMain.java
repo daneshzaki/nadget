@@ -29,7 +29,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -249,7 +249,7 @@ public class NadgetMain extends AppCompatActivity {
             {
                 actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3B3131")));
                 //set the actionbar titleSelected
-                TextView titleView = (TextView) new TextView(getBaseContext());
+                TextView titleView = new TextView(getBaseContext());
                 Typeface font = Typeface.createFromAsset(getResources().getAssets(),"AgencyFB-Bold.ttf");
                 titleView.setTypeface(font);
                 titleView.setTextSize(36.0f);
@@ -457,7 +457,7 @@ public class NadgetMain extends AppCompatActivity {
             //get prefs to get the values
             sharedPreferences = getSharedPreferences(FEEDS_FILE_NAME, Context.MODE_PRIVATE);
 
-            Map<String,?> feeds = (Map<String, String>) sharedPreferences.getAll();
+            Map<String,?> feeds = sharedPreferences.getAll();
 
             //check empty
             if(feeds == null || feeds.size()==0)

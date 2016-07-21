@@ -3,7 +3,6 @@ package in.pleb.nadget;
 import android.os.AsyncTask;
 import android.util.Log;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Created by danesh on 10-05-2016.

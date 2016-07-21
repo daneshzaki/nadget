@@ -15,10 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -133,7 +131,7 @@ public class SavedFeeds extends AppCompatActivity implements AdapterView.OnItemC
         //get prefs to get the values
         sharedPreferences = getSharedPreferences(FAVS_FILE_NAME, Context.MODE_PRIVATE);
 
-        Map<String,?> feeds = (Map<String, String>) sharedPreferences.getAll();
+        Map<String,?> feeds = sharedPreferences.getAll();
         //check empty
         if(feeds == null || feeds.size()==0)
         {

@@ -1,40 +1,23 @@
 package in.pleb.nadget;
 
 
-import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.app.ActionBar;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
@@ -42,12 +25,7 @@ import com.dropbox.client2.session.AppKeyPair;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.prefs.Preferences;
 
 
 public class NadgetSettings extends PreferenceActivity {
@@ -66,7 +44,7 @@ public class NadgetSettings extends PreferenceActivity {
         dbApi = new DropboxAPI<AndroidAuthSession>(session);
 
         // about dialog
-        Preference aboutPref = (Preference) findPreference("aboutPref");
+        Preference aboutPref = findPreference("aboutPref");
 
         aboutPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
@@ -82,7 +60,7 @@ public class NadgetSettings extends PreferenceActivity {
         );
 
         // open source licenses dialog
-        Preference osPref = (Preference) findPreference("osPref");
+        Preference osPref = findPreference("osPref");
 
         osPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
                                             {
@@ -101,7 +79,7 @@ public class NadgetSettings extends PreferenceActivity {
 
 
         // export contents to Dropbox
-        Preference exportPref = (Preference) findPreference("export");
+        Preference exportPref = findPreference("export");
         exportPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
                                                 {
 
@@ -117,7 +95,7 @@ public class NadgetSettings extends PreferenceActivity {
         );
 
         // import contents from Dropbox
-        Preference importPref = (Preference) findPreference("import");
+        Preference importPref = findPreference("import");
         importPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
                                                 {
 

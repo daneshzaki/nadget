@@ -1,7 +1,5 @@
 package in.pleb.nadget;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -13,10 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.method.ScrollingMovementMethod;
-import android.text.method.MovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.Window;
 import android.widget.TextView;
 
 /**
