@@ -70,11 +70,11 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         } else if (mLayoutManager instanceof GridLayoutManager) {
             lastVisibleItemPosition = ((GridLayoutManager) mLayoutManager).findLastVisibleItemPosition();
         }
-        Log.i(TAG, "***EndlessRecyclerViewScrollListener onScrolled***");
-        Log.i(TAG, "EndlessRecyclerViewScrollListener totalItemCount="+totalItemCount);
-        Log.i(TAG, "EndlessRecyclerViewScrollListener previousTotalItemCount="+previousTotalItemCount);
-        Log.i(TAG, "EndlessRecyclerViewScrollListener loading="+loading);
-        Log.i(TAG, "EndlessRecyclerViewScrollListener lastVisibleItemPosition="+lastVisibleItemPosition);
+        //Log.i(TAG, "***EndlessRecyclerViewScrollListener onScrolled***");
+        //Log.i(TAG, "EndlessRecyclerViewScrollListener totalItemCount="+totalItemCount);
+        //Log.i(TAG, "EndlessRecyclerViewScrollListener previousTotalItemCount="+previousTotalItemCount);
+        //Log.i(TAG, "EndlessRecyclerViewScrollListener loading="+loading);
+        //Log.i(TAG, "EndlessRecyclerViewScrollListener lastVisibleItemPosition="+lastVisibleItemPosition);
 
 
         // If the total item count is zero and the previous isn't, assume the
@@ -101,7 +101,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         // threshold should reflect how many total columns there are too
         //if (!loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
         if ((lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
-            Log.i(TAG, "--EndlessRecyclerViewScrollListener calling onLoadMore--");
+            //Log.i(TAG, "--EndlessRecyclerViewScrollListener calling onLoadMore--");
             currentPage++;
             onLoadMore(currentPage, totalItemCount);
             loading = true;

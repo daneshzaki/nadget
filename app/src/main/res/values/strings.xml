@@ -25,5 +25,8 @@
     <string name="action_share">Share</string>
     <string name="no_favorites">No saved articles </string>
     <string name="logo">n@dget</string>
+    <string name="rate">Now</string>
+    <string name="remind">Later</string>
+    <string name="noThanks">Never</string>
 
 </resources>

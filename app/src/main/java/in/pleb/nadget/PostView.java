@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,6 +29,15 @@ public class PostView extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        userPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(userPreferences.getBoolean("darkTheme", false))
+        {
+            setTheme(android.R.style.Theme_Material_NoActionBar);
+        }
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_view);
 
@@ -74,20 +84,36 @@ public class PostView extends AppCompatActivity
             return true;
         }
 
+        //android.R.id.home
+        if (id == android.R.id.home)
+        {
+            onBackPressed();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
+    public void onBackPressed()
+    {
+        Log.i(TAG, "PostView onBackPressed");
+        finish();
+    }
 
     //load the values in the screen
     private void loadValues()
     {
-
-
         //load the page in webview
         WebView webView = ((WebView) findViewById(R.id.webView));
 
         webView.setWebViewClient(new WebViewClient());
         webView.getSettings().setJavaScriptEnabled(true);
+
+        //for dark theme
+        if(userPreferences.getBoolean("darkTheme", false))
+        {
+            webView.setBackgroundColor(Color.GRAY);
+        }
 
         if(bundle.getString("link") != null )
         {
@@ -205,5 +231,5 @@ public class PostView extends AppCompatActivity
     private SharedPreferences.Editor editor;
     private boolean favoriteSet = false;
     private static final String FAVS_FILE_NAME = "in.pleb.nadget.FavoriteFeeds";
-
+    private SharedPreferences userPreferences;
 }

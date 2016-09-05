@@ -6,6 +6,5 @@
     android:gravity="center_vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:textColor="#3B3131"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:textStyle="bold" />
+    android:typeface="sans" />

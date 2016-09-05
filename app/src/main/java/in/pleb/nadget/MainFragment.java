@@ -2,13 +2,17 @@
 package in.pleb.nadget;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +33,7 @@ public class MainFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
 	{
-        View view = inflater.inflate(R.layout.main_fragment, container, false);
-
+		View view = inflater.inflate(R.layout.main_fragment, container, false);
 		// Retrieve the SwipeRefreshLayout and ListView instances
 		swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
 
@@ -66,7 +69,7 @@ public class MainFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState)
 	{
         super.onActivityCreated(savedInstanceState);
-		mainView.setBackgroundColor(Color.WHITE);
+		//mainView.setBackgroundColor(Color.WHITE);
 	}
 
 	@Override
@@ -77,9 +80,12 @@ public class MainFragment extends Fragment
 		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-				Log.i(TAG, "onRefresh called from SwipeRefreshLayout");
-				Toast.makeText(view.getContext(), "Refreshing", Toast.LENGTH_SHORT).show();
-				initiateRefresh();
+				Log.i(TAG, "onRefresh called from SwipeRefreshLayout items="+((NadgetMain) (getActivity())).isNoFeedsSelected());
+				swipeRefreshLayout.setRefreshing(false);
+				if(!((NadgetMain) (getActivity())).isNoFeedsSelected())
+				{
+					initiateRefresh();
+				}
 			}
 		});
 	}
@@ -90,7 +96,7 @@ public class MainFragment extends Fragment
 	{
 		Log.i(TAG, "****MainFragment*****");
 		Log.i(TAG, "MainFragment initiateRefresh");
-
+		Toast.makeText(this.getActivity(), "Refreshing", Toast.LENGTH_SHORT).show();
 		swipeRefreshLayout.post(new Runnable() {
 			@Override
 			public void run() {
@@ -101,6 +107,7 @@ public class MainFragment extends Fragment
 		//call main to refresh
 		((NadgetMain)(getActivity())).refreshForPull();
 		//stop the refreshing indicator
+		Log.i(TAG, "MainFragment initiateRefresh stop ref ");
 		swipeRefreshLayout.setRefreshing(false);
 
 	}

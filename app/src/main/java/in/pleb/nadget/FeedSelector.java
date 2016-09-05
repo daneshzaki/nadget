@@ -1,5 +1,6 @@
 package in.pleb.nadget;
 
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,13 @@ public class FeedSelector extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        //setTheme(android.R.style.Theme_Material_NoActionBar);
+        userPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(userPreferences.getBoolean("darkTheme", false))
+        {
+            setTheme(android.R.style.Theme_Material_NoActionBar);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed_selector);
 
@@ -204,4 +212,6 @@ public class FeedSelector extends AppCompatActivity
     private ActionBar actionBar = null;
     private static final String FEEDS_FILE_NAME = "in.pleb.nadget.SelectedFeeds";
     private static final String TAG = "Nadget";
+    private SharedPreferences userPreferences;
+
 }

@@ -1,12 +1,14 @@
 package in.pleb.nadget;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
@@ -23,6 +25,13 @@ public class SuggestFeeds extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        userPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(userPreferences.getBoolean("darkTheme", false))
+        {
+            setTheme(android.R.style.Theme_Material_NoActionBar);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_suggest_feeds);
 
@@ -97,4 +106,6 @@ public class SuggestFeeds extends AppCompatActivity {
     private EditText feedName;
     private EditText feedUrl;
     private EditText feedDesc;
+    private SharedPreferences userPreferences;
+
 }

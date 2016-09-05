@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,6 +41,9 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         setupFeedNames();
         //set fonts for all text
         typeface = Typeface.createFromAsset( MainViewAdapter.activity.getResources().getAssets(), "SourceSansPro-Regular.otf");
+
+        userPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+
     }
 
     //for rows
@@ -54,6 +58,7 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         PostViewHolder(View itemView)
         {
             super(itemView);
+
 
             cv = (CardView)itemView.findViewById(R.id.cv);
 
@@ -79,6 +84,9 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
     {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_view_row, parent, false);
         PostViewHolder holder = new PostViewHolder(v);
+        disablePics = userPreferences.getBoolean("disablePics",false);
+        //Log.i(TAG, "disable image loading = "+disablePics);
+
         return holder;
     }
 
@@ -115,8 +123,13 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         holder.postTitleView.setTypeface(typeface, Typeface.BOLD);
         holder.postDateView.setTypeface(typeface, Typeface.ITALIC);
 
-        Log.i(TAG,"MainViewAdapter imgurl = "+rssItems.get(position).getImageUrl());
-        if(rssItems.get(position).getImageUrl()!=null && rssItems.get(position).getImageUrl().trim().length()>0)
+        //Log.i(TAG,"MainViewAdapter imgurl = "+rssItems.get(position).getImageUrl());
+        //Log.i(TAG,"MainViewAdapter disablePics = "+disablePics);
+
+        //load only if user wants to see images
+        if(!disablePics
+                && rssItems.get(position).getImageUrl()!=null
+                            && rssItems.get(position).getImageUrl().trim().length()>0)
         {
             Picasso.with(activity.getBaseContext())
                     .load(rssItems.get(position).getImageUrl())
@@ -248,7 +261,8 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
     private SharedPreferences.Editor editor;
     private static final String FAVS_FILE_NAME = "in.pleb.nadget.FavoriteFeeds";
     private SharedPreferences sharedPreferences;
-
+    private SharedPreferences userPreferences;
+    private boolean disablePics = false;
     //private ArrayList<RssItem> updatedItems = new ArrayList<RssItem>();
 
 }

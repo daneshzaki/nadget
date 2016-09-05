@@ -8,6 +8,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,6 +35,14 @@ public class SavedFeeds extends AppCompatActivity implements AdapterView.OnItemC
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //setTheme(android.R.style.Theme_Material_NoActionBar);
+        userPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(userPreferences.getBoolean("darkTheme", false))
+        {
+            setTheme(android.R.style.Theme_Material_NoActionBar);
+        }
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved_feeds);
 
@@ -186,7 +195,7 @@ public class SavedFeeds extends AppCompatActivity implements AdapterView.OnItemC
                     tv1.setTextSize(16.0f);
                     tv1.setPadding(10, 15, 10, 15);
                     tv1.setElevation(16.0f);
-                    tv1.setTextColor(Color.parseColor("#3b3131"));
+                    //tv1.setTextColor(Color.parseColor("#3b3131"));
 
                     //fav link
                     tv2 = new TextView(getContext());
@@ -243,4 +252,5 @@ public class SavedFeeds extends AppCompatActivity implements AdapterView.OnItemC
     private static final String FAVS_FILE_NAME = "in.pleb.nadget.FavoriteFeeds";
     private TextView emptyView;
     private ListView listView;
+    private SharedPreferences userPreferences;
 }

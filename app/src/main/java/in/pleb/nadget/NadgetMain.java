@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -28,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.net.ConnectException;
@@ -42,12 +44,16 @@ public class NadgetMain extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        setupListAppearance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nadget_main);
 
         //navigation drawer
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerList = (ListView) findViewById(R.id.left_drawer);
+        navDrawLayout = (RelativeLayout) findViewById(R.id.left_drawer_content_layout);
+        navDrawLayout.setBackgroundColor(Color.WHITE);
+        drawerLogo = (ImageView) findViewById(R.id.image_view);
 
         // set the adapter for the navigation drawer
         drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, drawerItemLabels));
@@ -97,6 +103,9 @@ public class NadgetMain extends AppCompatActivity {
 
         //refresh main list
         refreshMainList();
+
+        //request users to rate the app
+        AppRater.app_launched(this);
     }
 
     //on resume
@@ -275,6 +284,35 @@ public class NadgetMain extends AppCompatActivity {
         }
     }
 
+    //setup main list view - background and image loading
+    private void setupListAppearance()
+    {
+        userPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Log.i(TAG, "setupListAppearance darkTheme = "+userPreferences.getBoolean("darkTheme", false));
+        if(userPreferences.getBoolean("darkTheme", false))
+        {
+            Log.i(TAG, "setupListAppearance setting dark theme");
+            setTheme(android.R.style.Theme_Material_NoActionBar);
+            if(navDrawLayout!= null)
+            {
+                navDrawLayout.setBackgroundColor(Color.DKGRAY);
+                drawerLogo.setImageResource(R.drawable.nadget_logo_white);
+            }
+        }
+        else
+        {
+            Log.i(TAG, "setupListAppearance setting light theme");
+            setTheme(android.R.style.Theme_Material_Light_NoActionBar);
+            if(navDrawLayout!= null)
+            {
+                navDrawLayout.setBackgroundColor(Color.WHITE);
+
+            }
+        }
+
+    }
+
+
     /**
      * Implementation of AsyncTask, to fetch the data in the background away from
      * the UI thread.
@@ -335,6 +373,7 @@ public class NadgetMain extends AppCompatActivity {
             //hide loading message
             loadingView.setVisibility(View.GONE);
 
+            Log.i(TAG, "***NadgetMain onPostExec refreshing = "+mainFragment.getSwipeRefreshLayout().isRefreshing());
             mainFragment.getSwipeRefreshLayout().setRefreshing(false);
             //update adapter
             adapter.notifyDataSetChanged();
@@ -395,6 +434,7 @@ public class NadgetMain extends AppCompatActivity {
     //method to refresh
     public void refreshMainList()
     {
+        setupListAppearance();
         Log.i(TAG, "refreshMainList entry isRefreshedMainList="+isRefreshedMainList);
             if(!isRefreshedMainList)
             {
@@ -419,12 +459,14 @@ public class NadgetMain extends AppCompatActivity {
             Log.i(TAG, "refreshForPull not null");
             feedIndex = feedKeys.length -1;
             new RssReaderTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (String) feedKeys[feedIndex].trim());
-
         }
         else
         {
-            Log.i(TAG, "refreshForPull null");
+            Log.i(TAG, "refreshForPull null ");
             mainFragment.getSwipeRefreshLayout().setRefreshing(false);
+            Log.i(TAG, "refreshForPull stopping refresh");
+            noFeedsSelected = true;
+            return;
         }
 
     }
@@ -470,7 +512,7 @@ public class NadgetMain extends AppCompatActivity {
                 //set empty message and show
                 emptyView.setVisibility(View.VISIBLE);
                 loadingView.setVisibility(View.GONE);
-
+                noFeedsSelected = true;
                 //Toast.makeText(this, R.string.no_data_available, Toast.LENGTH_LONG).show();
                 return;
             }
@@ -539,14 +581,21 @@ public class NadgetMain extends AppCompatActivity {
         return rssItems;
     }
 
+    //indicate no feeds selected to stop refresh
+    public boolean isNoFeedsSelected()
+    {
+        return noFeedsSelected;
+    }
+
     private static final String TAG = "Nadget";
     private MainFragment mainFragment;
 
     private String[] drawerItemLabels = new String[]{"Saved Articles", "Select Feeds", "Suggest Feeds", "Settings"};
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
+    private RelativeLayout navDrawLayout;
     private ListView drawerList;
-
+    private ImageView drawerLogo;
 
     private MainViewAdapter adapter = null;
     private android.support.v7.app.ActionBar actionBar;
@@ -554,6 +603,7 @@ public class NadgetMain extends AppCompatActivity {
     private static final int NUMBER_OF_POSTS = 10;
     private ArrayList<RssItem> rssItems = new ArrayList<RssItem>();
     private SharedPreferences sharedPreferences;
+    private SharedPreferences userPreferences;
     private static final String FEEDS_FILE_NAME = "in.pleb.nadget.SelectedFeeds";
     private Snackbar snackbarNetwork;
     private Snackbar snackbarInternal;
@@ -567,5 +617,7 @@ public class NadgetMain extends AppCompatActivity {
     //current executing feed index
     private int feedIndex = 0;
 
+    //set on no feeds selected
+    private boolean noFeedsSelected = false;
 
 }

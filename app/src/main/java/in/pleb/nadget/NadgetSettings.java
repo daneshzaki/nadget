@@ -2,12 +2,15 @@ package in.pleb.nadget;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
@@ -34,9 +37,17 @@ public class NadgetSettings extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        userPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if(userPreferences.getBoolean("darkTheme", false))
+        {
+            setTheme(android.R.style.Theme_Material_NoActionBar);
+        }
+
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.settings);
+
 
         //initialize Dropbox
         AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
@@ -109,6 +120,52 @@ public class NadgetSettings extends PreferenceActivity {
                                                 }
         );
 
+        // share app
+        Preference shareAppPref = findPreference("shareApp");
+
+        shareAppPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+                                                   public boolean onPreferenceClick(Preference preference) {
+                                                       Log.i(TAG, "share app clicked");
+                                                       shareApp();
+                                                       return true;
+                                                   }
+                                               }
+
+        );
+
+        // rate app
+        Preference rateAppPref = findPreference("rateApp");
+
+        rateAppPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+                                                 public boolean onPreferenceClick(Preference preference) {
+                                                     Log.i(TAG, "rate app clicked");
+                                                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=in.pleb.nadget")));
+                                                     return true;
+                                                 }
+                                             }
+
+        );
+
+        // dark theme
+        Preference darkThemePref = findPreference("darkTheme");
+
+        darkThemePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+                                                     public boolean onPreferenceClick(Preference preference) {
+                                                         Log.i(TAG, "dark theme clicked");
+                                                         finish();
+                                                         Intent intent = new Intent(NadgetSettings.this, NadgetSettings.class);
+                                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                         startActivity(intent);
+
+                                                         return true;
+                                                     }
+                                                 }
+
+        );
+
     }
 
     @Override
@@ -121,8 +178,6 @@ public class NadgetSettings extends PreferenceActivity {
         //change the back arrow color
         bar.getNavigationIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
 
-
-
         Spannable text = new SpannableString("Settings");
         text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         bar.setTitle(text);
@@ -131,6 +186,12 @@ public class NadgetSettings extends PreferenceActivity {
         bar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // sending back to the prev activity
+                Log.i(TAG, "calling main");
+                Intent intent = new Intent(NadgetSettings.this, NadgetMain.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 finish();
             }
         });
@@ -168,12 +229,28 @@ public class NadgetSettings extends PreferenceActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem)
     {
         // sending back to the prev activity
+        Log.i(TAG, "calling main");
         Intent intent = new Intent(this, NadgetMain.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
 
-        //finish();
+        finish();
         return true;
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        // sending back to the prev activity
+        Log.i(TAG, "calling main");
+        Intent intent = new Intent(this, NadgetMain.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+
+        finish();
+
     }
 
     //cleanup
@@ -379,6 +456,17 @@ public class NadgetSettings extends PreferenceActivity {
 
     }
 
+    public void shareApp()
+    {
+        Log.i(TAG, "shareApp");
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, APP_SHARE_TEXT);
+        sendIntent.setType("text/plain");
+        startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.action_share)));
+
+    }
+
     private DropboxAPI<AndroidAuthSession> dbApi;
 
     private boolean dbExport = false;
@@ -394,5 +482,9 @@ public class NadgetSettings extends PreferenceActivity {
     private static final String FAVS_FILE_NAME = "in.pleb.nadget.FavoriteFeeds.xml";
     private static final String FEEDS_FILE_NAME = "in.pleb.nadget.SelectedFeeds.xml";
 
+    //app share text
+    private static final String APP_SHARE_TEXT = "Checkout my app Nadget for cool tech news " +
+            "- https://play.google.com/store/apps/details?id=in.pleb.nadget&rdid=in.pleb.nadget";
 
+    private SharedPreferences userPreferences;
 }

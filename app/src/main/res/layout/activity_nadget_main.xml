@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".NadgetMain"
     android:fitsSystemWindows="true"
-    android:background="#ffffff">
+    >
 
 
     <!-- The main content view -->
@@ -73,7 +73,6 @@
                     android:id="@+id/main_fragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@android:color/white"
                     android:text="@string/placeholder"
                     tools:layout="@layout/main_fragment"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
@@ -92,7 +91,6 @@
         <ImageView android:id="@+id/image_view"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="#ffffff"
             android:src="@drawable/nadget2" />
 
         <ListView android:id="@+id/left_drawer"
@@ -102,8 +100,7 @@
             android:layout_below="@id/image_view"
             android:choiceMode="singleChoice"
             android:divider="@android:color/transparent"
-            android:dividerHeight="0dp"
-            android:background="@android:color/white"/>
+            android:dividerHeight="0dp"/>
 
     </RelativeLayout>
 

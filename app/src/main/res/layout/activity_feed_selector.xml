@@ -5,8 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.pleb.nadget.FeedSelector"
-    android:background="#ffffff">
+    tools:context="in.pleb.nadget.FeedSelector">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/main_toolbar"
@@ -24,7 +23,6 @@
         android:layout_weight="1"
         app:cp_addIcon="@android:drawable/ic_menu_add"
         app:cp_cancelIcon="@android:drawable/ic_menu_close_clear_cancel"
-        app:cp_itemBackgroundNormal="#C0C0C0"
         app:cp_itemBackgroundPressed="#5D4037"
         app:cp_itemMargin="5dp"
         app:cp_textPaddingBottom="5dp"

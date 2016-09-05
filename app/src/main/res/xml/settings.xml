@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:enabled="true"
+        android:key="disablePics"
+        android:selectable="true"
+        android:summary="Disable loading of images in main view"
+        android:title="Disable Image Loading" />
+    <SwitchPreference
+        android:enabled="true"
+        android:key="darkTheme"
+        android:selectable="true"
+        android:summary="Shows a theme with a dark background"
+        android:title="Dark Theme" />
     <Preference
         android:enabled="true"
         android:key="export"
@@ -12,6 +24,18 @@
         android:selectable="true"
         android:summary="Import feeds and saved articles from Dropbox"
         android:title="Import" />
+    <Preference
+        android:enabled="true"
+        android:key="rateApp"
+        android:selectable="true"
+        android:summary="Like the app? Please rate it :)"
+        android:title="Rate the app" />
+    <Preference
+        android:enabled="true"
+        android:key="shareApp"
+        android:selectable="true"
+        android:summary="Share the app with friends"
+        android:title="Share the app" />
     <Preference
         android:enabled="true"
         android:key="aboutPref"
