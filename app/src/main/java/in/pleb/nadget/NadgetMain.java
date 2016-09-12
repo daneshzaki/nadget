@@ -296,7 +296,7 @@ public class NadgetMain extends AppCompatActivity {
             if(navDrawLayout!= null)
             {
                 navDrawLayout.setBackgroundColor(Color.DKGRAY);
-                drawerLogo.setImageResource(R.drawable.nadget_logo_white);
+                drawerLogo.setImageResource(R.drawable.nadget_drawer_logo_white);
             }
         }
         else
