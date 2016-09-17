@@ -20,6 +20,7 @@ public class RssItem
             Log.i(TAG, "date in="+pubDate);
             //format for almost all feeds
             SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
+            dateFormat.setLenient(true);
             Date pubDateDt = dateFormat.parse(pubDate);
             //pubDate = dateFormat.format(pubDateDt);
             PrettyTime prettyTime = new PrettyTime();
@@ -37,6 +38,7 @@ public class RssItem
             try
             {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("EEE ,dd MMM yyyy HH:mm:ss Z");
+                dateFormat.setLenient(true);
                 Date pubDateDt = dateFormat.parse(pubDate);
                 PrettyTime prettyTime = new PrettyTime();
                 pubDate = prettyTime.formatDuration(pubDateDt) +" ago";
@@ -49,6 +51,7 @@ public class RssItem
                 try
                 {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy, HH:mm");
+                    dateFormat.setLenient(true);
                     Date pubDateDt = dateFormat.parse(pubDate);
                     PrettyTime prettyTime = new PrettyTime();
                     pubDate = prettyTime.formatDuration(pubDateDt) +" ago";
@@ -61,6 +64,7 @@ public class RssItem
                     {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ"	);
                         //                                                 "2016-06-24T20:42:33+05:30"
+                        dateFormat.setLenient(true);
                         Date pubDateDt = dateFormat.parse(pubDate);
                         PrettyTime prettyTime = new PrettyTime();
                         pubDate = prettyTime.formatDuration(pubDateDt) +" ago";
@@ -69,8 +73,9 @@ public class RssItem
                     catch(java.text.ParseException yetAnotherEx) {
                         //News18 format
                         try {
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ssZ");
-                            //                                                 "Fri, 8 Jul 2016 14:14:12+05:30"
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE,MMMM d,yyyy h:mm a");
+                            //                                                 "Saturday,September 17,2016 12:52 pm"
+                            dateFormat.setLenient(true);
                             Date pubDateDt = dateFormat.parse(pubDate);
                             PrettyTime prettyTime = new PrettyTime();
                             pubDate = prettyTime.formatDuration(pubDateDt) + " ago";
@@ -79,7 +84,7 @@ public class RssItem
                         //beyond that format just display the input date
                         catch(java.text.ParseException anotherEx2)
                         {
-                            anotherEx2.toString();
+                            Log.e(TAG,"News 18 date format error: "+anotherEx2.toString());
                             this.pubDate = pubDate;
                         }
                     }
