@@ -28,5 +28,7 @@
     <string name="rate">Now</string>
     <string name="remind">Later</string>
     <string name="noThanks">Never</string>
+    <string name="darkTheme">Dark Theme</string>
+    <string name="notify">Time for some tech news!</string>
 
 </resources>

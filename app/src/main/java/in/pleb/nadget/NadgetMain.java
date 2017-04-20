@@ -1,5 +1,8 @@
 package in.pleb.nadget;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +19,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.*;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,16 +29,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+
+
+
 
 
 public class NadgetMain extends AppCompatActivity {
@@ -103,6 +111,9 @@ public class NadgetMain extends AppCompatActivity {
 
         //refresh main list
         refreshMainList();
+
+        //build notification
+        Notifier.process(this);
 
         //request users to rate the app
         AppRater.app_launched(this);
@@ -212,22 +223,106 @@ public class NadgetMain extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // If the nav drawer is open, hide action items related to the content view
-        //Log.i(TAG, "onPrepareOptionsMenu");
-        //boolean drawerOpen = drawerLayout.isDrawerOpen(drawerList);
-        return super.onPrepareOptionsMenu(menu);
+        // Inflate the menu; this adds items to the action bar if it is present.
+        Log.i(TAG,"onPrepareOptionsMenu ");
+
+        MenuItem item = menu.findItem(R.id.action_darktheme);
+
+        Log.i(TAG,"onPrepareOptionsMenu darktheme sel* "+userPreferences.getBoolean("darkTheme", false));
+
+        //inverse title like Google news
+        if(userPreferences.getBoolean("darkTheme", false))
+        {
+            item.setTitle("Light Theme");
+        }
+        else
+        {
+            item.setTitle("Dark Theme");
+        }
+
+        Log.i(TAG,"onPrepareOptionsMenu item title = "+item.getTitle());
+
+        return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        Log.i(TAG,"onCreateOptionsMenu ");
+
+        getMenuInflater().inflate(R.menu.menu, menu);
+        MenuItem item = menu.findItem(R.id.action_darktheme);
+
+        Log.i(TAG,"onCreateOptionsMenu darktheme sel* "+userPreferences.getBoolean("darkTheme", false));
+
+        //inverse title like Google news
+        if(userPreferences.getBoolean("darkTheme", false))
+        {
+            item.setTitle("Light Theme");
+        }
+        else
+        {
+            item.setTitle("Dark Theme");
+        }
+
+        Log.i(TAG,"onCreateOptionsMenu item title = "+item.getTitle());
+
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         // Handle your other action bar items...
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                // User chose the "Settings" item, show the app settings UI...
+                Log.i(TAG,"onOptionsItemSelected settings sel");
+                startActivity(new Intent(NadgetMain.this, NadgetSettings.class));
+                return true;
 
-        return super.onOptionsItemSelected(item);    }
+            case R.id.action_darktheme:
+                Log.i(TAG,"onOptionsItemSelected darktheme sel ");
+                //rec the selection
+                editor = userPreferences.edit();
+
+                //show dark theme
+                Log.i(TAG,"onOptionsItemSelected darktheme sel* "+item.isChecked());
+                //editor.putBoolean("darkTheme", true);
+                if(item.getTitle().equals("Dark Theme"))
+                {
+                    Log.i(TAG,"onOptionsItemSelected darktheme 1st if");
+                    editor.putBoolean("darkTheme", true);
+                }
+                else
+                {
+                    Log.i(TAG,"onOptionsItemSelected darktheme 2nd if");
+                    //show light theme
+                    editor.putBoolean("darkTheme", false);
+
+                }
+
+                editor.commit();
+
+
+                //reload the activity
+                finish();
+                Intent intent = new Intent(NadgetMain.this, NadgetMain.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
+                return true;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
 
     private void setupToolbar()
@@ -620,4 +715,8 @@ public class NadgetMain extends AppCompatActivity {
     //set on no feeds selected
     private boolean noFeedsSelected = false;
 
+    //to store dark theme
+    private SharedPreferences.Editor editor;
+
+    private Menu toolbarMenu;
 }

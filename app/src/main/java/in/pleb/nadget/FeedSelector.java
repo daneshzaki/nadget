@@ -142,7 +142,9 @@ public class FeedSelector extends AppCompatActivity
                 actionBar.setTitle(text);
 
                 //change the back arrow color
-                final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material );
+                //final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material );
+                final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha );
+
                 upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                 actionBar.setHomeAsUpIndicator(upArrow);
 
