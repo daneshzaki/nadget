@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.*;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -42,11 +44,10 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
+import static in.pleb.nadget.R.layout.drawer_list_item;
 
 
-
-
-public class NadgetMain extends AppCompatActivity {
+public class NadgetMain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
 
     @Override
@@ -58,16 +59,8 @@ public class NadgetMain extends AppCompatActivity {
 
         //navigation drawer
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerList = (ListView) findViewById(R.id.left_drawer);
-        navDrawLayout = (RelativeLayout) findViewById(R.id.left_drawer_content_layout);
-        navDrawLayout.setBackgroundColor(Color.WHITE);
-        drawerLogo = (ImageView) findViewById(R.id.image_view);
-
-        // set the adapter for the navigation drawer
-        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, drawerItemLabels));
-
-        // set the nav drawer list's click listener
-        drawerList.setOnItemClickListener(new DrawerItemClickListener());
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         //set the action bar main_toolbar
         setupToolbar();
@@ -154,44 +147,43 @@ public class NadgetMain extends AppCompatActivity {
         drawerLayout.closeDrawer(Gravity.LEFT);
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView parent, View view, int position, long id) {
-            Log.i(TAG, "Nav bar item clicked is "+drawerItemLabels[position]);
 
-            //{"Saved Articles", "Select Feeds", "Suggest Feeds", "Settings"};
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem)
+    {
+        drawerLayout.closeDrawers();
+        String menuItemTitle = (String) menuItem.getTitle();
 
-            //saved articles clicked
-            if(position == 0)
-            {
-                startActivity(new Intent(NadgetMain.this, SavedFeeds.class));
-                closeDrawer();
-                drawerToggle.syncState();
-            }
-            //feed selector clicked
-            if(position == 1)
-            {
-                startActivity(new Intent(NadgetMain.this, FeedSelector.class));
-                closeDrawer();
-                drawerToggle.syncState();
-            }
-            //suggest feeds clicked
-            if(position == 2)
-            {
-                startActivity(new Intent(NadgetMain.this, SuggestFeeds.class));
-                closeDrawer();
-                drawerToggle.syncState();
-            }
-            //settings clicked
-            if(position == 3)
-            {
-                startActivity(new Intent(NadgetMain.this, NadgetSettings.class));
-                closeDrawer();
-                drawerToggle.syncState();
-            }
-
+        //saved articles clicked
+        if(menuItemTitle.equals(drawerItemLabels[0]))
+        {
+            startActivity(new Intent(NadgetMain.this, SavedFeeds.class));
+            closeDrawer();
+            drawerToggle.syncState();
         }
+        //feed selector clicked
+        if(menuItemTitle.equals(drawerItemLabels[1]))
+        {
+            startActivity(new Intent(NadgetMain.this, FeedSelector.class));
+            closeDrawer();
+            drawerToggle.syncState();
+        }
+        //suggest feeds clicked
+        if(menuItemTitle.equals(drawerItemLabels[2]))
+        {
+            startActivity(new Intent(NadgetMain.this, SuggestFeeds.class));
+            closeDrawer();
+            drawerToggle.syncState();
+        }
+        if(menuItemTitle.equals(drawerItemLabels[3]))
+        {
+            startActivity(new Intent(NadgetMain.this, NadgetSettings.class));
+            closeDrawer();
+            drawerToggle.syncState();
+        }
+        return true;
     }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -274,6 +266,7 @@ public class NadgetMain extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
         if (drawerToggle.onOptionsItemSelected(item)) {
@@ -294,7 +287,6 @@ public class NadgetMain extends AppCompatActivity {
 
                 //show dark theme
                 Log.i(TAG,"onOptionsItemSelected darktheme sel* "+item.isChecked());
-                //editor.putBoolean("darkTheme", true);
                 if(item.getTitle().equals("Dark Theme"))
                 {
                     Log.i(TAG,"onOptionsItemSelected darktheme 1st if");
@@ -331,23 +323,14 @@ public class NadgetMain extends AppCompatActivity {
 
         getWindow().setStatusBarColor(Color.parseColor("#423131"));
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        //Spannable text = new SpannableString("Nadget");
-        //text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-
         if (toolbar != null)
         {
             setSupportActionBar(toolbar);
-            //toolbar.setTitleTextAppearance(this, R.style.ToolBarTextStyle);
-            //toolbar.setSubtitleTextColor(Color.WHITE);
             toolbar.setBackground(new ColorDrawable(Color.parseColor("#3B3131")));
 
             CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
             collapsingToolbar.setBackgroundColor(Color.parseColor("#3B3131"));
-            //collapsingToolbar.setTitleEnabled(false);
-
-
             actionBar = getSupportActionBar();
-            Log.i(TAG,"actionbar= "+actionBar);
 
             if (actionBar != null)
             {
@@ -361,9 +344,6 @@ public class NadgetMain extends AppCompatActivity {
                 titleView.setTextColor(Color.WHITE);
 
                 actionBar.setCustomView(titleView);
-
-                //actionBar.setTitle(R.string.app_name);
-                //actionBar.setLogo(R.drawable.nadget_logo_white_large);
                 actionBar.setDisplayUseLogoEnabled(true);
                 actionBar.setDisplayShowCustomEnabled(true);
 
@@ -384,25 +364,19 @@ public class NadgetMain extends AppCompatActivity {
     {
         userPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Log.i(TAG, "setupListAppearance darkTheme = "+userPreferences.getBoolean("darkTheme", false));
+        Log.i(TAG, "setupListAppearance notify = "+userPreferences.getBoolean("notify", false));
+        Log.i(TAG, "setupListAppearance notifyTimeHr = "+userPreferences.getInt("notifyTimeHr", 0));
+        Log.i(TAG, "setupListAppearance notifyTimeMin = "+userPreferences.getInt("notifyTimeMin", 0));
+
         if(userPreferences.getBoolean("darkTheme", false))
         {
             Log.i(TAG, "setupListAppearance setting dark theme");
             setTheme(android.R.style.Theme_Material_NoActionBar);
-            if(navDrawLayout!= null)
-            {
-                navDrawLayout.setBackgroundColor(Color.DKGRAY);
-                drawerLogo.setImageResource(R.drawable.nadget_drawer_logo_white);
-            }
         }
         else
         {
             Log.i(TAG, "setupListAppearance setting light theme");
             setTheme(android.R.style.Theme_Material_Light_NoActionBar);
-            if(navDrawLayout!= null)
-            {
-                navDrawLayout.setBackgroundColor(Color.WHITE);
-
-            }
         }
 
     }
@@ -685,12 +659,9 @@ public class NadgetMain extends AppCompatActivity {
     private static final String TAG = "Nadget";
     private MainFragment mainFragment;
 
-    private String[] drawerItemLabels = new String[]{"Saved Articles", "Select Feeds", "Suggest Feeds", "Settings"};
+    private String[] drawerItemLabels = new String[]{"Saved Articles", "Select Feeds", "Suggest News Source", "Settings"};
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
-    private RelativeLayout navDrawLayout;
-    private ListView drawerList;
-    private ImageView drawerLogo;
 
     private MainViewAdapter adapter = null;
     private android.support.v7.app.ActionBar actionBar;
@@ -718,5 +689,6 @@ public class NadgetMain extends AppCompatActivity {
     //to store dark theme
     private SharedPreferences.Editor editor;
 
-    private Menu toolbarMenu;
+    private NavigationView navigationView;
+
 }

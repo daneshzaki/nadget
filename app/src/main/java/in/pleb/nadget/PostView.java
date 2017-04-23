@@ -109,11 +109,6 @@ public class PostView extends AppCompatActivity
         webView.setWebViewClient(new WebViewClient());
         webView.getSettings().setJavaScriptEnabled(true);
 
-        //for dark theme
-        if(userPreferences.getBoolean("darkTheme", false))
-        {
-            webView.setBackgroundColor(Color.GRAY);
-        }
 
         if(bundle.getString("link") != null )
         {

@@ -1,6 +1,9 @@
 package in.pleb.nadget;
 
 
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -11,16 +14,20 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.format.DateFormat;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TimePicker;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
@@ -29,6 +36,10 @@ import com.dropbox.client2.session.AppKeyPair;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
 
 public class NadgetSettings extends PreferenceActivity {
@@ -38,10 +49,25 @@ public class NadgetSettings extends PreferenceActivity {
     protected void onCreate(Bundle savedInstanceState)
     {
         userPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = userPreferences.edit();
 
         if(userPreferences.getBoolean("darkTheme", false))
         {
             setTheme(android.R.style.Theme_Material_NoActionBar);
+        }
+
+        Log.i(TAG, "onCreate notify "+userPreferences.getBoolean("notify", false));
+
+        //disable notify time if notifications are disabled
+        if(!userPreferences.getBoolean("notify", false))
+        {
+            Log.i(TAG, "onCreate notifyTimePref ");
+
+            //disable notify time pref
+            if(notifyTimePref!=null)
+            {
+                notifyTimePref.setEnabled(userPreferences.getBoolean("notify", false));
+            }
         }
 
         super.onCreate(savedInstanceState);
@@ -166,7 +192,60 @@ public class NadgetSettings extends PreferenceActivity {
 
         );
 
+        //notification time
+        notifyTimePref = findPreference("notifyTime");
+
+        notifyTimePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+                                                    public boolean onPreferenceClick(Preference preference) {
+                                                        Log.i(TAG, "notify time clicked");
+                                                        //display time picker
+                                                        // Get Current Time
+                                                        final Calendar c = Calendar.getInstance();
+                                                        int curHr = c.get(Calendar.HOUR_OF_DAY);
+                                                        int curMin = c.get(Calendar.MINUTE);
+
+                                                        new TimePickerDialog(NadgetSettings.this, timeSetListener, curHr, curMin, false).show();
+
+                                                        return true;
+                                                    }
+                                                }
+        );
+
+        //notifications
+        final SwitchPreference notifyPref = (SwitchPreference) findPreference("notify");
+
+        notifyPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+                                                       public boolean onPreferenceClick(Preference preference) {
+                                                           Log.i(TAG, "notify clicked state="+notifyPref.isChecked());
+                                                           //enable notification time pref
+
+                                                           notifyTimePref.setEnabled(notifyPref.isChecked());
+                                                           return true;
+                                                       }
+                                                   }
+        );
+
     }
+
+    //for getting notification time
+    private TimePickerDialog.OnTimeSetListener timeSetListener =
+            new TimePickerDialog.OnTimeSetListener() {
+
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    selHr = hourOfDay;
+                    selMin = minute;
+                    Log.i(TAG, "***" + selHr + ":" + selMin);
+                    notifyTimePref.setSummary("You will be notified at "+selHr + ":" + selMin);
+                    //set the time selected in prefs
+                    editor.putInt("notifyTimeHr", selHr);
+                    editor.putInt("notifyTimeMin", selMin);
+                    editor.commit();
+                }
+
+
+            };
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -200,6 +279,17 @@ public class NadgetSettings extends PreferenceActivity {
     protected void onResume()
     {
         super.onResume();
+
+        //disable notify time if notifications are disabled
+        if(!userPreferences.getBoolean("notify", false))
+        {
+            //disable notify time pref
+            if(notifyTimePref!=null)
+            {
+                notifyTimePref.setEnabled(userPreferences.getBoolean("notify", false));
+            }
+        }
+
 
         if (dbApi.getSession().authenticationSuccessful()) {
             try {
@@ -487,4 +577,10 @@ public class NadgetSettings extends PreferenceActivity {
             "- https://play.google.com/store/apps/details?id=in.pleb.nadget&rdid=in.pleb.nadget";
 
     private SharedPreferences userPreferences;
+    private SharedPreferences.Editor editor;
+
+    private Preference notifyTimePref;
+
+    private int selHr, selMin;
+
 }

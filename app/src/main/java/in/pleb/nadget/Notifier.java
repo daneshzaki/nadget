@@ -1,5 +1,6 @@
 package in.pleb.nadget;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,8 +9,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
+import org.ocpsoft.prettytime.*;
+
+import java.util.Calendar;
 
 /**
  * This class does the following:
@@ -18,50 +24,41 @@ import android.support.v4.app.TaskStackBuilder;
  */
 
 public class Notifier {
-    public static void process(Context mContext)
+    public static void process(Context context)
     {
-        //TODO: get notifications display - yes/no from settings
-        SharedPreferences prefs = mContext.getSharedPreferences("notifications", 0);
-        if (prefs.getBoolean("dontshowagain", false)) { return ; }
 
-        //if yes
-        //get time of display
-        //get current time
-        //if current time = time of display then show notification
-    /*
-        if (System.currentTimeMillis() >= user_notification_time) {
-            showNotification(mContext);
-        }*/
+        userPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (userPreferences.getBoolean("notify", false)) {
+
+            int notifyTimeHr = userPreferences.getInt("notifyTimeHr", 0);
+            int notifyTimeMin = userPreferences.getInt("notifyTimeMin", 0);
+            Log.i(TAG, "Notifier setupListAppearance notifyTimeHr = "+notifyTimeHr);
+            Log.i(TAG, "Notifier setupListAppearance notifyTimeMin = "+notifyTimeMin);
+
+            long notifyTime = ((notifyTimeHr*60) + notifyTimeMin) * 60000;
+
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(context, NotificationReceiver.class);
+            PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+            //alarmManager.set(AlarmManager.RTC_WAKEUP, notifyTime, alarmIntent);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, notifyTime, 86400000,alarmIntent);
+
+        }
+        else {
+
+            return;
+
+        }
+
     }
 
 
-    public static void showNotification(final Context mContext)
-    {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
-        mBuilder.setSmallIcon(R.drawable.nadget2);
-        mBuilder.setContentTitle("Nadget");
-        mBuilder.setContentText("Time for some tech news!");
-
-        //the activity to display
-        Intent resultIntent = new Intent(mContext, NadgetMain.class);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-        stackBuilder.addParentStack(NadgetMain.class);
-
-        // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(resultPendingIntent);
-
-        NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        int notificationID = 1;
-
-        // notificationID allows you to update the notification later on.
-        mNotificationManager.notify(notificationID, mBuilder.build());
-    }
 
     private final static String APP_TITLE = "Nadget";
-    private final static int DAYS_UNTIL_PROMPT = 30;
-    private final static int LAUNCHES_UNTIL_PROMPT = 30;
 
+    private static SharedPreferences userPreferences;
+    private static final String TAG = "Nadget";
 
 }

@@ -10,8 +10,20 @@
         android:enabled="true"
         android:key="darkTheme"
         android:selectable="true"
-        android:summary="Shows a theme with a dark background"
+        android:summary="Show a theme with a dark background"
         android:title="Dark Theme" />
+    <SwitchPreference
+        android:enabled="true"
+        android:key="notify"
+        android:selectable="true"
+        android:summary="Show notifications"
+        android:title="Notifications" />
+    <Preference
+        android:key="notifyTime"
+        android:selectable="true"
+        android:summary="Select time to notify"
+        android:title="Notification Time" />
+
     <Preference
         android:enabled="true"
         android:key="export"

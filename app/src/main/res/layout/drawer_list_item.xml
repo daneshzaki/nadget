@@ -1,3 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<ImageView android:id="@+id/flag"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:paddingLeft="10dp"
+    android:paddingTop="10dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="10dp"
+    android:layout_alignParentLeft="true"
+    android:layout_centerVertical="true"
+    android:contentDescription="@string/app_name"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
+
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
     android:layout_width="match_parent"
@@ -8,3 +28,5 @@
     android:paddingRight="16dp"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:typeface="sans" />
+
+    </LinearLayout>
