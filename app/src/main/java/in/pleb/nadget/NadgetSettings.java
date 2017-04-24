@@ -69,6 +69,16 @@ public class NadgetSettings extends PreferenceActivity {
                 notifyTimePref.setEnabled(userPreferences.getBoolean("notify", false));
             }
         }
+        else
+        {
+            //set the time from prefs
+            if(notifyTimePref!=null)
+            {
+                notifyTimePref.setSummary("You will be notified at "+userPreferences.getInt("notifyTimeHr", 0)+":"+userPreferences.getInt("notifyTimeMin", 0));
+            }
+
+
+        }
 
         super.onCreate(savedInstanceState);
 
@@ -288,6 +298,15 @@ public class NadgetSettings extends PreferenceActivity {
             {
                 notifyTimePref.setEnabled(userPreferences.getBoolean("notify", false));
             }
+        }
+        else
+        {
+            //set the time from prefs
+            if(notifyTimePref!=null)
+            {
+                notifyTimePref.setSummary("You will be notified at "+userPreferences.getInt("notifyTimeHr", 0)+":"+userPreferences.getInt("notifyTimeMin", 0));
+            }
+
         }
 
 

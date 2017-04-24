@@ -1,5 +1,6 @@
 package in.pleb.nadget;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,6 +16,7 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -44,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
-import static in.pleb.nadget.R.layout.drawer_list_item;
 
 
 public class NadgetMain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -65,8 +66,13 @@ public class NadgetMain extends AppCompatActivity implements NavigationView.OnNa
         //set the action bar main_toolbar
         setupToolbar();
 
-        emptyView = (ImageView) findViewById(R.id.empty_view);
-        loadingView = (com.wang.avi.AVLoadingIndicatorView) findViewById(R.id.loading_view);
+        //emptyView = (ImageView) findViewById(R.id.empty_view);
+        emptyViewLogo = (TextView) findViewById(R.id.empty_view_logo);
+        Typeface font = Typeface.createFromAsset(getResources().getAssets(),"AgencyFB-Bold.ttf");
+        emptyViewLogo.setTypeface(font);
+        emptyViewLogo.setTextSize(36.0f);
+
+        emptyView = (TextView) findViewById(R.id.empty_view);
 
         drawerToggle = new ActionBarDrawerToggle(
                 this,
@@ -372,6 +378,19 @@ public class NadgetMain extends AppCompatActivity implements NavigationView.OnNa
         {
             Log.i(TAG, "setupListAppearance setting dark theme");
             setTheme(android.R.style.Theme_Material_NoActionBar);
+            emptyViewLogo = (TextView) findViewById(R.id.empty_view_logo);
+            emptyView = (TextView) findViewById(R.id.empty_view);
+
+            if(emptyViewLogo!=null)
+            {
+                emptyViewLogo.setTextColor(Color.GRAY);
+            }
+
+            if(emptyView!=null)
+            {
+                emptyView.setTextColor(Color.GRAY);
+            }
+
         }
         else
         {
@@ -438,9 +457,6 @@ public class NadgetMain extends AppCompatActivity implements NavigationView.OnNa
 
             //show recycler view to show empty/loading message
             mainFragment.setMainViewVisible(true);
-
-            //hide loading message
-            loadingView.setVisibility(View.GONE);
 
             Log.i(TAG, "***NadgetMain onPostExec refreshing = "+mainFragment.getSwipeRefreshLayout().isRefreshing());
             mainFragment.getSwipeRefreshLayout().setRefreshing(false);
@@ -559,9 +575,6 @@ public class NadgetMain extends AppCompatActivity implements NavigationView.OnNa
         {
             dismissSnackbars();
 
-            //set loading message and show
-            loadingView.setVisibility(View.VISIBLE);
-
             //hide recycler view to show empty/loading message
             mainFragment.setMainViewVisible(false);
 
@@ -580,7 +593,8 @@ public class NadgetMain extends AppCompatActivity implements NavigationView.OnNa
 
                 //set empty message and show
                 emptyView.setVisibility(View.VISIBLE);
-                loadingView.setVisibility(View.GONE);
+                emptyViewLogo.setVisibility(View.VISIBLE);
+
                 noFeedsSelected = true;
                 //Toast.makeText(this, R.string.no_data_available, Toast.LENGTH_LONG).show();
                 return;
@@ -674,8 +688,8 @@ public class NadgetMain extends AppCompatActivity implements NavigationView.OnNa
     private Snackbar snackbarNetwork;
     private Snackbar snackbarInternal;
 
-    private ImageView emptyView;
-    private com.wang.avi.AVLoadingIndicatorView loadingView;
+    private TextView emptyViewLogo;
+    private TextView emptyView;
 
     //all feeds from shared prefs
     private String[] feedKeys;

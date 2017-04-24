@@ -21,8 +21,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(R.drawable.ic_stat_ng);
-        mBuilder.setContentTitle("Nadget");
-        mBuilder.setContentText("Time for some tech news!");
+        mBuilder.setContentTitle("Time for some tech news!");
 
         //the activity to display
         Intent resultIntent = new Intent(context, NadgetMain.class);
