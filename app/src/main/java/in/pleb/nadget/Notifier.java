@@ -43,7 +43,7 @@ public class Notifier {
             PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
             //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, notifyTime, 86400000,alarmIntent);            
-            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, notifyTime, AlarmManager.INTERVAL_DAY, alarmIntent);
+            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + notifyTime, AlarmManager.INTERVAL_DAY, alarmIntent);
             
         }
         else {
