@@ -45,6 +45,7 @@ public class Notifier {
             Log.i(TAG, "Notifier notifyTimeHr = "+notifyTimeHr);
             Log.i(TAG, "Notifier notifyTimeMin = "+notifyTimeMin);
 
+<<<<<<< HEAD
             //set the alarm to start at the said time
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
@@ -53,6 +54,11 @@ public class Notifier {
 
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY, alarmIntent);
+=======
+            //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, notifyTime, 86400000,alarmIntent);            
+            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + notifyTime, AlarmManager.INTERVAL_DAY, alarmIntent);
+            
+>>>>>>> origin/master
         }
         else {
 
