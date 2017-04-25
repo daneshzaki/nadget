@@ -133,7 +133,7 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         {
             Picasso.with(activity.getBaseContext())
                     .load(rssItems.get(position).getImageUrl())
-                    .placeholder(R.drawable.spinner)
+                    .placeholder(R.drawable.ic_action_ng)
                     .error(R.drawable.ic_action_ng)
                     .resize(1000, 500)
                     .centerCrop()

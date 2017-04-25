@@ -230,7 +230,6 @@ public class NadgetSettings extends PreferenceActivity {
                                                        public boolean onPreferenceClick(Preference preference) {
                                                            Log.i(TAG, "notify clicked state="+notifyPref.isChecked());
                                                            //enable notification time pref
-
                                                            notifyTimePref.setEnabled(notifyPref.isChecked());
                                                            return true;
                                                        }

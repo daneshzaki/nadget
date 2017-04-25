@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -17,18 +18,22 @@ import android.util.Log;
 public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i(TAG, "Notifier showNotification");
+        Log.i(TAG, "NotificationReceiver showNotification");
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(R.drawable.ic_stat_ng);
         mBuilder.setContentTitle("Time for some tech news!");
+        mBuilder.setContentText("Touch to refresh");
+        mBuilder.setColor(Color.parseColor("#3B3131"));
+        mBuilder.setAutoCancel(true);
+
 
         //the activity to display
         Intent resultIntent = new Intent(context, NadgetMain.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(NadgetMain.class);
 
-        Log.i(TAG, "Notifier showNotification 2");
+        Log.i(TAG, "NotificationReceiver showNotification 2");
 
         // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
@@ -40,7 +45,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         // notificationID allows you to update the notification later on.
         mNotificationManager.notify(notificationID, mBuilder.build());
-        Log.i(TAG, "Notifier showNotification 3");
+        Log.i(TAG, "NotificationReceiver showNotification 3");
 
     }
 
