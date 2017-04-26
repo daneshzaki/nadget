@@ -111,8 +111,7 @@ public class NadgetMain extends AppCompatActivity implements NavigationView.OnNa
         //refresh main list
         refreshMainList();
 
-        //build notification
-        Notifier.process(this);
+        Log.i(TAG,"Nadget Main onCreate calling Notifier process... ");
 
         //request users to rate the app
         AppRater.app_launched(this);
@@ -222,7 +221,6 @@ public class NadgetMain extends AppCompatActivity implements NavigationView.OnNa
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        Log.i(TAG,"onPrepareOptionsMenu ");
 
         MenuItem item = menu.findItem(R.id.action_darktheme);
 
@@ -238,15 +236,12 @@ public class NadgetMain extends AppCompatActivity implements NavigationView.OnNa
             item.setTitle("Dark Theme");
         }
 
-        Log.i(TAG,"onPrepareOptionsMenu item title = "+item.getTitle());
-
         return true;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        Log.i(TAG,"onCreateOptionsMenu ");
 
         getMenuInflater().inflate(R.menu.menu, menu);
         MenuItem item = menu.findItem(R.id.action_darktheme);

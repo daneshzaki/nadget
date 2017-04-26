@@ -56,34 +56,9 @@ public class NadgetSettings extends PreferenceActivity {
             setTheme(android.R.style.Theme_Material_NoActionBar);
         }
 
-        Log.i(TAG, "onCreate notify "+userPreferences.getBoolean("notify", false));
-
-        //disable notify time if notifications are disabled
-        if(!userPreferences.getBoolean("notify", false))
-        {
-            Log.i(TAG, "onCreate notifyTimePref ");
-
-            //disable notify time pref
-            if(notifyTimePref!=null)
-            {
-                notifyTimePref.setEnabled(userPreferences.getBoolean("notify", false));
-            }
-        }
-        else
-        {
-            //set the time from prefs
-            if(notifyTimePref!=null)
-            {
-                notifyTimePref.setSummary("You will be notified at "+userPreferences.getInt("notifyTimeHr", 0)+":"+userPreferences.getInt("notifyTimeMin", 0));
-            }
-
-
-        }
-
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.settings);
-
 
         //initialize Dropbox
         AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
@@ -236,6 +211,9 @@ public class NadgetSettings extends PreferenceActivity {
                                                    }
         );
 
+        //format the notification time and set summary
+        formatNotifyTime();
+
     }
 
     //for getting notification time
@@ -245,12 +223,24 @@ public class NadgetSettings extends PreferenceActivity {
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     selHr = hourOfDay;
                     selMin = minute;
-                    Log.i(TAG, "***" + selHr + ":" + selMin);
+                    Log.i(TAG, "time listenere You will be notified at "+selHr + ":" + selMin);
+
                     notifyTimePref.setSummary("You will be notified at "+selHr + ":" + selMin);
+
+                    //formatting for MM
+                    if(selMin == 0)
+                    {
+                        notifyTimePref.setSummary("You will be notified at "+selHr + ":00");
+                    }
+
                     //set the time selected in prefs
                     editor.putInt("notifyTimeHr", selHr);
                     editor.putInt("notifyTimeMin", selMin);
                     editor.commit();
+
+                    //build notification
+                    Notifier.process(NadgetSettings.this);
+
                 }
 
 
@@ -289,25 +279,8 @@ public class NadgetSettings extends PreferenceActivity {
     {
         super.onResume();
 
-        //disable notify time if notifications are disabled
-        if(!userPreferences.getBoolean("notify", false))
-        {
-            //disable notify time pref
-            if(notifyTimePref!=null)
-            {
-                notifyTimePref.setEnabled(userPreferences.getBoolean("notify", false));
-            }
-        }
-        else
-        {
-            //set the time from prefs
-            if(notifyTimePref!=null)
-            {
-                notifyTimePref.setSummary("You will be notified at "+userPreferences.getInt("notifyTimeHr", 0)+":"+userPreferences.getInt("notifyTimeMin", 0));
-            }
-
-        }
-
+        //format the notification time and set summary
+        formatNotifyTime();
 
         if (dbApi.getSession().authenticationSuccessful()) {
             try {
@@ -367,6 +340,34 @@ public class NadgetSettings extends PreferenceActivity {
         super.onDestroy();
     }
 
+    //this method formats the notification time to add 00 to MM
+    private void formatNotifyTime()
+    {
+        //disable notify time if notifications are disabled
+        if(!userPreferences.getBoolean("notify", false))
+        {
+            //disable notify time pref
+            if(notifyTimePref!=null)
+            {
+                notifyTimePref.setEnabled(userPreferences.getBoolean("notify", false));
+            }
+        }
+        else
+        {
+            //set the time from prefs
+            if(notifyTimePref!=null) {
+                if (userPreferences.getInt("notifyTimeMin", 0) < 10) {
+                    Log.i(TAG, "NAdgetSEttings format set");
+
+                    notifyTimePref.setSummary("You will be notified at " + userPreferences.getInt("notifyTimeHr", 0) + ":0"+ userPreferences.getInt("notifyTimeMin", 0));
+                } else {
+                    Log.i(TAG, "NAdgetSEttings no format set");
+                    notifyTimePref.setSummary("You will be notified at " + userPreferences.getInt("notifyTimeHr", 0) + ":" + userPreferences.getInt("notifyTimeMin", 0));
+                }
+            }
+        }
+
+    }
 
     /**
      * Implementation of AsyncTask to upload file to dropbox

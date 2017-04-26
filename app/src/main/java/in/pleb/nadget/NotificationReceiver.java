@@ -22,8 +22,8 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(R.drawable.ic_stat_ng);
-        mBuilder.setContentTitle("Time for some tech news!");
-        mBuilder.setContentText("Touch to refresh");
+        mBuilder.setContentTitle("Time for some gadget news!");
+        mBuilder.setContentText("(¯`·._.· Touch to update ·._.·´¯)");
         mBuilder.setColor(Color.parseColor("#3B3131"));
         mBuilder.setAutoCancel(true);
 
