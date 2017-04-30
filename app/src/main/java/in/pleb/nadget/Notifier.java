@@ -20,8 +20,8 @@ import java.util.Calendar;
 
 /**
  * This class does the following:
- * checks the time the user wants to notify
- * displays notification
+ * gets the time the user wants to notify from prefs
+ * displays notification using alarm manager
  */
 
 public class Notifier {
@@ -55,6 +55,7 @@ public class Notifier {
                     AlarmManager.INTERVAL_DAY, alarmIntent);
         }
         else {
+            Log.i(TAG, "Notifier notification cancelled!!!");
 
             //cancel any pending notifications
             alarmManager.cancel(alarmIntent);
