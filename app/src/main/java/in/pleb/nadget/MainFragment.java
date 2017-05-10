@@ -69,7 +69,6 @@ public class MainFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState)
 	{
         super.onActivityCreated(savedInstanceState);
-		//mainView.setBackgroundColor(Color.WHITE);
 	}
 
 	@Override

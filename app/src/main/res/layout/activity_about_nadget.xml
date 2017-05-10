@@ -33,7 +33,6 @@
     <ImageView
         android:layout_width="96dp"
         android:layout_height="96dp"
-        android:id="@+id/imageView"
         android:layout_gravity="center|bottom"
         android:src="@drawable/ic_launcher" />
 

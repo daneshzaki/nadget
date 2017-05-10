@@ -12,5 +12,11 @@
         android:title="@string/action_share"
         app:showAsAction="ifRoom"/>
 
+    <item
+        android:id="@+id/action_noimages"
+        android:icon="@drawable/ic_no_camera_100"
+        android:title="@string/action_noimages"
+        app:showAsAction="ifRoom"/>
+
 
 </menu>

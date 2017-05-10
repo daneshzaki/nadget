@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -46,6 +47,7 @@ public class PostView extends AppCompatActivity
 
         Log.i(TAG, "Before loadValues Bundle is " + bundle);
 
+        typeface = Typeface.createFromAsset( getResources().getAssets(), "SourceSansPro-Regular.otf");
 
         setupToolbar();
 
@@ -84,6 +86,12 @@ public class PostView extends AppCompatActivity
             return true;
         }
 
+        if(id == R.id.action_noimages)
+        {
+            toggleImages(item);
+            return true;
+        }
+
         //android.R.id.home
         if (id == android.R.id.home)
         {
@@ -104,11 +112,23 @@ public class PostView extends AppCompatActivity
     private void loadValues()
     {
         //load the page in webview
-        WebView webView = ((WebView) findViewById(R.id.webView));
+        webView = ((WebView) findViewById(R.id.webView));
 
         webView.setWebViewClient(new WebViewClient());
+
         webView.getSettings().setJavaScriptEnabled(true);
 
+        //May  2017
+        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
+        webView.getSettings().setLoadWithOverviewMode(false);
+        webView.getSettings().setStandardFontFamily("SourceSansPro-Regular");
+        webView.getSettings().setBlockNetworkImage(blockImages);
+        webView.getSettings().setSerifFontFamily("SourceSansPro-Regular");
+        webView.getSettings().setCursiveFontFamily("SourceSansPro-Regular");
+        webView.getSettings().setSansSerifFontFamily("SourceSansPro-Regular");
+        webView.getSettings().setFantasyFontFamily("SourceSansPro-Regular");
+        webView.getSettings().setFixedFontFamily("SourceSansPro-Regular");
+        webView.getSettings().setUserAgentString("Android");
 
         if(bundle.getString("link") != null )
         {
@@ -208,6 +228,29 @@ public class PostView extends AppCompatActivity
         startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.action_share)));
     }
 
+    //toggle image loading
+    private void toggleImages(MenuItem item)
+    {
+        String imageMsg = "";
+
+        if(blockImages)
+        {
+            item.setIcon(R.drawable.ic_no_camera_100);
+            imageMsg = "Showing images ";
+            blockImages = false;
+        }
+        else
+        {
+            item.setIcon(R.drawable.ic_photo_camera);
+            imageMsg = "Images blocked";
+            blockImages = true;
+        }
+
+        Snackbar.make(this.findViewById(R.id.webView), imageMsg, Snackbar.LENGTH_SHORT).show();
+        webView.getSettings().setBlockNetworkImage(blockImages);
+        webView.reload();
+    }
+
     //method to display error on no connection
     public void displayNetworkError()
     {
@@ -227,4 +270,8 @@ public class PostView extends AppCompatActivity
     private boolean favoriteSet = false;
     private static final String FAVS_FILE_NAME = "in.pleb.nadget.FavoriteFeeds";
     private SharedPreferences userPreferences;
+    private Typeface typeface = null;
+    private boolean blockImages = false;
+    private WebView webView;
+
 }
