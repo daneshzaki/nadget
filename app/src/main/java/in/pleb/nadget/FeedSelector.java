@@ -73,9 +73,11 @@ public class FeedSelector extends AppCompatActivity
         feedMaster.put("http://feeds2.feedburner.com/fone-arena","Fonearena");
         feedMaster.put("http://www.gizbot.com/rss/gizbot-fb.xml","Gizbot");
         feedMaster.put("http://feeds.feedburner.com/ogfeed","Only Gizmos");
-        feedMaster.put("http://trak.in/feed/", "Trak.in ");
-        feedMaster.put("http://www.techlila.com/feed/", "TechLila ");
-        feedMaster.put("http://feeds.feedburner.com/gadgetdiary", "Gadget Diary ");
+        feedMaster.put("http://trak.in/feed/", "Trak.in");
+        feedMaster.put("http://feeds.feedburner.com/gadgetdiary", "Gadget Diary");
+        feedMaster.put("http://feeds.feedburner.com/techtricksworld", "TechTricksWorld");
+        feedMaster.put("http://feeds.feedburner.com/techwelkin", "TechWelkin");
+        feedMaster.put("http://phoneradar.com/feed", "Phone Radar");
 
     }
 
@@ -98,8 +100,10 @@ public class FeedSelector extends AppCompatActivity
         feedPickerValues.add(new Item("http://www.gizbot.com/rss/gizbot-fb.xml","Gizbot"));
         feedPickerValues.add(new Item("http://feeds.feedburner.com/ogfeed","Only Gizmos"));
         feedPickerValues.add(new Item("http://trak.in/feed/", "Trak.in "));
-        feedPickerValues.add(new Item("http://www.techlila.com/feed/", "TechLila"));
         feedPickerValues.add(new Item("http://feeds.feedburner.com/gadgetdiary", "Gadget Diary"));
+        feedPickerValues.add(new Item("http://feeds.feedburner.com/techtricksworld", "TechTricksWorld"));
+        feedPickerValues.add(new Item("http://feeds.feedburner.com/techwelkin", "TechWelkin"));
+        feedPickerValues.add(new Item("http://phoneradar.com/feed", "Phone Radar"));
 
         //setup feed Picker with values
         feedPicker = (CollectionPicker) findViewById(R.id.feed_picker);

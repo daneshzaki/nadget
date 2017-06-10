@@ -23,6 +23,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.*;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -115,6 +116,9 @@ public class NadgetMain extends AppCompatActivity implements NavigationView.OnNa
 
         //request users to rate the app
         AppRater.app_launched(this);
+
+        //show what's new for the 1st time only
+        showWhatsNew();
     }
 
     //on resume
@@ -317,6 +321,22 @@ public class NadgetMain extends AppCompatActivity implements NavigationView.OnNa
         return super.onOptionsItemSelected(item);
     }
 
+    //this method is to show what's new and will show only once
+    public void showWhatsNew()
+    {
+        editor = userPreferences.edit();
+
+        boolean isFirstRun = userPreferences.getBoolean("isFirstRun", true);
+
+        if (isFirstRun)
+        {
+            // show what's new
+            new AlertDialog.Builder(this).setTitle(R.string.whatsnew_title).setMessage(R.string.whatsnew).setNeutralButton("OK", null).show();
+
+            editor.putBoolean("isFirstRun", false);
+            editor.commit();
+        }
+    }
 
     private void setupToolbar()
     {
@@ -695,7 +715,7 @@ public class NadgetMain extends AppCompatActivity implements NavigationView.OnNa
     //set on no feeds selected
     private boolean noFeedsSelected = false;
 
-    //to store dark theme
+    //to store dark theme and check first run for what's new
     private SharedPreferences.Editor editor;
 
     private NavigationView navigationView;

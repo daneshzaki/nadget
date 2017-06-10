@@ -26,5 +26,11 @@
     <string name="noThanks">Never</string>
     <string name="darkTheme">Dark Theme</string>
     <string name="action_noimages">No Images</string>
+    <string name="whatsnew_title">What\'s new</string>
+    <string name="whatsnew">
+    - New feeds \n
+    - Block images inside articles \n
+    - Minor UI changes
+    </string>
 
 </resources>

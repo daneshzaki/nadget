@@ -245,8 +245,11 @@ public class MainViewAdapter  extends RecyclerView.Adapter<MainViewAdapter.PostV
         feedNames.put("http://www.gizbot.com/rss/gizbot-fb.xml", "Gizbot ");
         feedNames.put("http://feeds.feedburner.com/ogfeed", "Only Gizmos ");
         feedNames.put("http://trak.in/feed/", "Trak.in ");
-        feedNames.put("http://www.techlila.com/feed/", "TechLila ");
         feedNames.put("http://feeds.feedburner.com/gadgetdiary", "Gadget Diary ");
+        feedNames.put("http://feeds.feedburner.com/techtricksworld", "TechTricksWorld ");
+        feedNames.put("http://feeds.feedburner.com/techwelkin", "TechWelkin ");
+        feedNames.put("http://phoneradar.com/feed", "Phone Radar ");
+
     }
 
 
