@@ -29,7 +29,7 @@
     <string name="whatsnew_title">What\'s new</string>
     <string name="whatsnew">
     - New feeds \n
-    - Block images inside articles \n
+    - Block ads inside articles (experimental) \n
     - Minor UI changes
     </string>
 

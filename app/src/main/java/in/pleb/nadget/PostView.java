@@ -122,13 +122,14 @@ public class PostView extends AppCompatActivity
         webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
         webView.getSettings().setLoadWithOverviewMode(false);
         webView.getSettings().setStandardFontFamily("SourceSansPro-Regular");
-        webView.getSettings().setBlockNetworkImage(blockImages);
+        webView.getSettings().setBlockNetworkImage(false);
         webView.getSettings().setSerifFontFamily("SourceSansPro-Regular");
         webView.getSettings().setCursiveFontFamily("SourceSansPro-Regular");
         webView.getSettings().setSansSerifFontFamily("SourceSansPro-Regular");
         webView.getSettings().setFantasyFontFamily("SourceSansPro-Regular");
         webView.getSettings().setFixedFontFamily("SourceSansPro-Regular");
         webView.getSettings().setUserAgentString("Android");
+        Log.i(TAG, "*** load image auto = "+ webView.getSettings().getLoadsImagesAutomatically());
 
         if(bundle.getString("link") != null )
         {
@@ -232,23 +233,33 @@ public class PostView extends AppCompatActivity
     private void toggleImages(MenuItem item)
     {
         String imageMsg = "";
+        Log.i(TAG, "*** toggle images 1 blockImages = "+ blockImages);
 
         if(blockImages)
         {
-            item.setIcon(R.drawable.ic_no_camera_100);
+            item.setIcon(R.drawable.ic_photo_camera);
             imageMsg = "Showing images ";
             blockImages = false;
         }
         else
         {
-            item.setIcon(R.drawable.ic_photo_camera);
+            item.setIcon(R.drawable.ic_no_camera_100);
             imageMsg = "Images blocked";
             blockImages = true;
         }
 
         Snackbar.make(this.findViewById(R.id.webView), imageMsg, Snackbar.LENGTH_SHORT).show();
-        webView.getSettings().setBlockNetworkImage(blockImages);
+        Log.i(TAG, "*** toggle images 2 blockImages = "+ blockImages);
+
+        //do the reverse for this method wants that
+        webView.getSettings().setLoadsImagesAutomatically(!blockImages);
+
+        Log.i(TAG, "*** toggle images 1 load image auto = "+ webView.getSettings().getLoadsImagesAutomatically());
+
         webView.reload();
+        Log.i(TAG, "*** toggle images 2 load image auto = "+ webView.getSettings().getLoadsImagesAutomatically());
+
+
     }
 
     //method to display error on no connection
@@ -272,6 +283,7 @@ public class PostView extends AppCompatActivity
     private SharedPreferences userPreferences;
     private Typeface typeface = null;
     private boolean blockImages = false;
+
     private WebView webView;
 
 }
